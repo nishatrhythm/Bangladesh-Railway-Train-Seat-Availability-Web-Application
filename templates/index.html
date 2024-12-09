@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BD Railway Train Seat Availability</title>
+    <link rel="stylesheet" href="static/styles.css">
+    <script src="static/js/script.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" rel="stylesheet">
+    <link rel="icon"
+        href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png"
+        type="image/x-icon" sizes="30x30">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>
+            <i class="fas fa-subway"></i> Bangladesh Railway Seat Availability
+        </h1>
+        {% if token %}
+        <form action="/clear_token" method="POST" style="display: inline;">
+            <button type="submit" class="btn-clear">
+                <i class="fas fa-times-circle"></i> Clear Authorization Token
+            </button>
+        </form>
+        {% endif %}
+        {% if error %}
+        <div class="error animated-fade-in">{{ error }}</div>
+        {% endif %}
+        <form action="/check_seats" method="POST" onsubmit="return validateForm(event)">
+            {% if not token %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="phone_number">Mobile Number:</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-phone input-icon"></i>
+                        <input type="number" id="phone_number" name="phone_number"
+                            placeholder="Enter your mobile number"
+                            value="{{ form_values.phone_number if form_values and form_values.phone_number is not none else '' }}"
+                            oninput="validateBangladeshPhoneNumber(this)" maxlength="11">
+                    </div>
+                    <span class="error-message" id="phone-error">Mobile Number is required</span>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <div class="input-with-icon" style="position: relative;">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="password" name="password" placeholder="Enter your password">
+                        <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility()"
+                            style="position: absolute; right: 15px; cursor: pointer;"></i>
+                    </div>
+                    <span class="error-message" id="password-error">Password is required</span>
+                </div>
+            </div>
+            {% endif %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="origin">Origin Station:</label>
+                    <div class="input-with-icon" style="position: relative;">
+                        <i class="fas fa-train input-icon"></i>
+                        <input type="text" id="origin" name="origin" placeholder="Type or select an origin station"
+                            value="{{ form_values.origin if form_values and form_values.origin is not none else '' }}"
+                            onkeyup="filterDropdown('origin', 'originDropdown')" onblur="hideDropdown('originDropdown')"
+                            autocomplete="off">
+                        <div id="originDropdown" class="custom-dropdown">
+                            {% for station in stations %}
+                            <div onclick="selectOption('origin', 'originDropdown', '{{ station }}')">{{ station }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <span class="error-message" id="origin-error">Origin Station is required</span>
+                </div>
+                <div class="form-group">
+                    <label for="destination">Destination Station:</label>
+                    <div class="input-with-icon" style="position: relative;">
+                        <i class="fas fa-train input-icon"></i>
+                        <input type="text" id="destination" name="destination"
+                            placeholder="Type or select a destination station"
+                            value="{{ form_values.destination if form_values and form_values.destination is not none else '' }}"
+                            onkeyup="filterDropdown('destination', 'destinationDropdown')"
+                            onblur="hideDropdown('destinationDropdown')" autocomplete="off">
+                        <div id="destinationDropdown" class="custom-dropdown">
+                            {% for station in stations %}
+                            <div onclick="selectOption('destination', 'destinationDropdown', '{{ station }}')">{{
+                                station }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <span class="error-message" id="destination-error">Destination Station is required</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="date">Date of Journey:</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-calendar-alt input-icon"></i>
+                        <input type="text" id="date" name="date" placeholder="Select a date"
+                            value="{{ form_values.date if form_values and form_values.date is not none else '' }}">
+                    </div>
+                    <span class="error-message" id="date-error">Date of Journey is required</span>
+                </div>
+                <div class="form-group submit-btn">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-search"></i> Check Seats
+                    </button>
+                </div>
+            </div>
+        </form>
+        <div id="loader" class="loader" style="display: none;"></div>
+
+        {% if show_disclaimer %}
+        <p class="note">
+            <span class="note-bold highlight">Disclaimer:</span> Your mobile number and password registered with the Bangladesh Railway website are used solely to generate an authorization token through an API request to the Bangladesh Railway website. This token is necessary to fetch seat availability details. Rest assured, we do not store your mobile number or password. Your data remains private and secure, directly between you and Bangladesh Railway. We do not access or intercept your information during the API request. For your convenience, the authorization token is saved in your browser's cookies, allowing us to reuse it without requiring you to re-enter your credentials.
+        </p>
+        {% endif %}
+
+        <footer class="new-footer">
+            <p>This project is open source. Check it out on <a href="https://github.com/nishatrhythm/Bangladesh-Railway-Seat-Availability-Web-Application"
+                    target="_blank">GitHub</a>.</p>
+        </footer>
+    </div>
+
+</body>
+
+</html>

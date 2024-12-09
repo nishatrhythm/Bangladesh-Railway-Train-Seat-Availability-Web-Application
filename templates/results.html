@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BD Railway Train Seat Availability</title>
+    <link rel="icon"
+        href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png"
+        type="image/x-icon" sizes="30x30">
+    <link rel="stylesheet" href="static/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <h1>
+            <i class="fas fa-train"></i>Seat Availability
+        </h1>
+        <form action="/clear_token" method="POST" style="display: inline;">
+            <button type="submit" class="btn-clear">
+                <i class="fas fa-times-circle"></i> Clear Authorization Token
+            </button>
+        </form>
+
+        <a href="https://eticket.railway.gov.bd/booking/train/search?fromcity={{ origin }}&tocity={{ destination }}&doj={{ date }}&class={{ seat_class }}"
+            target="_blank" class="btn-buy">
+            <i class="fas fa-external-link-alt"></i> Buy Tickets
+        </a>
+
+        {% if result %}
+        {% for train, details in result.items() %}
+        <div class="train-card animated-fade-in">
+            <div class="train-header">
+                <h2><i class="fas fa-subway"></i> {{ train }}</h2>
+                <p>
+                    <i class="fas fa-route"></i>
+                    <strong>Route:</strong> {{ details['from_station'] }} - {{ details['to_station'] }}
+                </p>
+                <p class="timing-info">
+                    <span>
+                        <i class="fas fa-clock"></i> <strong>Departure:</strong> {{ details['departure_time'] }}
+                    </span>
+                    <span class="separator">|</span>
+                    <span>
+                        <i class="fas fa-clock"></i> <strong>Arrival:</strong> {{ details['arrival_time'] }}
+                    </span>
+                </p>
+            </div>
+            {% for seat_type in details['seat_data'] %}
+            {% if seat_type['available_count'] == 0 and seat_type['booking_process_count'] == 0 %}
+            <div class="no-seats">
+                <i class="fas fa-exclamation-circle"></i> No seat details available for seat type: {{ seat_type['type']
+                }}
+            </div>
+            {% else %}
+            <h3><i class="fas fa-chair"></i> Seat Type: {{ seat_type['type'] }}</h3>
+            <p>
+                <span class="status status-available">
+                    <i class="fas fa-check-circle"></i> Available Tickets: {{ seat_type['available_count'] }}
+                </span>
+                <span class="status status-in-process">
+                    <i class="fas fa-spinner"></i> In Booking Process: {{ seat_type['booking_process_count'] }}
+                </span>
+            </p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Coach (Ticket Count)</th>
+                        <th>Seat Numbers</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for coach, group in seat_type['grouped_seats'].items() %}
+                    <tr>
+                        <td class="status status-available">
+                            <i class="fas fa-check-circle"></i> Available
+                        </td>
+                        <td>{{ coach }} ({{ group['count'] }} tickets)</td>
+                        <td>{{ ', '.join(group['seats']) }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% for coach, group in seat_type['grouped_booking_process'].items() %}
+                    <tr>
+                        <td class="status status-in-process">
+                            <i class="fas fa-spinner"></i> In Booking Process
+                        </td>
+                        <td>{{ coach }} ({{ group['count'] }} tickets)</td>
+                        <td>{{ ', '.join(group['seats']) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="error">
+            <i class="fas fa-exclamation-triangle"></i> No trains available for the selected criteria.
+        </p>
+        {% endif %}
+        <a href="/" class="btn-primary">
+            <i class="fas fa-arrow-left"></i> Back to Search
+        </a>
+    </div>
+</body>
+
+</html>
