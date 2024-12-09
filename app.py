@@ -26,7 +26,9 @@ def fetch_token(phone_number, password):
         token = data["data"]["token"]
         return token
     except requests.RequestException as e:
-        raise Exception(f"Failed to fetch token: {e}")
+        # Include the response details in the exception
+        error_message = f"Failed to fetch token: {e}. Response: {response.text if response else 'No Response'}"
+        raise Exception(error_message)
     
 @app.after_request
 def add_cache_control_headers(response):
