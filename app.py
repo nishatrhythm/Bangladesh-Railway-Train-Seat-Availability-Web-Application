@@ -19,26 +19,14 @@ def fetch_token(phone_number, password):
 
     try:
         response = requests.post(TOKEN_API_URL, json=payload)
-        
-        # Log status code and response content
-        print(f"API Response Status Code: {response.status_code}")
-        print(f"API Response Content: {response.text}")  # Logs the raw response body as text
-        
         if response.status_code == 422:
             raise Exception("Wrong credentials provided.")
         response.raise_for_status()
-        
         data = response.json()
         token = data["data"]["token"]
         return token
     except requests.RequestException as e:
-        # Log error details and response
-        print(f"Request Exception: {e}")
-        if response is not None:
-            print(f"Response Text: {response.text}")
-            print(f"Response Headers: {response.headers}")
         raise Exception(f"Failed to fetch token: {e}")
-
     
 @app.after_request
 def add_cache_control_headers(response):
