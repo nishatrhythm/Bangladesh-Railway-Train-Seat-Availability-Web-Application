@@ -1,6 +1,6 @@
 # Bangladesh Railway Seat Availability Web Application
 
-This document provides an in-depth explanation of the implementation logic, algorithms, API interactions, data fetching process, privacy measures, backend functionality, frontend capabilities, and technologies used in the Bangladesh Railway Seat Availability Web Application.
+This document provides an in-depth explanation of the implementation logic, algorithms, API interactions, data fetching process, privacy measures, backend functionality, frontend capabilities, and technologies used in the Bangladesh Railway Seat Availability Web Application. This project is based on the script [`detailsSeatAvailability.py`](https://github.com/nishatrhythm/Bangladesh-Railway-Segmented-Seat-Matrix-and-Details-Seat-Availabilty/blob/main/detailsSeatAvailability.py) and extends its functionality into a full-fledged web application.
 
 **Live Link**: [Bangladesh Railway Seat Availability](https://trainseat.vercel.app/)  
 > _**Note:** Currently, the Bangladesh Railway website restricts requests from the Vercel platform. The application will soon be deployed with a suitable workaround. In the meantime, you can clone and run the repository locally to explore its full functionality._
