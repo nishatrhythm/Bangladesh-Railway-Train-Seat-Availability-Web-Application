@@ -2,6 +2,15 @@
 
 This document provides an in-depth explanation of the implementation logic, algorithms, API interactions, data fetching process, privacy measures, backend functionality, frontend capabilities, and technologies used in the Bangladesh Railway Seat Availability Web Application.
 
+**Live Link**: [Bangladesh Railway Seat Availability](https://trainseat.vercel.app/)  
+> _**Note:** Currently, the Bangladesh Railway website restricts requests from the Vercel platform. The application will soon be deployed with a suitable workaround. In the meantime, you can clone and run the repository locally to explore its full functionality._
+
+<br>
+
+| <img src="/images/Screenshot_1.png" width="400"> | <img src="/images/Screenshot_2.png" width="400"> |
+|--------------------------------------------------|--------------------------------------------------|
+| <div align="center">**Screenshot 1**</div>      | <div align="center">**Screenshot 2**</div>      |
+
 ---
 
 ## Index
