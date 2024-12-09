@@ -118,7 +118,7 @@ This document provides an in-depth explanation of the implementation logic, algo
 
 ## Data Processing
   
-## Seat Grouping
+### Seat Grouping
 
 **Groups seats by coach prefix.**
 
@@ -131,7 +131,7 @@ def group_by_prefix(seats):
     return {prefix: {"seats": seats, "count": len(seats)} for prefix, seats in groups.items()}
 ```
 
-## Data Sorting
+### Data Sorting
 
 **Sorts trains by departure time for better readability.**
 
