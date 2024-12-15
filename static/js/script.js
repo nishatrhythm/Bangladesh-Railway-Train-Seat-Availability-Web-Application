@@ -179,8 +179,12 @@ function togglePasswordVisibility() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    const today = new Date();
-    const tenDaysLater = new Date();
+    // Set the Bangladeshi time zone
+    const bangladeshTimeZone = 'Asia/Dhaka';
+
+    // Get today's date in Bangladeshi time
+    const today = new Date(new Date().toLocaleString("en-US", { timeZone: bangladeshTimeZone }));
+    const tenDaysLater = new Date(new Date().toLocaleString("en-US", { timeZone: bangladeshTimeZone }));
     tenDaysLater.setDate(today.getDate() + 10);
 
     const dateInput = document.querySelector("#date");
@@ -203,8 +207,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 dateFormat: "Y-m-d",
                 altInput: true,
                 altFormat: "d-M-Y",
-                minDate: today,
-                maxDate: tenDaysLater,
+                minDate: today.toISOString().split("T")[0],
+                maxDate: tenDaysLater.toISOString().split("T")[0],
             });
 
             if (preFilledDate === today.toISOString().split("T")[0]) {
