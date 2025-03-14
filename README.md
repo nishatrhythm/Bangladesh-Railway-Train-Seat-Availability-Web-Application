@@ -4,6 +4,8 @@ This document provides an in-depth explanation of the implementation logic, algo
 
 **Live Link**: [Bangladesh Railway Seat Availability](https://trainseat.onrender.com)
 
+> Disclaimer: As onrender.com is the only free hosting site that specifically supports Singapore server hosting, it is used because Bangladesh Railway has restricted access to the e-Ticketing website from outside Bangladesh, except for Singapore. However, on the free plan, this hosting site freezes the hosted website if no user visits it within a 15-20 minute interval. As a result, you may experience a loading delay of around 45-50 seconds when accessing the site. After that, it will work fine.
+
 <br>
 
 | <img src="/images/Screenshot_1.png" width="400"> | <img src="/images/Screenshot_2.png" width="400"> |
