@@ -1,12 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, make_response
 from detailsSeatAvailability import main as detailsSeatAvailability, set_token
 from datetime import datetime
-import requests, os, json
+import requests, os, json, uuid
 from flask import session
 from flask import after_this_request
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
+
+RESULT_CACHE = {}
 
 TOKEN_API_URL = "https://railspaapi.shohoz.com/v1.0/app/auth/sign-in"
 
@@ -74,9 +76,6 @@ def check_seats():
             'date': request.form.get('date', '')
         }
 
-        form_values['origin'] = STATION_NAME_MAPPING.get(form_values['origin'], form_values['origin'])
-        form_values['destination'] = STATION_NAME_MAPPING.get(form_values['destination'], form_values['destination'])
-
         session['form_values'] = form_values
 
         token = request.cookies.get('token')
@@ -99,7 +98,7 @@ def check_seats():
 
             @after_this_request
             def set_cookie(response):
-                response.set_cookie('token', token, httponly=True)
+                response.set_cookie('token', token, httponly=True, secure=(os.getenv('FLASK_ENV') == 'production'))
                 return response
 
             set_token(token)
@@ -142,7 +141,10 @@ def check_seats():
                 seat_type['grouped_seats'] = group_by_prefix(seat_type['available_seats'])
                 seat_type['grouped_booking_process'] = group_by_prefix(seat_type['booking_process_seats'])
 
-        session['last_result'] = result
+        result_id = str(uuid.uuid4())
+        RESULT_CACHE[result_id] = result
+
+        session['result_id'] = result_id
 
         return redirect(url_for('show_results'))
 
@@ -154,9 +156,11 @@ def check_seats():
 @app.route('/show_results')
 def show_results():
     from flask import session
-    result = session.pop('last_result', None)
-    if result is None:
+    result_id = session.pop('result_id', None)
+    if not result_id or result_id not in RESULT_CACHE:
         return redirect(url_for('home'))
+
+    result = RESULT_CACHE.pop(result_id)
 
     form_values = session.get('form_values', {})
     origin = form_values.get('origin', '')
