@@ -15,11 +15,11 @@
 <body>
     <div class="container">
         <h1>
-            <i class="fas fa-train"></i>Seat Availability
+            <i class="fas fa-train"></i>Seat Availability Info
         </h1>
         <form action="/clear_token" method="POST" style="display: inline;">
             <button type="submit" class="btn-clear">
-                <i class="fas fa-times-circle"></i> Clear Authorization Token
+                <i class="fas fa-trash-alt"></i> Delete Auth Token
             </button>
         </form>
 
@@ -33,6 +33,7 @@
         <div class="train-card animated-fade-in">
             <div class="train-header">
                 <h2><i class="fas fa-subway"></i> {{ train }}</h2>
+                <div class="train-separator"></div>
                 <p>
                     <i class="fas fa-route"></i>
                     <strong>Route:</strong> {{ details['from_station'] }} - {{ details['to_station'] }}

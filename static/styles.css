@@ -373,12 +373,22 @@ input[type="number"] {
 }
 
 .error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #e74c3c;
-    background-color: #fdecea;
-    padding: 10px;
-    border-radius: 5px;
-    margin-top: 10px;
-    animation: fadeIn 1s ease-in-out;
+    text-align: center;
+    margin: 20px 0;
+    font-size: 16px;
+    font-weight: 600;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+.error-icon {
+    color: #e74c3c;
+    font-size: 18px;
+    margin-right: 8px;
+    vertical-align: middle;
 }
 
 .animated-fade-in {
@@ -532,6 +542,30 @@ button:hover {
     transform: translateX(5px);
 }
 
+.swap-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(0, 103, 71);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s;
+    margin: 0 2px;
+    align-self: flex-end;
+}
+
+.swap-icon {
+    font-size: 20px;
+    color: #ffffff;
+}
+
+.swap-icon-wrapper:hover {
+    transform: rotate(180deg) scale(1.1);
+    background-color: rgb(0, 85, 58);
+}
+
 .train-card {
     background-color: #ffffff;
     margin-bottom: 25px;
@@ -548,12 +582,16 @@ button:hover {
 }
 
 .train-header {
+    text-align: center;
+    background-color: #f2f6fa;
+    padding: 20px;
     margin-bottom: 20px;
+    border-radius: 8px 8px 0 0;
 }
 
 .train-header h2 {
     font-size: 22px;
-    margin-bottom: 5px;
+    margin-bottom: 20px;
     color: #006747;
 }
 
@@ -565,6 +603,14 @@ button:hover {
 
 .train-header p i {
     margin-right: 5px;
+}
+
+.train-separator {
+    width: 100%;
+    height: 1px;
+    background-color: #006747;
+    margin: 10px 0;
+    border-radius: 1px;
 }
 
 .timing-info {
@@ -882,6 +928,15 @@ footer a:hover {
 
     h3 {
         font-size: 16px;
+    }
+
+    .swap-icon-wrapper {
+        margin: 5px auto;
+        transform: rotate(90deg);
+    }
+
+    .swap-icon-wrapper:hover {
+        transform: rotate(270deg);
     }
 
     .train-card {

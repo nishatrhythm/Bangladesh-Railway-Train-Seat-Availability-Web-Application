@@ -23,6 +23,8 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
         response = requests.get(url, headers=headers, params=params)
         if response.status_code == 401:
             raise Exception("Token expired or unauthorized")
+        if response.status_code == 422:
+            raise Exception("422 error occurred")
         response.raise_for_status()
         data = response.json()
         seat_layout = data.get("data", {}).get("seatLayout", [])
@@ -41,6 +43,8 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
     except requests.RequestException as e:
         if response.status_code == 401:
             raise Exception("Token expired or unauthorized")
+        if response.status_code == 422:
+            raise Exception("422 error occurred")
         print(f"{Fore.RED}Failed to fetch seat layout: {e}")
         return [], [], 0, 0
 

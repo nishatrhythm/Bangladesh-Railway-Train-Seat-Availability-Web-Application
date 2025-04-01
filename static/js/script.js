@@ -9,6 +9,17 @@ function showLoaderAndSubmit(event) {
     }, 100);
 }
 
+function swapStations() {
+    const originInput = document.getElementById('origin');
+    const destinationInput = document.getElementById('destination');
+
+    if (originInput && destinationInput) {
+        const tempValue = originInput.value;
+        originInput.value = destinationInput.value;
+        destinationInput.value = tempValue;
+    }
+}
+
 function validateForm(event) {
     let isValid = true;
 

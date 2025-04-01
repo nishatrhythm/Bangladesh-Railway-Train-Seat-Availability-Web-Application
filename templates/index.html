@@ -38,12 +38,14 @@
         {% if token %}
         <form action="/clear_token" method="POST" style="display: inline;">
             <button type="submit" class="btn-clear">
-                <i class="fas fa-times-circle"></i> Clear Authorization Token
+                <i class="fas fa-trash-alt"></i> Delete Auth Token
             </button>
         </form>
         {% endif %}
         {% if error %}
-        <div class="error animated-fade-in">{{ error }}</div>
+        <div class="error animated-fade-in">
+            <i class="fas fa-exclamation-circle error-icon"></i> {{ error }}
+        </div>
         {% endif %}
         <form action="/check_seats" method="POST" onsubmit="return validateForm(event)">
             {% if not token %}
@@ -88,6 +90,11 @@
                     </div>
                     <span class="error-message" id="origin-error">Origin Station is required</span>
                 </div>
+
+                <div class="swap-icon-wrapper" onclick="swapStations()">
+                    <i class="fas fa-exchange-alt swap-icon"></i>
+                </div>
+
                 <div class="form-group">
                     <label for="destination">Destination Station:</label>
                     <div class="input-with-icon" style="position: relative;">

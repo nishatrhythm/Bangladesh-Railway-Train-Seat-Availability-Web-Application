@@ -17,7 +17,7 @@ def fetch_token(phone_number, password):
     try:
         response = requests.post(TOKEN_API_URL, json=payload)
         if response.status_code == 422:
-            raise Exception("Wrong credentials provided.")
+            raise Exception("Mobile Number or Password is incorrect.")
         response.raise_for_status()
         data = response.json()
         token = data["data"]["token"]
@@ -120,15 +120,19 @@ def check_seats():
         try:
             result = detailsSeatAvailability(config)
         except Exception as e:
-            if "Token expired" in str(e) or "unauthorized" in str(e).lower():
+            error_msg = str(e)
+            if "Token expired" in error_msg or "unauthorized" in error_msg.lower():
                 @after_this_request
                 def clear_cookie(response):
                     response.delete_cookie('token')
                     return response
-
                 error = "Authorization token expired. Please log in again."
-                session['error'] = error
-                return redirect(url_for('home'))
+            elif "422 error occurred" in error_msg:
+                error = "An error occurred while fetching seat details. Please retry with a different account."
+            else:
+                error = "An error occurred while fetching seat details."
+            session['error'] = error
+            return redirect(url_for('home'))
 
         if "error" in result:
             error = result["error"]
