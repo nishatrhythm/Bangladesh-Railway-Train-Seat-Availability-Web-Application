@@ -179,27 +179,29 @@ function togglePasswordVisibility() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Set the Bangladeshi time zone
-    const bangladeshTimeZone = 'Asia/Dhaka';
-
-    // Get today's date in Bangladeshi time
-    const today = new Date(new Date().toLocaleString("en-US", { timeZone: bangladeshTimeZone }));
-    const tenDaysLater = new Date(new Date().toLocaleString("en-US", { timeZone: bangladeshTimeZone }));
-    tenDaysLater.setDate(today.getDate() + 10);
-
     const dateInput = document.querySelector("#date");
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
     const preFilledDate = dateInput.value;
+
+    const minDate = window.minDate;
+    const maxDate = window.maxDate;
 
     if (isMobile) {
         if (dateInput) {
             dateInput.setAttribute("type", "date");
-            dateInput.setAttribute("min", today.toISOString().split("T")[0]);
-            dateInput.setAttribute("max", tenDaysLater.toISOString().split("T")[0]);
+            dateInput.setAttribute("min", minDate);
+            dateInput.setAttribute("max", maxDate);
             if (preFilledDate) {
                 dateInput.value = preFilledDate;
             }
+            dateInput.addEventListener('change', function () {
+                const selected = new Date(this.value);
+                const min = new Date(minDate);
+                const max = new Date(maxDate);
+                if (selected < min || selected > max) {
+                    this.value = minDate;
+                }
+            });
         }
     } else {
         if (dateInput) {
@@ -207,12 +209,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 dateFormat: "Y-m-d",
                 altInput: true,
                 altFormat: "d-M-Y",
-                minDate: today.toISOString().split("T")[0],
-                maxDate: tenDaysLater.toISOString().split("T")[0],
+                minDate: minDate,
+                maxDate: maxDate
             });
 
-            if (preFilledDate === today.toISOString().split("T")[0]) {
-                flatpickrInstance.setDate(today);
+            if (preFilledDate && preFilledDate === minDate) {
+                flatpickrInstance.setDate(minDate);
             }
         }
     }

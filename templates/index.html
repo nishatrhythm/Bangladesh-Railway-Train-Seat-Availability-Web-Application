@@ -22,7 +22,6 @@
     <meta property="og:type" content="website">
 
     <link rel="stylesheet" href="static/styles.css">
-    <script src="static/js/script.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" rel="stylesheet">
     <link rel="icon"
         href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png"
@@ -137,6 +136,14 @@
             <p>This project is open source. Check it out on <a href="https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application"
                     target="_blank">GitHub</a>.</p>
         </footer>
+
+
+        <script>
+            window.minDate = "{{ min_date }}";
+            window.maxDate = "{{ max_date }}";
+        </script>
+        <script src="static/js/script.js"></script>
+        
     </div>
 
 </body>

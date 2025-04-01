@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, make_response
 from detailsSeatAvailability import main as detailsSeatAvailability, set_token
-from datetime import datetime
-import requests, os, json, uuid
+from datetime import datetime, timedelta
+import requests, os, json, uuid, pytz
 from flask import session
 from flask import after_this_request
 
@@ -9,16 +9,11 @@ app = Flask(__name__)
 app.secret_key = "your_secret_key"
 
 RESULT_CACHE = {}
-
 TOKEN_API_URL = "https://railspaapi.shohoz.com/v1.0/app/auth/sign-in"
-
-STATION_NAME_MAPPING = {
-    "Coxs Bazar": "Cox's Bazar"
-}
+STATION_NAME_MAPPING = {"Coxs Bazar": "Cox's Bazar"}
 
 def fetch_token(phone_number, password):
     payload = {"mobile_number": phone_number, "password": password}
-
     try:
         response = requests.post(TOKEN_API_URL, json=payload)
         if response.status_code == 422:
@@ -34,7 +29,6 @@ def fetch_token(phone_number, password):
 def add_cache_control_headers(response):
     if 'set-cookie' in response.headers:
         return response
-
     response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '0'
@@ -53,8 +47,12 @@ def home():
         form_values['date'] = datetime.strptime(form_values['date'], '%Y-%m-%d').strftime('%Y-%m-%d')
 
     token = request.cookies.get('token')
-
     show_disclaimer = token is None
+
+    bst_tz = pytz.timezone('Asia/Dhaka')
+    bst_now = datetime.now(bst_tz)
+    min_date = bst_now.date()
+    max_date = min_date + timedelta(days=10)
 
     return render_template(
         'index.html',
@@ -62,9 +60,10 @@ def home():
         stations=stations_list,
         error=error,
         form_values=form_values,
-        show_disclaimer=show_disclaimer
+        show_disclaimer=show_disclaimer,
+        min_date=min_date.strftime('%Y-%m-%d'),
+        max_date=max_date.strftime('%Y-%m-%d')
     )
-
 
 @app.route('/check_seats', methods=['POST'])
 def check_seats():
@@ -158,7 +157,6 @@ def check_seats():
 
 @app.route('/show_results')
 def show_results():
-    from flask import session
     result_id = session.pop('result_id', None)
     if not result_id or result_id not in RESULT_CACHE:
         return redirect(url_for('home'))
@@ -201,7 +199,6 @@ def show_results():
 
 @app.route('/clear_token', methods=['POST'])
 def clear_token():
-    """Clear the token cookie."""
     response = make_response(redirect(url_for('home')))
     response.delete_cookie('token')
     return response
