@@ -534,8 +534,13 @@ button:hover {
     padding: 25px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e6e6e6;
+    border: 1px solid #006747;
     animation: fadeInUp 0.8s ease-in-out;
+    transition: box-shadow 0.3s;
+}
+
+.train-card:hover {
+    box-shadow: 0 6px 16px rgba(0, 103, 71, 0.2);
 }
 
 .train-header {

@@ -57,12 +57,12 @@
             <h3><i class="fas fa-chair"></i> Seat Type: {{ seat_type['type'] }}</h3>
             <p>
                 <span class="status status-available">
-                    <i class="fas fa-check-circle"></i> Available Tickets: {{ seat_type['available_count'] }}
-                    {{ 'ticket' if seat_type['available_count'] == 1 else 'tickets' }}
+                    <i class="fas fa-check-circle"></i> Available: {{ seat_type['available_count'] }}
+                    {{ 'ticket' if seat_type['available_count'] <= 1 else 'tickets' }}
                 </span>
                 <span class="status status-in-process">
-                    <i class="fas fa-spinner"></i> In Booking Process: {{ seat_type['booking_process_count'] }}
-                    {{ 'ticket' if seat_type['booking_process_count'] == 1 else 'tickets' }}
+                    <i class="fas fa-spinner"></i> In Booking: {{ seat_type['booking_process_count'] }}
+                    {{ 'ticket' if seat_type['booking_process_count'] <= 1 else 'tickets' }}
                 </span>
             </p>
             <table>
@@ -79,16 +79,16 @@
                         <td class="status status-available">
                             <i class="fas fa-check-circle"></i> Available
                         </td>
-                        <td>{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] == 1 else 'tickets' }})</td>
+                        <td>{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] <= 1 else 'tickets' }})</td>
                         <td>{{ ', '.join(group['seats']) }}</td>
                     </tr>
                     {% endfor %}
                     {% for coach, group in seat_type['grouped_booking_process'].items() %}
                     <tr>
                         <td class="status status-in-process">
-                            <i class="fas fa-spinner"></i> In Booking Process
+                            <i class="fas fa-spinner"></i> In Booking
                         </td>
-                        <td>{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] == 1 else 'tickets' }})</td>
+                        <td>{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] <= 1 else 'tickets' }})</td>
                         <td>{{ ', '.join(group['seats']) }}</td>
                     </tr>
                     {% endfor %}
