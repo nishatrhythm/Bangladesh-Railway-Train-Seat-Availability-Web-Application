@@ -58,9 +58,11 @@
             <p>
                 <span class="status status-available">
                     <i class="fas fa-check-circle"></i> Available Tickets: {{ seat_type['available_count'] }}
+                    {{ 'ticket' if seat_type['available_count'] == 1 else 'tickets' }}
                 </span>
                 <span class="status status-in-process">
                     <i class="fas fa-spinner"></i> In Booking Process: {{ seat_type['booking_process_count'] }}
+                    {{ 'ticket' if seat_type['booking_process_count'] == 1 else 'tickets' }}
                 </span>
             </p>
             <table>
@@ -77,7 +79,7 @@
                         <td class="status status-available">
                             <i class="fas fa-check-circle"></i> Available
                         </td>
-                        <td>{{ coach }} ({{ group['count'] }} tickets)</td>
+                        <td>{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] == 1 else 'tickets' }})</td>
                         <td>{{ ', '.join(group['seats']) }}</td>
                     </tr>
                     {% endfor %}
@@ -86,7 +88,7 @@
                         <td class="status status-in-process">
                             <i class="fas fa-spinner"></i> In Booking Process
                         </td>
-                        <td>{{ coach }} ({{ group['count'] }} tickets)</td>
+                        <td>{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] == 1 else 'tickets' }})</td>
                         <td>{{ ', '.join(group['seats']) }}</td>
                     </tr>
                     {% endfor %}

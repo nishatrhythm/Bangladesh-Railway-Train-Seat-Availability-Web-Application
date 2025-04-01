@@ -14,7 +14,7 @@ def set_token(token: str):
     global TOKEN
     TOKEN = token
 
-def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[Dict, Dict, int, int]:
+def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[str], int, int]:
     url = f"{API_BASE_URL}/web/bookings/seat-layout"
     headers = {"Authorization": f"Bearer {TOKEN}"}
     params = {"trip_id": trip_id, "trip_route_id": trip_route_id}
@@ -27,13 +27,14 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[Dict, Dict, int, 
         data = response.json()
         seat_layout = data.get("data", {}).get("seatLayout", [])
 
-        seats = [(seat["seat_number"], seat["seat_availability"])
+        seats = [(seat["seat_number"], seat["seat_availability"], seat["ticket_type"])
                  for layout in seat_layout
                  for row in layout["layout"]
                  for seat in row]
 
-        available_seats = [num for num, avail in seats if avail == SEAT_AVAILABILITY['AVAILABLE']]
-        booking_process_seats = [num for num, avail in seats if avail == SEAT_AVAILABILITY['IN_PROCESS']]
+        available_seats = [num for num, avail, _ in seats if avail == SEAT_AVAILABILITY['AVAILABLE']]
+        booking_process_seats = [num for num, avail, ttype in seats 
+                                if avail == SEAT_AVAILABILITY['IN_PROCESS'] and ttype in {1, 2, 3}]
 
         return (available_seats, booking_process_seats, len(available_seats), len(booking_process_seats))
 
@@ -41,7 +42,7 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[Dict, Dict, int, 
         if response.status_code == 401:
             raise Exception("Token expired or unauthorized")
         print(f"{Fore.RED}Failed to fetch seat layout: {e}")
-        return {}, {}, 0, 0
+        return [], [], 0, 0
 
 def fetch_train_details(config: Dict) -> List[Dict]:
     """
