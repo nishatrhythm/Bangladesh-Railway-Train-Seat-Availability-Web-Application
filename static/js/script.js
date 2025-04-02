@@ -1,3 +1,5 @@
+document.documentElement.classList.add('js-enabled');
+
 const cachedStations = localStorage.getItem('railwayStations');
 const stationData = cachedStations ? JSON.parse(cachedStations) : window.stationsData;
 
@@ -270,3 +272,21 @@ function togglePasswordVisibility() {
         toggleIcon.classList.add("fa-eye");
     }
 }
+
+function start404Countdown() {
+    const countdownElement = document.getElementById('countdown');
+    if (countdownElement) {
+        let countdown = 10;
+        
+        const timer = setInterval(() => {
+            countdown--;
+            countdownElement.textContent = countdown;
+            if (countdown <= 0) {
+                clearInterval(timer);
+                window.location.href = '/';
+            }
+        }, 1000);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', start404Countdown);

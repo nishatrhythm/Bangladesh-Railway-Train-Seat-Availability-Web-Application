@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, make_response
+from flask import Flask, render_template, request, redirect, url_for, make_response, abort
 from detailsSeatAvailability import main as detailsSeatAvailability, set_token
 from datetime import datetime, timedelta
 import requests, os, json, uuid, pytz
@@ -65,8 +65,10 @@ def home():
         max_date=max_date.strftime('%Y-%m-%d')
     )
 
-@app.route('/check_seats', methods=['POST'])
+@app.route('/check_seats', methods=['GET', 'POST'])
 def check_seats():
+    if request.method == 'GET':
+        abort(404)
     try:
         form_values = {
             'phone_number': request.form.get('phone_number', ''),
@@ -198,11 +200,17 @@ def show_results():
         seat_class=seat_class
     )
 
-@app.route('/clear_token', methods=['POST'])
+@app.route('/clear_token', methods=['GET', 'POST'])
 def clear_token():
+    if request.method == 'GET':
+        abort(404)
     response = make_response(redirect(url_for('home')))
     response.delete_cookie('token')
     return response
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 def group_by_prefix(seats):
     groups = {}
