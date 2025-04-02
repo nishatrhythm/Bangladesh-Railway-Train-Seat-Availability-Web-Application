@@ -1116,14 +1116,27 @@ tr:hover {
 }
 
 @keyframes trainMove {
-    0% { transform: translateX(-10px); }
-    50% { transform: translateX(10px); }
-    100% { transform: translateX(-10px); }
+    0% {
+        transform: translateX(-10px);
+    }
+
+    50% {
+        transform: translateX(10px);
+    }
+
+    100% {
+        transform: translateX(-10px);
+    }
 }
 
 @keyframes progress {
-    0% { width: 100%; }
-    100% { width: 0%; }
+    0% {
+        width: 100%;
+    }
+
+    100% {
+        width: 0%;
+    }
 }
 
 @keyframes fadeInUp {
@@ -1393,12 +1406,12 @@ footer a:hover {
     table td:nth-child(1) {
         width: 25%;
     }
-    
+
     table th:nth-child(2),
     table td:nth-child(2) {
         width: 30%;
     }
-    
+
     table th:nth-child(3),
     table td:nth-child(3) {
         width: 45%;
@@ -1470,12 +1483,12 @@ footer a:hover {
     }
 
     table {
-        font-size: 10px;
+        font-size: 12px;
     }
 
     th,
     td {
-        padding: 6px;
+        padding: 4px;
     }
 
     .train-card {
@@ -1500,64 +1513,20 @@ footer a:hover {
         font-size: 12px;
     }
 
-    .noscript-warning {
-        padding: 15px;
-        margin: 10px auto;
-    }
-
-    .noscript-warning h2 {
-        font-size: 18px;
-        gap: 8px;
-    }
-
-    .noscript-warning h2 i {
-        font-size: 20px;
-    }
-
-    .noscript-warning p {
-        font-size: 13px;
-        line-height: 1.5;
-    }
-
-    .noscript-warning .instructions {
-        padding: 10px;
-        font-size: 12px;
-    }
-
-    .error-404 {
-        padding: 20px 10px;
-    }
-
-    .error-404 .train-icon {
-        font-size: 40px;
-    }
-
-    .error-404 .error-text {
-        font-size: 14px;
-    }
-
-    .error-404 .countdown-wrapper p {
-        font-size: 13px;
-    }
-
-    .error-404 .progress-bar {
-        max-width: 200px;
-    }
-
     table th:nth-child(1),
     table td:nth-child(1) {
         width: 30%;
     }
-    
+
     table th:nth-child(2),
     table td:nth-child(2) {
-        width: 30%;
+        width: 20%;
     }
-    
+
     table th:nth-child(3),
     table td:nth-child(3) {
-        width: 40%;
-     font-size: 12px;
+        width: 50%;
+        font-size: 12px;
     }
 
     .noscript-warning {
@@ -1602,50 +1571,6 @@ footer a:hover {
 
     .error-404 .progress-bar {
         max-width: 200px;
-t-size: 12px;
-    }
-
-    .noscript-warning {
-        padding: 15px;
-        margin: 10px auto;
-    }
-
-    .noscript-warning h2 {
-        font-size: 18px;
-        gap: 8px;
-    }
-
-    .noscript-warning h2 i {
-        font-size: 20px;
-    }
-
-    .noscript-warning p {
-        font-size: 13px;
-        line-height: 1.5;
-    }
-
-    .noscript-warning .instructions {
-        padding: 10px;
         font-size: 12px;
-    }
-
-    .error-404 {
-        padding: 20px 10px;
-    }
-
-    .error-404 .train-icon {
-        font-size: 40px;
-    }
-
-    .error-404 .error-text {
-        font-size: 14px;
-    }
-
-    .error-404 .countdown-wrapper p {
-        font-size: 13px;
-    }
-
-    .error-404 .progress-bar {
-        max-width: 200px;
     }
 }
