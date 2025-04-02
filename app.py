@@ -1,9 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, make_response, abort
+from flask import Flask, render_template, request, redirect, url_for, make_response, abort, session, after_this_request
 from detailsSeatAvailability import main as detailsSeatAvailability, set_token
 from datetime import datetime, timedelta
 import requests, os, json, uuid, pytz
-from flask import session
-from flask import after_this_request
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
@@ -11,6 +9,9 @@ app.secret_key = "your_secret_key"
 RESULT_CACHE = {}
 TOKEN_API_URL = "https://railspaapi.shohoz.com/v1.0/app/auth/sign-in"
 STATION_NAME_MAPPING = {"Coxs Bazar": "Cox's Bazar"}
+
+with open('config.json', 'r', encoding='utf-8') as config_file:
+    CONFIG = json.load(config_file)
 
 def fetch_token(phone_number, password):
     payload = {"mobile_number": phone_number, "password": password}
@@ -24,7 +25,7 @@ def fetch_token(phone_number, password):
         return token
     except requests.RequestException as e:
         raise Exception(f"Failed to fetch token: {e}")
-    
+
 @app.after_request
 def add_cache_control_headers(response):
     if 'set-cookie' in response.headers:
@@ -34,8 +35,17 @@ def add_cache_control_headers(response):
     response.headers['Expires'] = '0'
     return response
 
+def check_maintenance():
+    if CONFIG.get("is_maintenance", 0):
+        return render_template('notice.html', message=CONFIG.get("maintenance_message", ""))
+    return None
+
 @app.route('/')
 def home():
+    maintenance_response = check_maintenance()
+    if maintenance_response:
+        return maintenance_response
+
     with open('stations_en.json', 'r', encoding='utf-8') as file:
         stations_data = json.load(file)
     stations_list = stations_data.get('stations', [])
@@ -62,11 +72,18 @@ def home():
         form_values=form_values,
         show_disclaimer=show_disclaimer,
         min_date=min_date.strftime('%Y-%m-%d'),
-        max_date=max_date.strftime('%Y-%m-%d')
+        max_date=max_date.strftime('%Y-%m-%d'),
+        is_banner_enabled=CONFIG.get("is_banner_enabled", 0),
+        banner_image=CONFIG.get("image_link", ""),
+        CONFIG=CONFIG
     )
 
 @app.route('/check_seats', methods=['GET', 'POST'])
 def check_seats():
+    maintenance_response = check_maintenance()
+    if maintenance_response:
+        return maintenance_response
+
     if request.method == 'GET':
         abort(404)
     try:
@@ -160,6 +177,10 @@ def check_seats():
 
 @app.route('/show_results')
 def show_results():
+    maintenance_response = check_maintenance()
+    if maintenance_response:
+        return maintenance_response
+
     result_id = session.pop('result_id', None)
     if not result_id or result_id not in RESULT_CACHE:
         return redirect(url_for('home'))
@@ -202,6 +223,10 @@ def show_results():
 
 @app.route('/clear_token', methods=['GET', 'POST'])
 def clear_token():
+    maintenance_response = check_maintenance()
+    if maintenance_response:
+        return maintenance_response
+
     if request.method == 'GET':
         abort(404)
     response = make_response(redirect(url_for('home')))
@@ -210,6 +235,9 @@ def clear_token():
 
 @app.errorhandler(404)
 def page_not_found(e):
+    maintenance_response = check_maintenance()
+    if maintenance_response:
+        return maintenance_response
     return render_template('404.html'), 404
 
 def group_by_prefix(seats):

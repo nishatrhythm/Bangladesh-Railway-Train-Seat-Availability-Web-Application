@@ -2,20 +2,22 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BD Railway Train Seat Availability</title>
-
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home | Train Seat Availability</title>
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Check train seat availability for Bangladesh Railway effortlessly. Plan your journey with accurate and up-to-date information.">
-    <meta name="keywords" content="Bangladesh Railway, train seat availability, travel, transportation, railway schedule, Bangladesh travel">
+    <meta name="description"
+        content="Check train seat availability for Bangladesh Railway effortlessly. Plan your journey with accurate and up-to-date information.">
+    <meta name="keywords"
+        content="Bangladesh Railway, train seat availability, travel, transportation, railway schedule, Bangladesh travel">
     <meta name="author" content="Nishat Mahmud">
     <meta name="publish_date" content="2024-12-09" scheme="YYYY-MM-DD">
-
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Bangladesh Railway Train Seat Availability">
-    <meta property="og:description" content="Easily check seat availability for Bangladesh Railway trains and plan your travel effortlessly.">
-    <meta property="og:image" content="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application/main/images/link_share_image.png">
+    <meta property="og:description"
+        content="Easily check seat availability for Bangladesh Railway trains and plan your travel effortlessly.">
+    <meta property="og:image"
+        content="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application/main/images/link_share_image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:url" content="https://trainseat.vercel.app">
@@ -23,27 +25,34 @@
 
     <link rel="stylesheet" href="static/styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" rel="stylesheet">
-    <link rel="icon" href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png" type="image/x-icon" sizes="30x30">
+    <link rel="icon"
+        href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png"
+        type="image/x-icon" sizes="30x30">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <!-- CONFIG as JSON for JS -->
+    <script id="app-config" type="application/json">
+    {{ CONFIG | tojson | safe }}
+  </script>
 </head>
 
 <body>
     <noscript>
         <div class="container noscript-warning">
-            <h2>
-                <i class="fas fa-exclamation-circle"></i> Please Enable JavaScript
-            </h2>
-            <p>This website requires JavaScript to function properly. Enable it in your browser settings to access full functionality and check train seat availability.</p>
+            <h2><i class="fas fa-exclamation-circle"></i> Please Enable JavaScript</h2>
+            <p>This website requires JavaScript to function properly. Enable it in your browser settings to access full
+                functionality and check train seat availability.</p>
             <div class="instructions">
-                <strong>How to enable:</strong> Go to your browser settings > Privacy/Security > Enable JavaScript. Refresh the page after enabling.
+                <strong>How to enable:</strong> Go to your browser settings > Privacy/Security > Enable JavaScript.
+                Refresh the page after enabling.
             </div>
         </div>
     </noscript>
+
     <div class="container main-content">
-        <h1>
-            <i class="fas fa-subway"></i> Bangladesh Railway Train Seat Availability
-        </h1>
+        <h1><i class="fas fa-subway"></i> Bangladesh Railway Train Seat Availability</h1>
+
         {% if token %}
         <form action="/clear_token" method="POST" class="inline-form">
             <button type="submit" class="btn-clear">
@@ -51,11 +60,13 @@
             </button>
         </form>
         {% endif %}
+
         {% if error %}
         <div class="error animated-fade-in">
             <i class="fas fa-exclamation-circle error-icon"></i> {{ error }}
         </div>
         {% endif %}
+
         <form action="/check_seats" method="POST" id="seatForm">
             {% if not token %}
             <div class="form-row">
@@ -63,7 +74,8 @@
                     <label for="phone_number">Mobile Number:</label>
                     <div class="input-with-icon">
                         <i class="fas fa-phone input-icon"></i>
-                        <input type="number" id="phone_number" name="phone_number" placeholder="Enter your mobile number"
+                        <input type="number" id="phone_number" name="phone_number"
+                            placeholder="Enter your mobile number"
                             value="{{ form_values.phone_number if form_values and form_values.phone_number is not none else '' }}"
                             maxlength="11">
                     </div>
@@ -80,6 +92,7 @@
                 </div>
             </div>
             {% endif %}
+
             <div class="form-row">
                 <div class="form-group">
                     <label for="origin">Origin Station:</label>
@@ -92,16 +105,15 @@
                     </div>
                     <span class="error-message" id="origin-error">Origin Station is required</span>
                 </div>
-
                 <div class="swap-icon-wrapper">
                     <i class="fas fa-exchange-alt swap-icon"></i>
                 </div>
-
                 <div class="form-group">
                     <label for="destination">Destination Station:</label>
                     <div class="input-with-icon">
                         <i class="fas fa-train input-icon"></i>
-                        <input type="text" id="destination" name="destination" placeholder="Type or select a destination station"
+                        <input type="text" id="destination" name="destination"
+                            placeholder="Type or select a destination station"
                             value="{{ form_values.destination if form_values and form_values.destination is not none else '' }}"
                             autocomplete="off">
                         <div id="destinationDropdown" class="custom-dropdown"></div>
@@ -109,6 +121,7 @@
                     <span class="error-message" id="destination-error">Destination Station is required</span>
                 </div>
             </div>
+
             <div class="form-row">
                 <div class="form-group">
                     <label for="date">Date of Journey:</label>
@@ -126,25 +139,92 @@
                 </div>
             </div>
         </form>
+
         <div id="loader" class="loader"></div>
 
         {% if show_disclaimer %}
         <p class="note">
-            <span class="note-bold highlight">Disclaimer:</span> Your mobile number and password registered with the Bangladesh Railway website are used solely to generate an authorization token through an API request to the Bangladesh Railway website. This token is necessary to fetch seat availability details. Rest assured, we do not store your mobile number or password. Your data remains private and secure, directly between you and Bangladesh Railway. We do not access or intercept your information during the API request. For your convenience, the authorization token is saved in your browser's cookies, allowing us to reuse it without requiring you to re-enter your credentials.
+            <span class="note-bold highlight">Disclaimer:</span> Your mobile number and password registered with the
+            Bangladesh Railway website are used solely to generate an authorization token through an API request to the
+            Bangladesh Railway website. This token is necessary to fetch seat availability details. Rest assured, we do
+            not store your mobile number or password. Your data remains private and secure, directly between you and
+            Bangladesh Railway. We do not access or intercept your information during the API request. For your
+            convenience, the authorization token is saved in your browser's cookies, allowing us to reuse it without
+            requiring you to re-enter your credentials.
         </p>
         {% endif %}
 
         <footer class="new-footer">
-            <p>This project is open source. Check it out on <a href="https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application" target="_blank">GitHub</a>.</p>
+            <p>This project is open source. Check it out on <a
+                    href="https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application"
+                    target="_blank">GitHub</a>.</p>
         </footer>
 
-        <script>
-            window.minDate = "{{ min_date }}";
-            window.maxDate = "{{ max_date }}";
-            window.stationsData = JSON.parse('{{ stations | tojson | safe }}');
-        </script>
-        <script src="static/js/script.js"></script>
+        {% if is_banner_enabled %}
+        <div id="bannerModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal"><i class="fas fa-times"></i></span>
+                <img src="{{ banner_image if banner_image else '/static/images/sample_banner.png' }}" alt="Banner"
+                    class="banner-image animated-zoom-in">
+                <div class="modal-footer">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="dontShowAgain">
+                        <span class="checkmark"></span>
+                        Don't show this again
+                    </label>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
+
+    <script>
+        window.minDate = "{{ min_date }}";
+        window.maxDate = "{{ max_date }}";
+        window.stationsData = JSON.parse('{{ stations | tojson | safe }}');
+    </script>
+
+    <script src="static/js/script.js"></script>
+
+    <!-- JavaScript for Banner Modal -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const configData = JSON.parse(document.getElementById('app-config').textContent);
+            const forceBanner = configData.force_banner || 0;
+            const appVersion = configData.version || "1.0.0";
+
+            const modal = document.getElementById('bannerModal');
+            const closeModal = document.querySelector('.close-modal');
+            const dontShowAgainCheckbox = document.getElementById('dontShowAgain');
+            const storedData = JSON.parse(localStorage.getItem('bannerState') || '{}');
+            const dontShowAgain = storedData.dontShowAgain === true;
+            const storedVersion = storedData.version || "0.0.0";
+
+            if (modal) {
+                if (forceBanner === 1 && (!dontShowAgain || storedVersion !== appVersion)) {
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                } else if (forceBanner !== 1 && !dontShowAgain) {
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+
+                if (closeModal) {
+                    closeModal.addEventListener('click', function () {
+                        modal.classList.remove('active');
+                        document.body.style.overflow = 'auto';
+                        if (dontShowAgainCheckbox && dontShowAgainCheckbox.checked) {
+                            localStorage.setItem('bannerState', JSON.stringify({
+                                dontShowAgain: true,
+                                version: appVersion
+                            }));
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+
 </body>
 
 </html>
