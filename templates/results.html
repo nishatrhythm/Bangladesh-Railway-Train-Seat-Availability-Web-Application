@@ -105,8 +105,10 @@
                 <tbody>
                     {% for coach, group in seat_type['grouped_seats'].items() %}
                     <tr>
-                        <td class="status status-available">
-                            <i class="fas fa-check-circle"></i> Available
+                        <td>
+                            <span class="status status-available">
+                                <i class="fas fa-check-circle"></i> Available
+                            </span>
                         </td>
                         <td>{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] <= 1 else 'tickets' }})</td>
                         <td>{{ ', '.join(group['seats']) }}</td>
@@ -114,8 +116,10 @@
                     {% endfor %}
                     {% for coach, group in seat_type['grouped_booking_process'].items() %}
                     <tr>
-                        <td class="status status-in-process">
-                            <i class="fas fa-spinner"></i> In Booking
+                        <td>
+                            <span class="status status-in-process">
+                                <i class="fas fa-spinner"></i> In Booking
+                            </span>
                         </td>
                         <td>{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] <= 1 else 'tickets' }})</td>
                         <td>{{ ', '.join(group['seats']) }}</td>
