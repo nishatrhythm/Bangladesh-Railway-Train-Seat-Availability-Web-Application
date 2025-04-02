@@ -726,30 +726,52 @@ table {
     margin-bottom: 20px;
     font-size: 14px;
     border: 1px solid #ddd;
+    table-layout: fixed;
 }
 
-th,
+th {
+    background-color: #006747;
+    color: white;
+    border: 1px solid #005740;
+    padding: 12px;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 700;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
 td {
     border: 1px solid #ddd;
     padding: 12px;
     text-align: center;
     vertical-align: middle;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+table th:nth-child(1),
+table td:nth-child(1) {
+    width: 20%;
+}
+
+table th:nth-child(2),
+table td:nth-child(2) {
+    width: 30%;
+}
+
+table th:nth-child(3),
+table td:nth-child(3) {
+    width: 50%;
 }
 
 td .status {
-    display: inline-block;
-    width: fit-content;
-    margin: 0 auto;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 14px;
-    border: 1px solid transparent;
-}
-
-th {
-    background-color: rgb(0, 103, 71);
-    color: white;
-    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(100% - 10px);
+    margin: 0;
+    box-sizing: border-box;
 }
 
 tr:nth-child(even) {
@@ -761,14 +783,16 @@ tr:hover {
 }
 
 .status {
-    font-size: 14px;
-    padding: 7px 12px;
-    border-radius: 5px;
     display: inline-flex;
     align-items: center;
-    margin-right: 10px;
-    text-align: center;
+    justify-content: center;
+    padding: 7px 12px;
+    font-size: 14px;
+    border-radius: 5px;
     white-space: nowrap;
+    margin: 5px;
+    border-width: 1px;
+    border-style: solid;
 }
 
 .status i {
@@ -778,15 +802,13 @@ tr:hover {
 .status-available {
     background-color: #dff7e1;
     color: #006747;
-    border: 1px solid #006747;
-    margin-bottom: 5px;
+    border-color: #006747;
 }
 
 .status-in-process {
     background-color: #fef8dc;
     color: #e09b00;
-    border: 1px solid #e09b00;
-    margin-bottom: 5px;
+    border: px solid #e09b00;
 }
 
 .seat-status-wrapper {
@@ -1366,6 +1388,21 @@ footer a:hover {
     .error-404 .progress-bar {
         max-width: 250px;
     }
+
+    table th:nth-child(1),
+    table td:nth-child(1) {
+        width: 25%;
+    }
+    
+    table th:nth-child(2),
+    table td:nth-child(2) {
+        width: 30%;
+    }
+    
+    table th:nth-child(3),
+    table td:nth-child(3) {
+        width: 45%;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1461,6 +1498,111 @@ footer a:hover {
 
     .new-footer {
         font-size: 12px;
+    }
+
+    .noscript-warning {
+        padding: 15px;
+        margin: 10px auto;
+    }
+
+    .noscript-warning h2 {
+        font-size: 18px;
+        gap: 8px;
+    }
+
+    .noscript-warning h2 i {
+        font-size: 20px;
+    }
+
+    .noscript-warning p {
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .noscript-warning .instructions {
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    .error-404 {
+        padding: 20px 10px;
+    }
+
+    .error-404 .train-icon {
+        font-size: 40px;
+    }
+
+    .error-404 .error-text {
+        font-size: 14px;
+    }
+
+    .error-404 .countdown-wrapper p {
+        font-size: 13px;
+    }
+
+    .error-404 .progress-bar {
+        max-width: 200px;
+    }
+
+    table th:nth-child(1),
+    table td:nth-child(1) {
+        width: 30%;
+    }
+    
+    table th:nth-child(2),
+    table td:nth-child(2) {
+        width: 30%;
+    }
+    
+    table th:nth-child(3),
+    table td:nth-child(3) {
+        width: 40%;
+     font-size: 12px;
+    }
+
+    .noscript-warning {
+        padding: 15px;
+        margin: 10px auto;
+    }
+
+    .noscript-warning h2 {
+        font-size: 18px;
+        gap: 8px;
+    }
+
+    .noscript-warning h2 i {
+        font-size: 20px;
+    }
+
+    .noscript-warning p {
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .noscript-warning .instructions {
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    .error-404 {
+        padding: 20px 10px;
+    }
+
+    .error-404 .train-icon {
+        font-size: 40px;
+    }
+
+    .error-404 .error-text {
+        font-size: 14px;
+    }
+
+    .error-404 .countdown-wrapper p {
+        font-size: 13px;
+    }
+
+    .error-404 .progress-bar {
+        max-width: 200px;
+t-size: 12px;
     }
 
     .noscript-warning {
