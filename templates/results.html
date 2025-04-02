@@ -36,7 +36,7 @@
                 <div class="train-separator"></div>
                 <p>
                     <i class="fas fa-route"></i>
-                    <strong>Route:</strong> {{ details['from_station'] }} - {{ details['to_station'] }}
+                    <strong>Route:</strong> {{ details['from_station'] }} → {{ details['to_station'] }}
                 </p>
                 <p class="timing-info">
                     <span>
@@ -48,13 +48,30 @@
                     </span>
                 </p>
             </div>
-            {% for seat_type in details['seat_data'] %}
-            {% if seat_type['available_count'] == 0 and seat_type['booking_process_count'] == 0 %}
-            <div class="no-seats">
-                <i class="fas fa-exclamation-circle"></i> No seat details available for seat type: {{ seat_type['type']
-                }}
+            {% set all_seats_422 = details['seat_data']|length > 0 and details['seat_data']|selectattr('is_422')|list|length == details['seat_data']|length %}
+            {% if all_seats_422 %}
+            <div class="error-badge">
+                <i class="fas fa-exclamation-circle"></i> Please retry with a different account to get full info for this train.
             </div>
             {% else %}
+            {% set has_no_seats = details['seat_data']|selectattr('is_422')|list|length > 0 or details['seat_data']|selectattr('available_count', 'equalto', 0)|selectattr('booking_process_count', 'equalto', 0)|list|length > 0 %}
+            {% if has_no_seats %}
+            <div class="seat-status-wrapper">
+                {% for seat_type in details['seat_data'] %}
+                {% if seat_type['is_422'] %}
+                <div class="no-seats">
+                    <i class="fas fa-exclamation-circle"></i> Please retry with a different account to get full info for this train's {{ seat_type['type'] }} seats.
+                </div>
+                {% elif seat_type['available_count'] == 0 and seat_type['booking_process_count'] == 0 %}
+                <div class="no-seats">
+                    <i class="fas fa-exclamation-circle"></i> No seat details available for seat type: {{ seat_type['type'] }}
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% for seat_type in details['seat_data'] %}
+            {% if not seat_type['is_422'] and (seat_type['available_count'] > 0 or seat_type['booking_process_count'] > 0) %}
             <h3><i class="fas fa-chair"></i> Seat Type: {{ seat_type['type'] }}</h3>
             <p>
                 <span class="status status-available">
@@ -97,6 +114,7 @@
             </table>
             {% endif %}
             {% endfor %}
+            {% endif %}
         </div>
         {% endfor %}
         {% else %}

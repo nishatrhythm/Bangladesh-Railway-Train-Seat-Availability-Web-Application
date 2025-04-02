@@ -117,27 +117,17 @@ def check_seats():
             'seat_class': 'S_CHAIR'
         }
 
-        try:
-            result = detailsSeatAvailability(config)
-        except Exception as e:
-            error_msg = str(e)
-            if "Token expired" in error_msg or "unauthorized" in error_msg.lower():
-                @after_this_request
-                def clear_cookie(response):
-                    response.delete_cookie('token')
-                    return response
-                error = "Authorization token expired. Please log in again."
-            elif "422 error occurred" in error_msg:
-                error = "An error occurred while fetching seat details. Please retry with a different account."
-            else:
-                error = "An error occurred while fetching seat details."
-            session['error'] = error
-            return redirect(url_for('home'))
+        result = detailsSeatAvailability(config)
 
         if "error" in result:
-            error = result["error"]
-            session['error'] = error
-            return redirect(url_for('home'))
+            if result["error"] == "422 error occurred for all trains":
+                error = "An error occurred while fetching seat details. Please retry with a different account for the given criteria."
+                session['error'] = error
+                return redirect(url_for('home'))
+            elif result["error"] == "No trains found for the given criteria.":
+                error = result["error"]
+                session['error'] = error
+                return redirect(url_for('home'))
 
         for train, details in result.items():
             details['from_station'] = config['from_city']
@@ -149,13 +139,20 @@ def check_seats():
 
         result_id = str(uuid.uuid4())
         RESULT_CACHE[result_id] = result
-
         session['result_id'] = result_id
 
         return redirect(url_for('show_results'))
 
     except Exception as e:
-        error = str(e)
+        error_msg = str(e)
+        if "Token expired" in error_msg or "unauthorized" in error_msg.lower():
+            @after_this_request
+            def clear_cookie(response):
+                response.delete_cookie('token')
+                return response
+            error = "Authorization token expired. Please log in again."
+        else:
+            error = f"An unexpected error occurred: {error_msg}"
         session['error'] = error
         return redirect(url_for('home'))
 

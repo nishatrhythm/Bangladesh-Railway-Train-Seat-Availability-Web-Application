@@ -74,7 +74,7 @@ label {
 
 .form-row {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 20px;
     animation: fadeInUp 0.8s ease-in-out;
@@ -85,14 +85,19 @@ label {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    background-color: #f1f8f3;
     animation: fadeInUp 0.8s ease-in-out;
+    padding: 10px;
+    border-radius: 12px;
 }
 
 .form-group.submit-btn {
     flex: 1;
     display: flex;
-    justify-content: flex-end;
     align-items: flex-end;
+    justify-content: flex-end;
+    height: 100%;
+    padding-top: 20px;
 }
 
 .form-group.submit-btn button {
@@ -294,16 +299,22 @@ input[type="number"] {
 }
 
 .toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
     color: #006747;
-    /* Match theme */
     font-size: 18px;
-    line-height: 1;
-    vertical-align: middle;
     transition: color 0.3s;
 }
 
 .toggle-password:hover {
     color: rgb(0, 85, 58);
+}
+
+.inline-form {
+    display: inline;
 }
 
 #loader {
@@ -552,8 +563,8 @@ button:hover {
     height: 45px;
     cursor: pointer;
     transition: transform 0.3s ease, background-color 0.3s;
-    margin: 0 2px;
-    align-self: flex-end;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .swap-icon {
@@ -581,59 +592,111 @@ button:hover {
     box-shadow: 0 6px 16px rgba(0, 103, 71, 0.2);
 }
 
+.train-card h3 {
+    background-color: #f1f8f3;
+    color: #006747;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #006747;
+    font-weight: 700;
+    margin: 15px 0 10px;
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(0, 103, 71, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.train-card h3:hover {
+    background-color: #eaf4eb;
+    box-shadow: 0 4px 8px rgba(0, 103, 71, 0.2);
+}
+
+.train-card h3 i {
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
 .train-header {
     text-align: center;
-    background-color: #f2f6fa;
+    background: linear-gradient(to bottom, #f2f6fa, #ffffff);
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 8px 8px 0 0;
+    border-top: 3px solid #006747;
+    box-shadow: 0 2px 6px rgba(0, 103, 71, 0.1);
+    transition: box-shadow 0.3s;
+}
+
+.train-header:hover {
+    box-shadow: 0 4px 10px rgba(0, 103, 71, 0.15);
 }
 
 .train-header h2 {
     font-size: 22px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     color: #006747;
+    font-weight: 700;
+    display: inline-block;
+    padding: 4px 10px;
+    background-color: rgba(0, 103, 71, 0.1);
+    border-radius: 4px;
+}
+
+.train-header h2 i {
+    margin-right: 8px;
+    vertical-align: middle;
 }
 
 .train-header p {
-    margin: 10px 0;
+    margin: 8px 0;
     font-size: 16px;
-    color: #555;
+    color: #444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 
 .train-header p i {
     margin-right: 5px;
+    color: #006747;
 }
 
 .train-separator {
-    width: 100%;
+    width: 80%;
     height: 1px;
     background-color: #006747;
-    margin: 10px 0;
+    margin: 12px auto;
     border-radius: 1px;
+    opacity: 0.8;
 }
 
 .timing-info {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 15px;
+    gap: 20px;
     font-size: 16px;
     flex-wrap: wrap;
     margin: 10px 0;
     line-height: 1.5;
+    background-color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .timing-info span {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     white-space: nowrap;
+    color: #333;
 }
 
 .timing-info .separator {
     font-weight: bold;
-    color: #333;
+    color: #006747;
+    font-size: 18px;
 }
 
 .timing-info .timing-block {
@@ -723,22 +786,49 @@ tr:hover {
     margin-bottom: 5px;
 }
 
+.seat-status-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    justify-content: center;
+    margin: 10px 0;
+    max-width: 100%;
+}
+
 .no-seats {
-    padding: 15px;
-    background: #f9f9f9;
-    border: 1px dashed #ccc;
-    border-radius: 5px;
-    color: #888;
+    background-color: #fff3e6;
+    color: #e67e22;
+    padding: 10px;
+    border: 1px solid #e67e22;
+    border-radius: 8px;
     text-align: center;
-    font-size: 14px;
-    margin: 10px 5px;
-    display: inline-block;
-    max-width: 80%;
-    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex: 1 1 calc(50% - 10px);
+    max-width: calc(50% - 10px);
+    box-sizing: border-box;
+    animation: fadeIn 0.6s ease-in-out;
 }
 
 .no-seats i {
     margin-right: 5px;
+}
+
+.error-badge {
+    background-color: #fce4e4;
+    color: #e74c3c;
+    padding: 10px;
+    border: 1px solid #e74c3c;
+    border-radius: 8px;
+    margin: 10px 0;
+    text-align: center;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .btn-primary {
@@ -943,26 +1033,31 @@ footer a:hover {
         padding: 15px;
     }
 
-    .train-header h2 {
-        font-size: 18px;
+    .train-card h3 {
+        font-size: 14px;
+        padding: 6px 10px;
     }
 
+    .train-header {
+        padding: 15px;
+    }
+    .train-header h2 {
+        font-size: 18px;
+        padding: 3px 8px;
+    }
     .train-header p {
         font-size: 14px;
     }
-
     .timing-info {
-        flex-direction: column;
         gap: 10px;
+        padding: 6px 10px;
         font-size: 14px;
     }
-
-    .timing-info .timing-block {
-        justify-content: center;
-    }
-
     .timing-info .separator {
         display: none;
+    }
+    .train-separator {
+        width: 90%;
     }
 
     .status {
@@ -997,7 +1092,16 @@ footer a:hover {
         padding: 15px;
     }
 
+    .seat-status-wrapper {
+        flex-wrap: wrap;
+    }
+
     .no-seats {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    .error-badge {
         font-size: 12px;
         padding: 12px;
         max-width: 90%;
@@ -1023,6 +1127,9 @@ footer a:hover {
     .form-group.submit-btn {
         align-items: center;
         justify-content: center;
+        box-shadow: none !important;
+        background-color: transparent;
+        margin-top: -20px;
     }
 
     .submit-btn {
@@ -1080,6 +1187,14 @@ footer a:hover {
     }
 
     .no-seats {
+        font-size: 10px;
+        padding: 10px;
+        max-width: 95%;
+        margin: 5px 0;
+        line-height: 1.3;
+    }
+
+    .error-badge {
         font-size: 10px;
         padding: 10px;
         max-width: 95%;
