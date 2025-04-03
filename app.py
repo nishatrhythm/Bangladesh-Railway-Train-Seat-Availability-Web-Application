@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, make_response, abort, session, after_this_request, jsonify
+from flask import Flask, render_template, request, redirect, url_for, make_response, abort, session, after_this_request
 from detailsSeatAvailability import main as detailsSeatAvailability, set_token
 from datetime import datetime, timedelta
 import requests, os, json, uuid, pytz, base64
@@ -27,8 +27,9 @@ if os.path.exists(default_banner_path):
             DEFAULT_BANNER_IMAGE = f"data:image/png;base64,{encoded_image}"
     except Exception as e:
         pass
-else:
-    pass
+
+with open('stations_en.json', 'r', encoding='utf-8') as stations_file:
+    STATIONS_DATA = json.load(stations_file).get('stations', [])
 
 @app.before_request
 def filter_cloudflare_requests():
@@ -61,12 +62,6 @@ def check_maintenance():
     if CONFIG.get("is_maintenance", 0):
         return render_template('notice.html', message=CONFIG.get("maintenance_message", ""), styles_css=STYLES_CSS_CONTENT, script_js=SCRIPT_JS_CONTENT)
     return None
-
-@app.route('/api/stations')
-def get_stations():
-    with open('stations_en.json', 'r', encoding='utf-8') as file:
-        stations_data = json.load(file)
-    return jsonify(stations_data.get('stations', []))
 
 @app.route('/')
 def home():
@@ -105,6 +100,7 @@ def home():
         min_date=min_date.strftime('%Y-%m-%d'),
         max_date=max_date.strftime('%Y-%m-%d'),
         bst_midnight_utc=bst_midnight_utc,
+        stations=STATIONS_DATA,
         is_banner_enabled=CONFIG.get("is_banner_enabled", 0),
         banner_image=banner_image,
         CONFIG=CONFIG,

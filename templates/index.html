@@ -33,6 +33,10 @@
     <script id="app-config" type="application/json">
         {{ CONFIG | tojson | safe }}
     </script>
+    <!-- Stations Data -->
+    <script id="stations-data" type="application/json">
+        {{ stations | tojson | safe }}
+    </script>
 </head>
 
 <body>
@@ -129,8 +133,9 @@
                     <div class="input-with-icon">
                         <i class="fas fa-calendar-alt input-icon"></i>
                         <input type="text" id="date" name="date" readonly placeholder="Select a date"
-                            value="{{ form_values.date if form_values and form_values.date is not none else '' }}" />
-
+                            value="{{ form_values.date if form_values and form_values.date is not none else '' }}"
+                            data-min-date="{{ min_date }}" data-max-date="{{ max_date }}"
+                            data-bst-midnight-utc="{{ bst_midnight_utc }}" />
                         <div class="calendar-dialog" id="materialCalendar" style="display: none;">
                             <div class="calendar-header">
                                 <button type="button" class="calendar-nav prev" id="prevMonthBtn">❮</button>
@@ -199,9 +204,6 @@
         window.bannerImageUrl = "{{ banner_image | safe }}";
         {{ script_js | safe }}
     </script>
-    <script>{{ script_js | safe }}</script>
-
-    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'92a87ea94faeb0a0',t:'MTc0MzY4MjU2MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
 </body>
 
 </html>

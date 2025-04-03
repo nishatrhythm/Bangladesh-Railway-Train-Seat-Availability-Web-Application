@@ -9,20 +9,15 @@ function loadStations() {
             stationData = JSON.parse(cachedStations);
             resolve();
         } else {
-            fetch('/api/stations')
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
-                .then(data => {
-                    stationData = data;
-                    localStorage.setItem('railwayStations', JSON.stringify(data));
-                    resolve();
-                })
-                .catch(error => {
-                    stationData = [];
-                    resolve();
-                });
+            const stationsElement = document.getElementById('stations-data');
+            if (stationsElement) {
+                stationData = JSON.parse(stationsElement.textContent);
+                localStorage.setItem('railwayStations', JSON.stringify(stationData));
+                resolve();
+            } else {
+                stationData = [];
+                resolve();
+            }
         }
     });
 }
