@@ -101,6 +101,7 @@ def home():
         max_date=max_date.strftime('%Y-%m-%d'),
         bst_midnight_utc=bst_midnight_utc,
         stations=STATIONS_DATA,
+        app_version=CONFIG.get("version", "1.0.0"),
         is_banner_enabled=CONFIG.get("is_banner_enabled", 0),
         banner_image=banner_image,
         CONFIG=CONFIG,

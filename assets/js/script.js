@@ -5,19 +5,39 @@ let stationData;
 function loadStations() {
     return new Promise((resolve) => {
         const cachedStations = localStorage.getItem('railwayStations');
-        if (cachedStations) {
-            stationData = JSON.parse(cachedStations);
-            resolve();
+        const stationsElement = document.getElementById('stations-data');
+        let serverStations, serverVersion;
+
+        if (stationsElement) {
+            const data = JSON.parse(stationsElement.textContent);
+            serverStations = data.stations;
+            serverVersion = data.version || "1.0.0";
         } else {
-            const stationsElement = document.getElementById('stations-data');
-            if (stationsElement) {
-                stationData = JSON.parse(stationsElement.textContent);
-                localStorage.setItem('railwayStations', JSON.stringify(stationData));
+            serverStations = [];
+            serverVersion = "1.0.0";
+        }
+
+        if (cachedStations) {
+            const cachedData = JSON.parse(cachedStations);
+            const cachedVersion = cachedData.version || "0.0.0";
+            if (cachedVersion === serverVersion) {
+                stationData = cachedData.stations;
                 resolve();
             } else {
-                stationData = [];
+                stationData = serverStations;
+                localStorage.setItem('railwayStations', JSON.stringify({
+                    stations: serverStations,
+                    version: serverVersion
+                }));
                 resolve();
             }
+        } else {
+            stationData = serverStations;
+            localStorage.setItem('railwayStations', JSON.stringify({
+                stations: serverStations,
+                version: serverVersion
+            }));
+            resolve();
         }
     });
 }
