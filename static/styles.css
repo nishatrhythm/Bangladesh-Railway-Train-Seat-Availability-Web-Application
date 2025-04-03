@@ -1220,6 +1220,7 @@ footer a:hover {
     transition: color 0.3s, transform 0.3s;
     padding: 5px;
     line-height: 1;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .close-modal:hover {
@@ -1262,6 +1263,7 @@ footer a:hover {
     user-select: none;
     font-size: 14px;
     line-height: 20px;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .custom-checkbox input {
