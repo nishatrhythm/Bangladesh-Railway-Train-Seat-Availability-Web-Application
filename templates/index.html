@@ -7,7 +7,7 @@
     <title>Home | Train Seat Availability</title>
     <!-- SEO Meta Tags -->
     <meta name="description"
-        content="Check train seat availability for Bangladesh Railway effortlessly. Plan your journey with accurate and up-to-date information.">
+        content="Check train seat availability for Bangladesh Railway effortlessly. Plan your journey with accurate and up-to-date information;">
     <meta name="keywords"
         content="Bangladesh Railway, train seat availability, travel, transportation, railway schedule, Bangladesh travel">
     <meta name="author" content="Nishat Mahmud">
@@ -23,21 +23,22 @@
     <meta property="og:url" content="https://trainseat.vercel.app">
     <meta property="og:type" content="website">
 
-    <link rel="stylesheet" href="static/styles.css">
+    <style>{{ styles_css | safe }}</style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" rel="stylesheet">
     <link rel="icon"
         href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png"
         type="image/x-icon" sizes="30x30">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <!-- CONFIG as JSON for JS -->
     <script id="app-config" type="application/json">
-    {{ CONFIG | tojson | safe }}
-  </script>
+        {{ CONFIG | tojson | safe }}
+    </script>
 </head>
 
 <body>
+    <div class="progress-container" id="progressContainer">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
     <noscript>
         <div class="container noscript-warning">
             <h2><i class="fas fa-exclamation-circle"></i> Please Enable JavaScript</h2>
@@ -55,7 +56,7 @@
 
         {% if token %}
         <form action="/clear_token" method="POST" class="inline-form">
-            <button type="submit" class="btn-clear">
+            <button type="submit" class="btn-clear" draggable="false">
                 <i class="fas fa-trash-alt"></i> Delete Auth Token
             </button>
         </form>
@@ -127,13 +128,28 @@
                     <label for="date">Date of Journey:</label>
                     <div class="input-with-icon">
                         <i class="fas fa-calendar-alt input-icon"></i>
-                        <input type="text" id="date" name="date" placeholder="Select a date"
-                            value="{{ form_values.date if form_values and form_values.date is not none else '' }}">
+                        <input type="text" id="date" name="date" readonly placeholder="Select a date"
+                            value="{{ form_values.date if form_values and form_values.date is not none else '' }}" />
+
+                        <div class="calendar-dialog" id="materialCalendar" style="display: none;">
+                            <div class="calendar-header">
+                                <button type="button" class="calendar-nav prev" id="prevMonthBtn">❮</button>
+                                <div class="calendar-month-year" id="calendarTitle"></div>
+                                <button type="button" class="calendar-nav next" id="nextMonthBtn">❯</button>
+                            </div>
+                            <div class="calendar-grid">
+                                <div class="calendar-weekdays">
+                                    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                                </div>
+                                <div class="calendar-days" id="calendarDays"></div>
+                            </div>
+                        </div>
                     </div>
                     <span class="error-message" id="date-error">Date of Journey is required</span>
                 </div>
+
                 <div class="form-group submit-btn">
-                    <button type="submit" class="btn-primary">
+                    <button type="submit" class="btn-primary" draggable="false">
                         <i class="fas fa-search"></i> Check Seats Info
                     </button>
                 </div>
@@ -164,8 +180,7 @@
         <div id="bannerModal" class="modal">
             <div class="modal-content">
                 <span class="close-modal"><i class="fas fa-times"></i></span>
-                <img src="{{ banner_image if banner_image else '/static/images/sample_banner.png' }}" alt="Banner"
-                    class="banner-image animated-zoom-in">
+                <div id="bannerImageContainer"></div>
                 <div class="modal-footer">
                     <label class="custom-checkbox">
                         <input type="checkbox" id="dontShowAgain">
@@ -181,50 +196,12 @@
     <script>
         window.minDate = "{{ min_date }}";
         window.maxDate = "{{ max_date }}";
-        window.stationsData = JSON.parse('{{ stations | tojson | safe }}');
+        window.bannerImageUrl = "{{ banner_image | safe }}";  // Use the passed banner_image variable
+        {{ script_js | safe }}
     </script>
+    <script>{{ script_js | safe }}</script>
 
-    <script src="static/js/script.js"></script>
-
-    <!-- JavaScript for Banner Modal -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const configData = JSON.parse(document.getElementById('app-config').textContent);
-            const forceBanner = configData.force_banner || 0;
-            const appVersion = configData.version || "1.0.0";
-
-            const modal = document.getElementById('bannerModal');
-            const closeModal = document.querySelector('.close-modal');
-            const dontShowAgainCheckbox = document.getElementById('dontShowAgain');
-            const storedData = JSON.parse(localStorage.getItem('bannerState') || '{}');
-            const dontShowAgain = storedData.dontShowAgain === true;
-            const storedVersion = storedData.version || "0.0.0";
-
-            if (modal) {
-                if (forceBanner === 1 && (!dontShowAgain || storedVersion !== appVersion)) {
-                    modal.classList.add('active');
-                    document.body.style.overflow = 'hidden';
-                } else if (forceBanner !== 1 && !dontShowAgain) {
-                    modal.classList.add('active');
-                    document.body.style.overflow = 'hidden';
-                }
-
-                if (closeModal) {
-                    closeModal.addEventListener('click', function () {
-                        modal.classList.remove('active');
-                        document.body.style.overflow = 'auto';
-                        if (dontShowAgainCheckbox && dontShowAgainCheckbox.checked) {
-                            localStorage.setItem('bannerState', JSON.stringify({
-                                dontShowAgain: true,
-                                version: appVersion
-                            }));
-                        }
-                    });
-                }
-            }
-        });
-    </script>
-
+    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'92a87ea94faeb0a0',t:'MTc0MzY4MjU2MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
 </body>
 
 </html>

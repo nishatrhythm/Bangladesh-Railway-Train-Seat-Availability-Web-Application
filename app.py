@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, make_response, abort, session, after_this_request
+from flask import Flask, render_template, request, redirect, url_for, make_response, abort, session, after_this_request, jsonify
 from detailsSeatAvailability import main as detailsSeatAvailability, set_token
 from datetime import datetime, timedelta
-import requests, os, json, uuid, pytz
+import requests, os, json, uuid, pytz, base64
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
@@ -12,6 +12,29 @@ STATION_NAME_MAPPING = {"Coxs Bazar": "Cox's Bazar"}
 
 with open('config.json', 'r', encoding='utf-8') as config_file:
     CONFIG = json.load(config_file)
+
+with open('assets/js/script.js', 'r', encoding='utf-8') as js_file:
+    SCRIPT_JS_CONTENT = js_file.read()
+with open('assets/styles.css', 'r', encoding='utf-8') as css_file:
+    STYLES_CSS_CONTENT = css_file.read()
+
+default_banner_path = 'assets/images/sample_banner.png'
+DEFAULT_BANNER_IMAGE = ""
+if os.path.exists(default_banner_path):
+    try:
+        with open(default_banner_path, 'rb') as img_file:
+            encoded_image = base64.b64encode(img_file.read()).decode('utf-8')
+            DEFAULT_BANNER_IMAGE = f"data:image/png;base64,{encoded_image}"
+        app.logger.info(f"Successfully loaded default banner image from {default_banner_path}")
+    except Exception as e:
+        app.logger.error(f"Failed to load default banner image: {e}")
+else:
+    app.logger.warning(f"Default banner image not found at {default_banner_path}")
+
+@app.before_request
+def filter_cloudflare_requests():
+    if request.path.startswith('/cdn-cgi/'):
+        return '', 404
 
 def fetch_token(phone_number, password):
     payload = {"mobile_number": phone_number, "password": password}
@@ -37,8 +60,14 @@ def add_cache_control_headers(response):
 
 def check_maintenance():
     if CONFIG.get("is_maintenance", 0):
-        return render_template('notice.html', message=CONFIG.get("maintenance_message", ""))
+        return render_template('notice.html', message=CONFIG.get("maintenance_message", ""), styles_css=STYLES_CSS_CONTENT, script_js=SCRIPT_JS_CONTENT)
     return None
+
+@app.route('/api/stations')
+def get_stations():
+    with open('stations_en.json', 'r', encoding='utf-8') as file:
+        stations_data = json.load(file)
+    return jsonify(stations_data.get('stations', []))
 
 @app.route('/')
 def home():
@@ -46,15 +75,14 @@ def home():
     if maintenance_response:
         return maintenance_response
 
-    with open('stations_en.json', 'r', encoding='utf-8') as file:
-        stations_data = json.load(file)
-    stations_list = stations_data.get('stations', [])
-
     error = session.pop('error', None)
     form_values = session.pop('form_values', None)
 
     if form_values and form_values.get('date'):
-        form_values['date'] = datetime.strptime(form_values['date'], '%Y-%m-%d').strftime('%Y-%m-%d')
+        try:
+            datetime.strptime(form_values['date'], '%d-%b-%Y')
+        except ValueError:
+            form_values['date'] = ''
 
     token = request.cookies.get('token')
     show_disclaimer = token is None
@@ -64,18 +92,23 @@ def home():
     min_date = bst_now.date()
     max_date = min_date + timedelta(days=10)
 
+    banner_image = CONFIG.get("image_link") or DEFAULT_BANNER_IMAGE
+    if not banner_image:
+        app.logger.warning("No banner image available: CONFIG['image_link'] and DEFAULT_BANNER_IMAGE are both empty")
+
     return render_template(
         'index.html',
         token=token,
-        stations=stations_list,
         error=error,
         form_values=form_values,
         show_disclaimer=show_disclaimer,
         min_date=min_date.strftime('%Y-%m-%d'),
         max_date=max_date.strftime('%Y-%m-%d'),
         is_banner_enabled=CONFIG.get("is_banner_enabled", 0),
-        banner_image=CONFIG.get("image_link", ""),
-        CONFIG=CONFIG
+        banner_image=banner_image,
+        CONFIG=CONFIG,
+        styles_css=STYLES_CSS_CONTENT,
+        script_js=SCRIPT_JS_CONTENT
     )
 
 @app.route('/check_seats', methods=['GET', 'POST'])
@@ -119,7 +152,7 @@ def check_seats():
 
             @after_this_request
             def set_cookie(response):
-                response.set_cookie('token', token, httponly=True, secure=(os.getenv('FLASK_ENV') == 'production'))
+                response.set_cookie('token', token, httponly=True, secure=True, samesite='Lax')
                 return response
 
             set_token(token)
@@ -127,7 +160,11 @@ def check_seats():
             set_token(token)
 
         raw_date = request.form['date']
-        formatted_date = datetime.strptime(raw_date, '%Y-%m-%d').strftime('%d-%b-%Y')
+        try:
+            formatted_date = datetime.strptime(raw_date, '%d-%b-%Y').strftime('%d-%b-%Y')
+        except ValueError:
+            session['error'] = "Invalid date format submitted. Please choose a date again."
+            return redirect(url_for('home'))
 
         config = {
             'from_city': form_values['origin'],
@@ -193,17 +230,23 @@ def show_results():
 
     raw_date = form_values.get('date', '')
     if raw_date:
-        formatted_date = datetime.strptime(raw_date, '%Y-%m-%d').strftime('%d-%b-%Y')
+        try:
+            formatted_date = datetime.strptime(raw_date, '%d-%b-%Y').strftime('%d-%b-%Y')
+        except ValueError:
+            formatted_date = ''
     else:
         formatted_date = ''
 
     seat_class = 'S_CHAIR'
 
     if result:
-        result = dict(sorted(
-            result.items(),
-            key=lambda item: datetime.strptime(item[1]['departure_time'], '%d %b, %I:%M %p')
-        ))
+        def parse_departure_time(item):
+            journey_date = datetime.strptime(form_values['date'], '%d-%b-%Y').date()
+            dep_time_str = item[1]['departure_time']
+            dep_time = datetime.strptime(dep_time_str, '%d %b, %I:%M %p').time()
+            return datetime.combine(journey_date, dep_time)
+
+        result = dict(sorted(result.items(), key=parse_departure_time))
 
     @after_this_request
     def add_headers(response):
@@ -212,13 +255,20 @@ def show_results():
         response.headers['Expires'] = '0'
         return response
 
+    banner_image = CONFIG.get("image_link") or DEFAULT_BANNER_IMAGE
+    if not banner_image:
+        app.logger.warning("No banner image available for results: CONFIG['image_link'] and DEFAULT_BANNER_IMAGE are both empty")
+
     return render_template(
         'results.html',
         result=result,
         origin=origin,
         destination=destination,
         date=formatted_date,
-        seat_class=seat_class
+        seat_class=seat_class,
+        styles_css=STYLES_CSS_CONTENT,
+        script_js=SCRIPT_JS_CONTENT,
+        banner_image=banner_image
     )
 
 @app.route('/clear_token', methods=['GET', 'POST'])
@@ -238,7 +288,7 @@ def page_not_found(e):
     maintenance_response = check_maintenance()
     if maintenance_response:
         return maintenance_response
-    return render_template('404.html'), 404
+    return render_template('404.html', styles_css=STYLES_CSS_CONTENT, script_js=SCRIPT_JS_CONTENT), 404
 
 def group_by_prefix(seats):
     groups = {}
