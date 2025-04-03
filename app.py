@@ -68,17 +68,6 @@ def get_stations():
         stations_data = json.load(file)
     return jsonify(stations_data.get('stations', []))
 
-@app.route('/api/current_bst_time')
-def get_current_bst_time():
-    bst_tz = pytz.timezone('Asia/Dhaka')
-    bst_now = datetime.now(bst_tz)
-    bst_midnight = bst_now.replace(hour=0, minute=0, second=0, microsecond=0)
-    return jsonify({
-        'current_bst': bst_now.strftime('%Y-%m-%d %H:%M:%S %Z'),
-        'bst_midnight': bst_midnight.strftime('%Y-%m-%d 00:00:00 %Z'),
-        'bst_midnight_utc': bst_midnight.astimezone(pytz.UTC).strftime('%Y-%m-%d %H:%M:%S UTC')
-    })
-
 @app.route('/')
 def home():
     maintenance_response = check_maintenance()
@@ -101,6 +90,7 @@ def home():
     bst_now = datetime.now(bst_tz)
     min_date = bst_now.replace(hour=0, minute=0, second=0, microsecond=0)
     max_date = min_date + timedelta(days=10)
+    bst_midnight_utc = min_date.astimezone(pytz.UTC).strftime('%Y-%m-%dT%H:%M:%SZ')
 
     banner_image = CONFIG.get("image_link") or DEFAULT_BANNER_IMAGE
     if not banner_image:
@@ -114,6 +104,7 @@ def home():
         show_disclaimer=show_disclaimer,
         min_date=min_date.strftime('%Y-%m-%d'),
         max_date=max_date.strftime('%Y-%m-%d'),
+        bst_midnight_utc=bst_midnight_utc,
         is_banner_enabled=CONFIG.get("is_banner_enabled", 0),
         banner_image=banner_image,
         CONFIG=CONFIG,

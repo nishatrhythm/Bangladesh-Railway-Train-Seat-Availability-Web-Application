@@ -414,19 +414,21 @@ let calendarCurrentMonth;
 let calendarMinDate;
 let calendarMaxDate;
 
-async function getBSTDate() {
-    try {
-        const response = await fetch('/api/current_bst_time');
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        const data = await response.json();
-        const bstMidnight = new Date(data.bst_midnight_utc);
-        return bstMidnight;
-    } catch (error) {
-        const inputElement = document.getElementById('date');
-        const minDateStr = inputElement?.dataset.minDate || '2025-04-04';
-        const fallbackDate = new Date(`${minDateStr}T18:00:00Z`);
-        return fallbackDate;
+function getBSTDate() {
+    const inputElement = document.getElementById('date');
+    const bstMidnightUtc = inputElement?.dataset.bstMidnightUtc || '2025-04-03T18:00:00Z';
+    const bstMidnight = new Date(bstMidnightUtc);
+    
+    const now = new Date();
+    const utcOffset = now.getTimezoneOffset() * 60000;
+    const bstOffset = 6 * 60 * 60 * 1000;
+    const localMidnight = new Date(now.setUTCHours(0, 0, 0, 0) - utcOffset + bstOffset);
+    
+    if (localMidnight > bstMidnight) {
+        const daysDiff = Math.floor((localMidnight - bstMidnight) / (24 * 60 * 60 * 1000));
+        bstMidnight.setUTCDate(bstMidnight.getUTCDate() + daysDiff);
     }
+    return bstMidnight;
 }
 
 function formatDate(date) {
@@ -552,8 +554,8 @@ function closeMaterialCalendar() {
     }
 }
 
-async function updateCalendarDates() {
-    const todayBST = await getBSTDate();
+function updateCalendarDates() {
+    const todayBST = getBSTDate();
     calendarMinDate = new Date(todayBST);
     calendarMaxDate = addDays(todayBST, DATE_LIMIT_DAYS - 1);
     calendarCurrentMonth = new Date(calendarMinDate.getFullYear(), calendarMinDate.getMonth(), 1);
@@ -564,11 +566,11 @@ async function updateCalendarDates() {
     }
 }
 
-async function initMaterialCalendar() {
+function initMaterialCalendar() {
     if (!input) {
         return;
     }
-    await updateCalendarDates();
+    updateCalendarDates();
 
     input.addEventListener("focus", openMaterialCalendar);
     input.addEventListener("click", openMaterialCalendar);
@@ -594,14 +596,14 @@ async function initMaterialCalendar() {
         });
     }
 
-    setInterval(async () => {
-        const nowBST = await getBSTDate();
+    setInterval(() => {
+        const nowBST = getBSTDate();
         if (!isSameDate(nowBST, calendarMinDate)) {
-            await updateCalendarDates();
+            updateCalendarDates();
         }
     }, 60000);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    initMaterialCalendar().catch(error => { });
+    initMaterialCalendar();
 });
