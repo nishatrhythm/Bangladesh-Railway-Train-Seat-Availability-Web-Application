@@ -82,20 +82,20 @@ const maxDate = window.maxDate;
 let suppressDropdown = false;
 let suppressEvents = false;
 
-// function showLoaderAndSubmit(event) {
-//     event.preventDefault();
-//     const loader = document.getElementById('loader');
-//     const progressContainer = document.getElementById('progressContainer');
-//     const form = event.target;
+function showLoaderAndSubmit(event) {
+    event.preventDefault();
+    const loader = document.getElementById('loader');
+    const progressContainer = document.getElementById('progressContainer');
+    const form = event.target;
 
-//     if (window.innerWidth <= 768 && progressContainer) {
-//         progressContainer.style.display = 'block';
-//         setTimeout(() => form.submit(), 10);
-//     } else if (loader && form) {
-//         loader.style.display = 'block';
-//         setTimeout(() => form.submit(), 10);
-//     }
-// }
+    if (window.innerWidth <= 768 && progressContainer) {
+        progressContainer.style.display = 'block';
+        setTimeout(() => form.submit(), 10);
+    } else if (loader && form) {
+        loader.style.display = 'block';
+        setTimeout(() => form.submit(), 10);
+    }
+}
 
 function swapStations() {
     suppressDropdown = true;
