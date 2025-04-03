@@ -25,11 +25,10 @@ if os.path.exists(default_banner_path):
         with open(default_banner_path, 'rb') as img_file:
             encoded_image = base64.b64encode(img_file.read()).decode('utf-8')
             DEFAULT_BANNER_IMAGE = f"data:image/png;base64,{encoded_image}"
-        app.logger.info(f"Successfully loaded default banner image from {default_banner_path}")
     except Exception as e:
-        app.logger.error(f"Failed to load default banner image: {e}")
+        pass
 else:
-    app.logger.warning(f"Default banner image not found at {default_banner_path}")
+    pass
 
 @app.before_request
 def filter_cloudflare_requests():
@@ -69,6 +68,17 @@ def get_stations():
         stations_data = json.load(file)
     return jsonify(stations_data.get('stations', []))
 
+@app.route('/api/current_bst_time')
+def get_current_bst_time():
+    bst_tz = pytz.timezone('Asia/Dhaka')
+    bst_now = datetime.now(bst_tz)
+    bst_midnight = bst_now.replace(hour=0, minute=0, second=0, microsecond=0)
+    return jsonify({
+        'current_bst': bst_now.strftime('%Y-%m-%d %H:%M:%S %Z'),
+        'bst_midnight': bst_midnight.strftime('%Y-%m-%d 00:00:00 %Z'),
+        'bst_midnight_utc': bst_midnight.astimezone(pytz.UTC).strftime('%Y-%m-%d %H:%M:%S UTC')
+    })
+
 @app.route('/')
 def home():
     maintenance_response = check_maintenance()
@@ -89,12 +99,12 @@ def home():
 
     bst_tz = pytz.timezone('Asia/Dhaka')
     bst_now = datetime.now(bst_tz)
-    min_date = bst_now.date()
+    min_date = bst_now.replace(hour=0, minute=0, second=0, microsecond=0)
     max_date = min_date + timedelta(days=10)
 
     banner_image = CONFIG.get("image_link") or DEFAULT_BANNER_IMAGE
     if not banner_image:
-        app.logger.warning("No banner image available: CONFIG['image_link'] and DEFAULT_BANNER_IMAGE are both empty")
+        pass
 
     return render_template(
         'index.html',
@@ -242,7 +252,9 @@ def show_results():
     if result:
         def parse_departure_time(item):
             journey_date = datetime.strptime(form_values['date'], '%d-%b-%Y').date()
-            dep_time_str = item[1]['departure_time']
+            dep_time_str = item[1].get('departure_time', '')
+            if not dep_time_str:
+                return datetime.max
             dep_time = datetime.strptime(dep_time_str, '%d %b, %I:%M %p').time()
             return datetime.combine(journey_date, dep_time)
 
@@ -257,7 +269,7 @@ def show_results():
 
     banner_image = CONFIG.get("image_link") or DEFAULT_BANNER_IMAGE
     if not banner_image:
-        app.logger.warning("No banner image available for results: CONFIG['image_link'] and DEFAULT_BANNER_IMAGE are both empty")
+        pass
 
     return render_template(
         'results.html',

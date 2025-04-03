@@ -20,7 +20,6 @@ function loadStations() {
                     resolve();
                 })
                 .catch(error => {
-                    console.error('Error fetching stations:', error);
                     stationData = [];
                     resolve();
                 });
@@ -41,7 +40,6 @@ function loadBannerImage() {
         const currentImageUrl = window.bannerImageUrl;
 
         if (!currentImageUrl) {
-            console.warn('No banner image URL provided');
             resolve();
             return;
         }
@@ -72,7 +70,6 @@ function loadBannerImage() {
 
         img.onload = () => resolve();
         img.onerror = () => {
-            console.error('Failed to load banner image from:', currentImageUrl);
             bannerContainer.removeChild(img);
             resolve();
         };
@@ -410,23 +407,26 @@ document.addEventListener("click", (e) => {
     }
 });
 
-// Calendar Logic
-const DATE_LIMIT_DAYS = 11; // 11 days including today (0 to 10 days ahead)
-const BST_OFFSET = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
-
+const DATE_LIMIT_DAYS = 11;
 const input = document.getElementById("date");
 
 let calendarCurrentMonth;
 let calendarMinDate;
 let calendarMaxDate;
 
-function getBSTDate() {
-    const nowUTC = new Date(); // Current UTC time, e.g., Apr 3, 14:49 UTC
-    const utcMidnight = new Date(nowUTC);
-    utcMidnight.setUTCHours(0, 0, 0, 0); // Midnight UTC of current UTC day
-    const bstMidnight = new Date(utcMidnight.getTime() + BST_OFFSET); // Midnight BST
-    console.log("Today BST:", bstMidnight.toString());
-    return bstMidnight;
+async function getBSTDate() {
+    try {
+        const response = await fetch('/api/current_bst_time');
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const data = await response.json();
+        const bstMidnight = new Date(data.bst_midnight_utc);
+        return bstMidnight;
+    } catch (error) {
+        const inputElement = document.getElementById('date');
+        const minDateStr = inputElement?.dataset.minDate || '2025-04-04';
+        const fallbackDate = new Date(`${minDateStr}T18:00:00Z`);
+        return fallbackDate;
+    }
 }
 
 function formatDate(date) {
@@ -453,20 +453,22 @@ function isSameDate(d1, d2) {
 
 function addDays(date, days) {
     const newDate = new Date(date);
-    newDate.setDate(newDate.getDate() + days);
+    newDate.setUTCDate(newDate.getUTCDate() + days);
     return newDate;
 }
 
 function generateMaterialCalendar() {
     const calendarDays = document.getElementById("calendarDays");
     const calendarTitle = document.getElementById("calendarTitle");
-    calendarDays.innerHTML = "";
+    if (!calendarDays || !calendarTitle) return;
 
+    calendarDays.innerHTML = "";
     const options = { month: "long", year: "numeric" };
     calendarTitle.textContent = calendarCurrentMonth.toLocaleDateString("en-US", options);
 
     const prevBtn = document.getElementById("prevMonthBtn");
     const nextBtn = document.getElementById("nextMonthBtn");
+    if (!prevBtn || !nextBtn) return;
 
     const minMonth = new Date(calendarMinDate.getFullYear(), calendarMinDate.getMonth(), 1);
     const maxMonth = new Date(calendarMaxDate.getFullYear(), calendarMaxDate.getMonth(), 1);
@@ -530,6 +532,7 @@ function generateMaterialCalendar() {
 
 function openMaterialCalendar() {
     const calendar = document.getElementById("materialCalendar");
+    if (!calendar) return;
     calendar.style.display = "block";
     generateMaterialCalendar();
 
@@ -549,48 +552,56 @@ function closeMaterialCalendar() {
     }
 }
 
-function updateCalendarDates() {
-    const todayBST = getBSTDate();
+async function updateCalendarDates() {
+    const todayBST = await getBSTDate();
     calendarMinDate = new Date(todayBST);
-    calendarMaxDate = addDays(todayBST, DATE_LIMIT_DAYS - 1); // 10 days ahead
+    calendarMaxDate = addDays(todayBST, DATE_LIMIT_DAYS - 1);
     calendarCurrentMonth = new Date(calendarMinDate.getFullYear(), calendarMinDate.getMonth(), 1);
 
-    // If calendar is open, regenerate it
     const calendar = document.getElementById("materialCalendar");
     if (calendar && calendar.style.display === "block") {
         generateMaterialCalendar();
     }
 }
 
-function initMaterialCalendar() {
-    updateCalendarDates();
+async function initMaterialCalendar() {
+    if (!input) {
+        return;
+    }
+    await updateCalendarDates();
 
     input.addEventListener("focus", openMaterialCalendar);
     input.addEventListener("click", openMaterialCalendar);
 
-    document.getElementById("prevMonthBtn").addEventListener("click", () => {
-        const prevMonth = new Date(calendarCurrentMonth.getFullYear(), calendarCurrentMonth.getMonth() - 1, 1);
-        if (prevMonth >= new Date(calendarMinDate.getFullYear(), calendarMinDate.getMonth(), 1)) {
-            calendarCurrentMonth = prevMonth;
-            generateMaterialCalendar();
-        }
-    });
+    const prevBtn = document.getElementById("prevMonthBtn");
+    const nextBtn = document.getElementById("nextMonthBtn");
+    if (prevBtn) {
+        prevBtn.addEventListener("click", () => {
+            const prevMonth = new Date(calendarCurrentMonth.getFullYear(), calendarCurrentMonth.getMonth() - 1, 1);
+            if (prevMonth >= new Date(calendarMinDate.getFullYear(), calendarMinDate.getMonth(), 1)) {
+                calendarCurrentMonth = prevMonth;
+                generateMaterialCalendar();
+            }
+        });
+    }
+    if (nextBtn) {
+        nextBtn.addEventListener("click", () => {
+            const nextMonth = new Date(calendarCurrentMonth.getFullYear(), calendarCurrentMonth.getMonth() + 1, 1);
+            if (nextMonth <= new Date(calendarMaxDate.getFullYear(), calendarMaxDate.getMonth(), 1)) {
+                calendarCurrentMonth = nextMonth;
+                generateMaterialCalendar();
+            }
+        });
+    }
 
-    document.getElementById("nextMonthBtn").addEventListener("click", () => {
-        const nextMonth = new Date(calendarCurrentMonth.getFullYear(), calendarCurrentMonth.getMonth() + 1, 1);
-        if (nextMonth <= new Date(calendarMaxDate.getFullYear(), calendarMaxDate.getMonth(), 1)) {
-            calendarCurrentMonth = nextMonth;
-            generateMaterialCalendar();
-        }
-    });
-
-    // Check every minute if we’ve crossed midnight BST
-    setInterval(() => {
-        const nowBST = getBSTDate();
+    setInterval(async () => {
+        const nowBST = await getBSTDate();
         if (!isSameDate(nowBST, calendarMinDate)) {
-            updateCalendarDates();
+            await updateCalendarDates();
         }
-    }, 60000); // Check every minute
+    }, 60000);
 }
 
-document.addEventListener("DOMContentLoaded", initMaterialCalendar);
+document.addEventListener("DOMContentLoaded", () => {
+    initMaterialCalendar().catch(error => { });
+});
