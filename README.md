@@ -1,244 +1,281 @@
-# Bangladesh Railway Train Seat Availability Web Application
+# 🚆 Bangladesh Railway Train Seat Availability Web Application
 
-This document provides an in-depth explanation of the implementation logic, algorithms, API interactions, data fetching process, privacy measures, backend functionality, frontend capabilities, and technologies used in the Bangladesh Railway Train Seat Availability Web Application. This project is based on the script [`detailsSeatAvailability.py`](https://github.com/nishatrhythm/Bangladesh-Railway-Segmented-Seat-Matrix-and-Details-Seat-Availabilty/blob/main/detailsSeatAvailability.py) and extends its functionality into a full-fledged web application.
+A full-stack, token-authenticated web application to **securely fetch and visualize real-time train seat availability** from the official Bangladesh Railway e-ticketing API. This version focuses on **efficiency, user experience, and privacy** — fully aligned with official data, built using Flask + Vanilla JS + REST APIs.
 
-**Live Link**: [Bangladesh Railway Train Seat Availability](https://trainseat.vercel.app)
+---
 
-> Disclaimer: As onrender.com is the only free hosting site that specifically supports Singapore server hosting, it is used because Bangladesh Railway has restricted access to the e-Ticketing website from outside Bangladesh, except for Singapore. However, on the free plan, this hosting site freezes the hosted website if no user visits it within a 15-20 minute interval. As a result, you may experience a loading delay of around 45-50 seconds when accessing the site. After that, it will work fine.
+## 🌐 Live Site
+
+👉 **Live URL:** [trainseat.onrender.com](https://trainseat.onrender.com)  
+⚠️ **Note:** Hosted from Singapore to comply with Bangladesh Railway’s geo-restrictions. First load may be delayed up to 1 minute due to free-tier cold starts.
 
 <br>
 
-| <img src="/images/Screenshot_1.png" width="400"> | <img src="/images/Screenshot_2.png" width="400"> |
+| <img src="images/Screenshot_1.png" width="400"> | <img src="images/Screenshot_2.png" width="400"> |
 |--------------------------------------------------|--------------------------------------------------|
-| <div align="center">**Screenshot 1**</div>      | <div align="center">**Screenshot 2**</div>      |
+| <div align="center">**Screenshot 1**</div>       | <div align="center">**Screenshot 2**</div>       |
 
 ---
 
-## Index
+## 📚 Table of Contents
 
-1. [Folder Structure](#folder-structure)
-2. [Core Implementation and Logic](#core-implementation-and-logic)
-   - [Authentication and Token Management](#authentication-and-token-management)
-   - [Fetching Train and Seat Data](#fetching-train-and-seat-data)
-3. [Data Processing](#data-processing)
-4. [Privacy and Security](#privacy-and-security)
-5. [Error Handling](#error-handling)
-6. [Backend Functionality](#backend-functionality)
-7. [Frontend Capabilities](#frontend-capabilities)
-8. [Technologies Used](#technologies-used)
+1. [Project Structure](#-project-structure)  
+2. [Features Overview](#️-features-overview)  
+3. [Privacy & Security](#-privacy--security)  
+4. [Core Logic](#-core-logic)  
+5. [Data Processing](#-data-processing)  
+6. [Frontend Features](#️-frontend-features)  
+7. [API Error Handling](#-api-error-handling)  
+8. [Cache Control](#-cache-control)  
+9. [Technologies Used](#-technologies-used)  
+10. [Setup Instructions](#-setup-instructions)  
+11. [Disclaimer on Data Usage](#️-disclaimer-on-data-usage)  
+12. [License](#-license)  
 
 ---
 
-## Folder Structure
+## 📂 Project Structure
 ```
 .
-├── app.py                     # Main Flask application file
-├── detailsSeatAvailability.py # Backend logic for fetching train and seat data
-├── templates/
-│   ├── index.html             # Home page template
-│   ├── results.html           # Results page template
-├── static/
-│   ├── styles.css             # CSS for styling
-│   ├── js/
-│   │   └── script.js          # JavaScript for frontend functionality
-├── stations_en.json           # JSON file containing station names
-└── README.md                  # Project documentation
+├── app.py                        # Flask backend with routes, session mgmt, auth & rendering
+├── config.json                   # Dynamic config: banner, maintenance, app version
+├── detailsSeatAvailability.py    # Seat logic, API integrations, retry, error handling
+├── LICENSE                       # Project license
+├── README.md                     # Project documentation (this file)
+├── requirements.txt              # Python dependencies
+├── stations_en.json              # Official station list (used for dropdowns)
+├── assets/
+│   ├── images/
+│   │   └── sample_banner.png     # Default fallback banner image
+│   └── js/
+│       └── script.js             # Frontend JS for validation, UX, calendar, dropdowns
+├── styles.css                    # Fully responsive, modern UI with animations
+├── images/
+│   ├── link_share_image.png      # Social sharing preview image
+│   ├── Screenshot_1.png          # Screenshot for documentation
+│   └── Screenshot_2.png          # Screenshot for documentation
+└── templates/
+    ├── 404.html                  # Custom error page
+    ├── index.html                # Home form page
+    ├── notice.html               # Maintenance banner
+    └── results.html              # Seat result visualizer
 ```
----
-
-## Core Implementation and Logic
-
-### Authentication and Token Management
-
-**Key Highlights**:
-- Secure login using mobile number and password.
-- Token-based authentication for subsequent API requests.
-- Automatic token expiry management.
-
-1. **Login and Authentication**:
-   - Users log in with their **mobile number** and **password**, registered on the Bangladesh Railway system.
-   - A POST request is sent to the **Bangladesh Railway API Authentication Endpoint**:
-     - **URL**: `https://railspaapi.shohoz.com/v1.0/app/auth/sign-in`
-     - **Payload**:
-       ```json
-       {
-           "mobile_number": "<user_phone_number>",
-           "password": "<user_password>"
-       }
-       ```
-   - If successful, the API responds with a token stored securely as an **HTTP-only cookie**.
-
-2. **Token Usage**:
-   - The token is included in the `Authorization` header for all API requests:
-     ```json
-     {
-         "Authorization": "Bearer <token>"
-     }
-     ```
-
-3. **Token Expiry Handling**:
-   - If a token expires or becomes invalid:
-     - The application deletes the expired token from the cookie.
-     - Users are prompted to log in again.
 
 ---
 
-### Fetching Train and Seat Data
+## ⚙️ Features Overview
 
-**Key Highlights**:
-- Dynamic API queries based on user input.
-- Comprehensive seat data fetched and processed.
-
-1. **Train Details Request**:
-   - The application prepares a query based on user inputs: origin, destination, journey date, and seat class.
-   - A GET request is sent to the **Train Search Endpoint**:
-     - **URL**: `https://railspaapi.shohoz.com/v1.0/app/bookings/search-trips-v2`
-     - **Query Parameters**:
-       ```json
-       {
-           "from_city": "<origin>",
-           "to_city": "<destination>",
-           "date_of_journey": "<formatted_date>",
-           "seat_class": "S_CHAIR"
-       }
-       ```
-
-2. **Seat Layout Fetching**:
-   - For each train in the search results, seat details are fetched via a second GET request:
-     - **URL**: `https://railspaapi.shohoz.com/v1.0/web/bookings/seat-layout`
-     - **Query Parameters**:
-       ```json
-       {
-           "trip_id": "<trip_id>",
-           "trip_route_id": "<trip_route_id>"
-       }
-       ```
-
-3. **Data Transformation**:
-   - Train and seat layouts are processed:
-     - **Seats Grouping**: Seats are grouped by coach prefixes (e.g., `THA-1`, `THA-2`).
-     - **Seat Counts**: Available and booking-in-process seats are counted.
-
-4. **Data Output**:
-   - The processed data is rendered on the `results.html` page, displaying:
-     - Train details.
-     - Seat availability by coach and seat type.
+| Feature                                  | Status ✅ | Description |
+|------------------------------------------|-----------|-------------|
+| Token-based login (Shohoz API)           | ✅        | Secure token via POST, stored as HTTP-only cookie |
+| Train list + seat availability API       | ✅        | Live API integration for real-time data |
+| Animated, Material UI Date Picker        | ✅        | Custom calendar with range check, BST logic |
+| Auto-suggestions with station filtering  | ✅        | Live dropdown using fuzzy match |
+| Responsive Mobile-first UI               | ✅        | Tailored views for mobile, tablet, desktop |
+| Maintenance Mode with Admin Config       | ✅        | Enable site-level notice using config.json |
+| Banner System (with version memory)      | ✅        | LocalStorage + version-controlled modal |
+| LocalStorage for station list + banner   | ✅        | Reduces network load and repeated fetches |
+| Error Handling (422, 401, API failure)   | ✅        | Friendly, helpful user messages |
+| Offline + Slow Internet Notifications    | ✅        | Detects network status and alerts user |
+| Sorting of Trains by Departure Time      | ✅        | Intelligent ordering of result cards |
+| Grouped Seat View (by coach prefix)      | ✅        | Easy-to-understand coach-wise layout |
+| Cookie-based Session Flow                | ✅        | Token + form caching + redirect-based UX |
+| Custom 404 Page with Countdown           | ✅        | Auto-redirect after 10s for broken links |
+| Accessibility & Tap Optimization         | ✅        | Full support for mobile gestures, tap highlights |
 
 ---
 
-## Data Processing
-  
-### Seat Grouping
+## 🔒 Privacy & Security
 
-**Groups seats by coach prefix.**
+- **No storage of credentials**: Mobile number & password are used *only once* to fetch token.
+- **HTTP-only secure cookie**: Token stored server-side with secure flags.
+- **Input sanitation**: All form fields validated both client-side and server-side.
+- **Session-specific result handling**: Data purged on redirect or session expiration.
+- **LocalStorage data**:
+  - Used **only** for:
+    - Station list cache
+    - Banner modal state
+    - Banner image (base64 version)
+  - **No sensitive data stored**
+
+---
+
+## 🧠 Core Logic
+
+### 🔐 Token Authentication (Shohoz API)
+
+- POST to: `https://railspaapi.shohoz.com/v1.0/app/auth/sign-in`
+- Validates and retrieves JWT token.
+- Stored as `token` cookie (HttpOnly, Secure, Lax).
+- Expired token is detected automatically, and user is re-prompted to login.
+
+### 🚂 Train Search API
+
+```http
+GET /app/bookings/search-trips-v2
+Params:
+  from_city, to_city, date_of_journey, seat_class=S_CHAIR
+```
+Returns matching train list with trip IDs.
+
+### 🪑 Seat Layout API
+
+```http
+GET /web/bookings/seat-layout
+Params:
+  trip_id, trip_route_id
+```
+Returns seat layout grid with availability and ticket type.
+
+### ⚛️ Retry Logic
+
+- Retries 3 times on 500+ errors.
+- Graceful fallback for 422 errors (no layout).
+- 401 error → clears cookie and redirects to login.
+
+---
+
+## 📊 Data Processing
+
+### Grouping by Prefix
 
 ```python
 def group_by_prefix(seats):
-    groups = {}
-    for seat in seats:
-        prefix = seat.split('-')[0]  # Extract coach prefix
-        groups.setdefault(prefix, []).append(seat)
-    return {prefix: {"seats": seats, "count": len(seats)} for prefix, seats in groups.items()}
+    # Groups THA-1, THA-2, ... into a single group with count
 ```
 
-### Data Sorting
-
-**Sorts trains by departure time for better readability.**
+### Sorting Seats
+Custom sort prioritizes known Bangla coach order using:
 
 ```python
-sorted_results = dict(sorted(
-    result.items(),
-    key=lambda item: datetime.strptime(item[1]['departure_time'], '%d %b, %I:%M %p')
-))
+def sort_seat_number(seat):
+    # Returns tuple based on BANGLA_COACH_ORDER
 ```
-## Privacy and Security
 
-1. **No Credential Storage**:
-   - **Mobile numbers** and **passwords** are used only to generate tokens through the API. These credentials are **not stored** on the server, database, or in memory.
+### Sorting Trains
 
-2. **Token Security**:
-   - Tokens are stored in **HTTP-only cookies**:
-     - Prevents JavaScript access, mitigating XSS vulnerabilities.
-     - Tokens are automatically cleared on logout or expiry.
-
-3. **Direct API Communication**:
-   - All requests to the Bangladesh Railway API are made directly from the application to ensure data privacy.
-   - Sensitive data (e.g., credentials) is never intercepted or logged.
-
-4. **Client-side Validation**:
-   - Inputs like phone numbers and dates are validated client-side to minimize incorrect data submission and reduce server load.
-
-5. **Clear User Feedback**:
-   - All errors (e.g., invalid credentials, expired tokens) are displayed transparently to users without revealing sensitive details.
+```python
+sorted(result.items(), key=lambda x: parsed_dep_time)
+```
 
 ---
 
-## Error Handling
+## 🖼️ Frontend Features
 
-1. **Token Errors**:
-   - If a token is invalid or expired, the application:
-     - Deletes the stale token from the cookie.
-     - Prompts the user to log in again.
+### 1. Material Calendar
 
-2. **API Errors**:
-   - If the API returns errors (e.g., no trains available, seat layout unavailable), clear and concise messages are displayed on the homepage.
+- Custom-built, BST-based calendar
+- Shows only next 11 days
+- Animates in/out with selection
+- Automatically updates daily via timer
 
-3. **Validation Errors**:
-   - Client-side validation ensures all fields are filled correctly before submission.
-   - Errors are dynamically displayed next to the corresponding fields.
+### 2. Validation & UX
 
----
+- Validates:
+  - Phone: Must be 11 digits, starts with 01[3-9]
+  - All fields required
+- Displays inline error using animation (`fadeInScale`)
+- Prevents multiple submission / empty values
 
-## Backend Functionality
+### 3. Dropdown Search
 
-1. **Routing**:
-   - Manages routes like `home`, `check_seats`, `show_results`, and `clear_token`.
+- Station data cached in LocalStorage
+- Auto-suggest after typing 2+ chars
+- Dropdown hides automatically on blur
+- Avoids duplicate origin/destination
 
-2. **Session Management**:
-   - Uses Flask sessions to store user inputs and session-specific data.
+### 4. Connection Check
 
-3. **Data Processing**:
-   - Handles API requests and processes data for frontend templates.
-
-4. **Error Management**:
-   - Provides seamless error handling with clear messages.
-
----
-
-## Frontend Capabilities
-
-1. **Interactive Forms**:
-   - Validates inputs dynamically and provides instant feedback.
-
-2. **Responsive Design**:
-   - Optimized for all devices using modern CSS.
-
-3. **Enhanced UX**:
-   - Features like auto-suggestions and dynamic dropdowns improve usability.
-
-4. **Result Presentation**:
-   - Displays comprehensive train and seat availability details.
+- Detects:
+  - **Offline mode**
+  - **Slow connection**
+  - **Google unreachable**
+- Shows flyout banners using network events
 
 ---
 
-## Technologies Used
+## 📡 API Error Handling
 
-### Backend:
-- **Flask**: Core framework for routing and session management.
-- **Python**: Handles API logic and data processing.
-- **Requests Library**: Communicates with the Bangladesh Railway API.
-
-### Frontend:
-- **HTML5, CSS3, JavaScript**: Builds a modern, interactive UI.
-- **Flatpickr**: Enhances date picker functionality.
-- **FontAwesome**: Provides intuitive icons.
-
-### Data:
-- **JSON**: Manages station mapping and API responses.
-
-### Security:
-- **HTTP-only Cookies**: Ensures secure token storage.
-- **Input Validation**: Prevents erroneous or malicious submissions.
+| Error Type     | Description           | Action                                         |
+|----------------|-----------------------|------------------------------------------------|
+| 401            | Unauthorized Token    | Token cookie deleted; login required           |
+| 422            | Invalid Layout        | Error flag used to show fallback message       |
+| 500+           | Server-side issues    | Retried 3 times; final message shown           |
+| Empty Train    | No trains             | Clear message: try different station/date      |
+| Invalid Date   | Corrupt input         | Session flushed and redirected                 |
 
 ---
-This web application is designed with a focus on user privacy, seamless API integration, and a responsive user interface to ensure a secure and efficient experience for checking train seat availability.
+
+## 🚦 Cache Control
+
+All pages include headers:
+
+```http
+Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+Pragma: no-cache
+Expires: 0
+```
+
+---
+
+## 🧰 Technologies Used
+
+### Backend
+
+- **Python 3.10+**
+- **Flask 3.1**
+- `requests`, `colorama`, `pytz`
+
+### Frontend
+
+- **HTML5**, **CSS3**, **Vanilla JS**
+- **Material-style UI/UX**
+- **LocalStorage**, `@media` queries
+
+### API
+
+- Official Shohoz-based endpoints (Bangladesh Railway)
+
+---
+
+## 🧪 Setup Instructions
+
+1. **Clone repo**
+
+```bash
+git clone https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application.git
+cd Bangladesh-Railway-Train-Seat-Availability-Web-Application
+```
+
+2. **Install dependencies**
+
+```bash
+pip install -r requirements.txt
+```
+
+3. **Run locally**
+
+```bash
+python app.py
+```
+
+4. **Access**:  Visit `http://localhost:5000`
+
+---
+
+## ⚖️ Disclaimer on Data Usage
+
+This project **does not engage in illegal web scraping**. It interacts with publicly accessible endpoints provided by the Bangladesh Railway e-Ticketing platform (Shohoz API) that **do not require any reverse-engineering, bypassing of authentication, or scraping of HTML content**.
+
+- All data is fetched through **open RESTful APIs** provided by the Shohoz platform.
+- The API endpoints used are **official**, public-facing, and **require user authentication** via a registered account.
+- Users must **log in using their own credentials**, and no credentials are stored or misused.
+- No attempt is made to interfere with or overload the service.
+
+This tool is intended purely for **personal, educational, and informational purposes** — helping users visualize seat availability efficiently. If requested by the official service provider, access can be removed or adjusted accordingly.
+
+---
+
+## 📝 License
+
+Licensed under MIT. See `LICENSE` for more.
