@@ -44,50 +44,62 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
     url = f"{API_BASE_URL}/web/bookings/seat-layout"
     headers = {"Authorization": f"Bearer {TOKEN}"}
     params = {"trip_id": trip_id, "trip_route_id": trip_route_id}
+    max_retries = 3
+    retry_count = 0
 
-    try:
-        response = requests.get(url, headers=headers, params=params)
-        if response.status_code >= 500:
-            raise Exception("We're facing a problem with the Bangladesh Railway website. Please try again in a few minutes.")
-        response.raise_for_status()
-        data = response.json()
-        seat_layout = data.get("data", {}).get("seatLayout", [])
+    while retry_count < max_retries:
+        try:
+            response = requests.get(url, headers=headers, params=params)
+            if response.status_code >= 500:
+                retry_count += 1
+                if retry_count == max_retries:
+                    raise Exception("We're facing a problem with the Bangladesh Railway website. Please try again in a few minutes.")
+                continue
+            response.raise_for_status()
+            data = response.json()
+            seat_layout = data.get("data", {}).get("seatLayout", [])
 
-        seats = [(seat["seat_number"], seat["seat_availability"], seat["ticket_type"])
-                 for layout in seat_layout
-                 for row in layout["layout"]
-                 for seat in row]
+            seats = [(seat["seat_number"], seat["seat_availability"], seat["ticket_type"])
+                     for layout in seat_layout
+                     for row in layout["layout"]
+                     for seat in row]
 
-        available_seats = [num for num, avail, _ in seats if avail == SEAT_AVAILABILITY['AVAILABLE']]
-        booking_process_seats = [num for num, avail, ttype in seats 
-                                if avail == SEAT_AVAILABILITY['IN_PROCESS'] and ttype in {1, 2, 3}]
+            available_seats = [num for num, avail, _ in seats if avail == SEAT_AVAILABILITY['AVAILABLE']]
+            booking_process_seats = [num for num, avail, ttype in seats 
+                                    if avail == SEAT_AVAILABILITY['IN_PROCESS'] and ttype in {1, 2, 3}]
 
-        available_seats_sorted = sorted(available_seats, key=sort_seat_number)
-        booking_process_seats_sorted = sorted(booking_process_seats, key=sort_seat_number)
+            available_seats_sorted = sorted(available_seats, key=sort_seat_number)
+            booking_process_seats_sorted = sorted(booking_process_seats, key=sort_seat_number)
 
-        return (available_seats_sorted, booking_process_seats_sorted, len(available_seats), len(booking_process_seats), False)
+            return (available_seats_sorted, booking_process_seats_sorted, len(available_seats), len(booking_process_seats), False)
 
-    except requests.RequestException as e:
-        status_code = e.response.status_code if e.response is not None else None
-        if status_code == 401:
-            raise Exception("Token expired or unauthorized")
-        if status_code == 422:
-            return [], [], 0, 0, True
-        return [], [], 0, 0, False
+        except requests.RequestException as e:
+            status_code = e.response.status_code if e.response is not None else None
+            if status_code == 401:
+                raise Exception("Token expired or unauthorized")
+            if status_code == 422:
+                return [], [], 0, 0, True
+            return [], [], 0, 0, False
 
 def fetch_train_details(config: Dict) -> List[Dict]:
     url = f"{API_BASE_URL}/app/bookings/search-trips-v2"
     headers = {"Authorization": f"Bearer {TOKEN}"}
+    max_retries = 3
+    retry_count = 0
 
-    try:
-        response = requests.get(url, params=config, headers=headers)
-        if response.status_code >= 500:
-            raise Exception("We're facing a problem with the Bangladesh Railway website. Please try again in a few minutes.")
-        response.raise_for_status()
-        train_data = response.json().get("data", {}).get("trains", [])
-        return train_data
-    except requests.RequestException as e:
-        return []
+    while retry_count < max_retries:
+        try:
+            response = requests.get(url, params=config, headers=headers)
+            if response.status_code >= 500:
+                retry_count += 1
+                if retry_count == max_retries:
+                    raise Exception("We're facing a problem with the Bangladesh Railway website. Please try again in a few minutes.")
+                continue
+            response.raise_for_status()
+            train_data = response.json().get("data", {}).get("trains", [])
+            return train_data
+        except requests.RequestException as e:
+            return []
 
 def main(config: Dict) -> Dict:
     result = {}

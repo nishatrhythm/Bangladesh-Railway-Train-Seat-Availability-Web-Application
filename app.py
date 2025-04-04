@@ -38,20 +38,27 @@ def filter_cloudflare_requests():
 
 def fetch_token(phone_number, password):
     payload = {"mobile_number": phone_number, "password": password}
-    try:
-        response = requests.post(TOKEN_API_URL, json=payload)
-        if response.status_code == 422:
-            raise Exception("Mobile Number or Password is incorrect.")
-        elif response.status_code >= 500:
-            raise Exception("We're facing a problem with the Bangladesh Railway website. Please try again in a few minutes.")
-        data = response.json()
-        token = data["data"]["token"]
-        return token
-    except requests.RequestException as e:
-        error_str = str(e)
-        if "NameResolutionError" in error_str or "Failed to resolve" in error_str:
-            raise Exception("We couldn't reach the Bangladesh Railway website. Please try again in a few minutes.")
-        raise Exception(f"Failed to fetch token: {error_str}")
+    max_retries = 3
+    retry_count = 0
+
+    while retry_count < max_retries:
+        try:
+            response = requests.post(TOKEN_API_URL, json=payload)
+            if response.status_code == 422:
+                raise Exception("Mobile Number or Password is incorrect.")
+            elif response.status_code >= 500:
+                retry_count += 1
+                if retry_count == max_retries:
+                    raise Exception("We're facing a problem with the Bangladesh Railway website. Please try again in a few minutes.")
+                continue
+            data = response.json()
+            token = data["data"]["token"]
+            return token
+        except requests.RequestException as e:
+            error_str = str(e)
+            if "NameResolutionError" in error_str or "Failed to resolve" in error_str:
+                raise Exception("We couldn't reach the Bangladesh Railway website. Please try again in a few minutes.")
+            raise Exception(f"Failed to fetch token: {error_str}")
 
 @app.after_request
 def add_cache_control_headers(response):
