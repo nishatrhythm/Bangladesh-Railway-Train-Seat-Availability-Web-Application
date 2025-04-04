@@ -3,6 +3,6 @@
     "is_maintenance": 0,
     "maintenance_message": "This website will remain temporarily unavailable from May 24, 2025 to June 7, 2025 due to Eid ticket sales. We apologize for the inconvenience and appreciate your understanding.",
     "is_banner_enabled": 1,
-    "image_link": "",
+    "image_link": "https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application/main/assets/images/new_ui_banner.png",
     "force_banner": 0
 }

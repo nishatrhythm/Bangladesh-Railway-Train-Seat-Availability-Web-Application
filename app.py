@@ -42,14 +42,15 @@ def fetch_token(phone_number, password):
         response = requests.post(TOKEN_API_URL, json=payload)
         if response.status_code == 422:
             raise Exception("Mobile Number or Password is incorrect.")
-        response.raise_for_status()
+        elif response.status_code >= 500:
+            raise Exception("We're facing a problem with the Bangladesh Railway website. Please try again in a few minutes.")
         data = response.json()
         token = data["data"]["token"]
         return token
     except requests.RequestException as e:
         error_str = str(e)
         if "NameResolutionError" in error_str or "Failed to resolve" in error_str:
-            raise Exception("Could not connect to Bangladesh Railway server. Please try again after some time.")
+            raise Exception("We couldn't reach the Bangladesh Railway website. Please try again in a few minutes.")
         raise Exception(f"Failed to fetch token: {error_str}")
 
 @app.after_request
