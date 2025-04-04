@@ -661,18 +661,18 @@ function checkConnectionSpeed() {
     fetch('https://www.google.com', { method: 'HEAD', mode: 'no-cors' })
         .then(() => {
             const duration = performance.now() - startTime;
-            if (duration > 2000) { // Slow if > 2 seconds
+            if (duration > 2000) {
                 clearTimeout(slowConnectionTimeout);
                 showFlyout('Slow Internet Connection Detected.', 'warning', 7000);
-                slowConnectionTimeout = setTimeout(checkConnectionSpeed, 10000);
+                slowConnectionTimeout = setTimeout(checkConnectionSpeed, 30000);
             } else {
-                slowConnectionTimeout = setTimeout(checkConnectionSpeed, 5000);
+                slowConnectionTimeout = setTimeout(checkConnectionSpeed, 15000);
             }
         })
         .catch(() => {
             if (!isOffline) {
                 showFlyout('Network Error. Please check your connection.', 'warning', 7000);
-                slowConnectionTimeout = setTimeout(checkConnectionSpeed, 10000);
+                slowConnectionTimeout = setTimeout(checkConnectionSpeed, 30000);
             }
         });
 }
