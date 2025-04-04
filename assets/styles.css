@@ -1574,6 +1574,13 @@ footer a:hover {
     justify-content: center;
 }
 
+.result-disclaimer {
+    margin: 20px 0 30px;
+    font-size: 14px;
+    text-align: justify;
+    line-height: 1.6;
+}
+
 .flyout-notification .flyout-close:hover {
     transform: rotate(90deg) scale(1.1);
     color: #c9302c;
