@@ -688,3 +688,35 @@ document.addEventListener('DOMContentLoaded', () => {
         checkConnectionSpeed();
     }
 });
+
+(function setupBackToTopButton() {
+    const btn = document.getElementById('backToTopBtn');
+    if (!btn) return;
+
+    let hideTimeout;
+    let lastScrollY = window.scrollY;
+
+    function showButton() {
+        btn.classList.add('visible');
+        clearTimeout(hideTimeout);
+        hideTimeout = setTimeout(() => {
+            btn.classList.remove('visible');
+        }, 5000);
+    }
+
+    function handleScroll() {
+        const scrollY = window.scrollY;
+        if (scrollY > 300) {
+            if (scrollY !== lastScrollY) showButton();
+        } else {
+            btn.classList.remove('visible');
+        }
+        lastScrollY = scrollY;
+    }
+
+    btn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    window.addEventListener('scroll', handleScroll);
+})();

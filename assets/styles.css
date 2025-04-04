@@ -1590,6 +1590,44 @@ footer a:hover {
     color: #004f3a;
 }
 
+#backToTopBtn {
+    position: fixed;
+    bottom: 30px;
+    right: 20px;
+    background-color: #006747;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-drag: none;
+}
+
+#backToTopBtn:hover {
+    background-color: #004f3a;
+    transform: scale(1.05);
+}
+
+#backToTopBtn.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
 ::selection {
     background-color: #aad2c1;
     color: #003a2c;
