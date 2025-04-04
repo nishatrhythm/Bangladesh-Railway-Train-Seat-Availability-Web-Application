@@ -47,6 +47,8 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
 
     try:
         response = requests.get(url, headers=headers, params=params)
+        if response.status_code >= 500:
+            raise Exception("We're facing a problem with the Bangladesh Railway website. Please try again in a few minutes.")
         response.raise_for_status()
         data = response.json()
         seat_layout = data.get("data", {}).get("seatLayout", [])
@@ -71,7 +73,6 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
             raise Exception("Token expired or unauthorized")
         if status_code == 422:
             return [], [], 0, 0, True
-        print(f"{Fore.RED}Failed to fetch seat layout: {e}")
         return [], [], 0, 0, False
 
 def fetch_train_details(config: Dict) -> List[Dict]:
@@ -80,11 +81,12 @@ def fetch_train_details(config: Dict) -> List[Dict]:
 
     try:
         response = requests.get(url, params=config, headers=headers)
+        if response.status_code >= 500:
+            raise Exception("We're facing a problem with the Bangladesh Railway website. Please try again in a few minutes.")
         response.raise_for_status()
         train_data = response.json().get("data", {}).get("trains", [])
         return train_data
     except requests.RequestException as e:
-        print(f"{Fore.RED}Failed to fetch train details: {e}")
         return []
 
 def main(config: Dict) -> Dict:
