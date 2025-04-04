@@ -124,6 +124,7 @@ Returns matching train list with trip IDs and trip route IDs.
 
 ### 🪑 Seat Layout API
 
+Sends the `JWT token` in the Authorization header:
 ```http
 GET /web/bookings/seat-layout
 Params:
