@@ -47,7 +47,10 @@ def fetch_token(phone_number, password):
         token = data["data"]["token"]
         return token
     except requests.RequestException as e:
-        raise Exception(f"Failed to fetch token: {e}")
+        error_str = str(e)
+        if "NameResolutionError" in error_str or "Failed to resolve" in error_str:
+            raise Exception("Could not connect to Bangladesh Railway server. Please try again after some time.")
+        raise Exception(f"Failed to fetch token: {error_str}")
 
 @app.after_request
 def add_cache_control_headers(response):
