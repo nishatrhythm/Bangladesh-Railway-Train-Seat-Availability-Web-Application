@@ -104,7 +104,11 @@ A full-stack, token-authenticated web application to **securely fetch and visual
 
 ### 🔐 Token Authentication (Shohoz API)
 
-- POST to: `https://railspaapi.shohoz.com/v1.0/app/auth/sign-in`
+```http
+POST https://railspaapi.shohoz.com/v1.0/web/auth/sign-in
+Params:
+  mobile_number, password
+```
 - Validates and retrieves JWT token.
 - Stored as `token` cookie (HttpOnly, Secure, Lax).
 - Expired token is detected automatically, and user is re-prompted to login.
@@ -112,11 +116,11 @@ A full-stack, token-authenticated web application to **securely fetch and visual
 ### 🚂 Train Search API
 
 ```http
-GET /app/bookings/search-trips-v2
+GET /web/bookings/search-trips-v2
 Params:
   from_city, to_city, date_of_journey, seat_class=S_CHAIR
 ```
-Returns matching train list with trip IDs.
+Returns matching train list with trip IDs and trip route IDs.
 
 ### 🪑 Seat Layout API
 
