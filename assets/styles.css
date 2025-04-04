@@ -1501,6 +1501,88 @@ footer a:hover {
     margin: 0;
 }
 
+.flyout-notification {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 320px;
+    max-width: 90%;
+    font-size: 16px;
+    font-weight: 700;
+    color: #333;
+    transition: top 0.4s ease-in-out, opacity 0.3s ease;
+    border-left: 4px solid transparent;
+    opacity: 0;
+}
+
+.flyout-notification.active {
+    top: 15px;
+    opacity: 1;
+}
+
+.flyout-notification.warning {
+    background: linear-gradient(135deg, #fce4e4 0%, #fff 100%);
+    color: #e74c3c;
+    border-left-color: #e74c3c;
+}
+
+.flyout-notification.success {
+    background: linear-gradient(135deg, #dff7e1 0%, #fff 100%);
+    color: #006747;
+    border-left-color: #006747;
+}
+
+.flyout-notification::before {
+    content: '';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.flyout-notification.warning::before {
+    content: '\f0c2';
+    color: #e74c3c;
+}
+
+.flyout-notification.success::before {
+    content: '\f1eb';
+    color: #006747;
+}
+
+.flyout-notification .flyout-close {
+    margin-left: 15px;
+    font-size: 16px;
+    cursor: pointer;
+    color: inherit;
+    transition: transform 0.3s ease, color 0.3s ease;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flyout-notification .flyout-close:hover {
+    transform: rotate(90deg) scale(1.1);
+    color: #c9302c;
+}
+
+.flyout-notification.success .flyout-close:hover {
+    color: #004f3a;
+}
+
 ::selection {
     background-color: #aad2c1;
     color: #003a2c;
@@ -1848,6 +1930,24 @@ footer a:hover {
         width: 32px;
         font-size: 13px;
     }
+
+    .flyout-notification {
+        min-width: 300px;
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    .flyout-notification .flyout-close {
+        font-size: 14px;
+        margin-left: 10px;
+        width: 22px;
+        height: 22px;
+    }
+
+    .flyout-notification::before {
+        font-size: 16px;
+        margin-right: 8px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -2097,5 +2197,23 @@ footer a:hover {
         height: 30px;
         width: 30px;
         font-size: 12px;
+    }
+
+    .flyout-notification {
+        min-width: 270px;
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .flyout-notification .flyout-close {
+        font-size: 12px;
+        margin-left: 8px;
+        width: 20px;
+        height: 20px;
+    }
+
+    .flyout-notification::before {
+        font-size: 14px;
+        margin-right: 6px;
     }
 }

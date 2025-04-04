@@ -622,3 +622,69 @@ function initMaterialCalendar() {
 document.addEventListener("DOMContentLoaded", () => {
     initMaterialCalendar();
 });
+
+const flyoutNotification = document.getElementById('flyoutNotification');
+const flyoutMessage = document.getElementById('flyoutMessage');
+const flyoutClose = document.getElementById('flyoutClose');
+
+let isOffline = !navigator.onLine;
+let slowConnectionTimeout = null;
+
+function showFlyout(message, type, autoHideDelay = 0) {
+    flyoutMessage.textContent = message;
+    flyoutNotification.classList.remove('warning', 'success');
+    flyoutNotification.classList.add(type, 'active');
+
+    if (autoHideDelay > 0) {
+        setTimeout(hideFlyout, autoHideDelay);
+    }
+}
+
+function hideFlyout() {
+    flyoutNotification.classList.remove('active');
+}
+
+function checkNetworkStatus() {
+    if (!navigator.onLine && !isOffline) {
+        isOffline = true;
+        showFlyout('No Internet Connection. Please check your network.', 'warning');
+    } else if (navigator.onLine && isOffline) {
+        isOffline = false;
+        showFlyout('Internet Connection Restored!', 'success', 5000);
+    }
+}
+
+function checkConnectionSpeed() {
+    if (isOffline) return;
+
+    const startTime = performance.now();
+    fetch('https://www.google.com', { method: 'HEAD', mode: 'no-cors' })
+        .then(() => {
+            const duration = performance.now() - startTime;
+            if (duration > 2000) { // Slow if > 2 seconds
+                clearTimeout(slowConnectionTimeout);
+                showFlyout('Slow Internet Connection Detected.', 'warning', 7000);
+                slowConnectionTimeout = setTimeout(checkConnectionSpeed, 10000);
+            } else {
+                slowConnectionTimeout = setTimeout(checkConnectionSpeed, 5000);
+            }
+        })
+        .catch(() => {
+            if (!isOffline) {
+                showFlyout('Network Error. Please check your connection.', 'warning', 7000);
+                slowConnectionTimeout = setTimeout(checkConnectionSpeed, 10000);
+            }
+        });
+}
+
+window.addEventListener('online', checkNetworkStatus);
+window.addEventListener('offline', checkNetworkStatus);
+
+flyoutClose.addEventListener('click', hideFlyout);
+
+document.addEventListener('DOMContentLoaded', () => {
+    checkNetworkStatus();
+    if (navigator.onLine) {
+        checkConnectionSpeed();
+    }
+});
