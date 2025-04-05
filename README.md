@@ -67,7 +67,7 @@ A full-stack, token-authenticated web application to **securely fetch and visual
 
 | Feature                                  | Status ✅ | Description |
 |------------------------------------------|-----------|-------------|
-| Token-based login (Shohoz API)           | ✅        | Secure token via POST, stored as HTTP-only cookie |
+| Token-based login (Shohoz Railway API)   | ✅        | Secure token via POST, stored as HTTP-only cookie |
 | Train list + seat availability API       | ✅        | Live API integration for real-time data |
 | Animated, Material UI Date Picker        | ✅        | Custom calendar with range check, BST logic |
 | Auto-suggestions with station filtering  | ✅        | Live dropdown using fuzzy match |
@@ -102,7 +102,7 @@ A full-stack, token-authenticated web application to **securely fetch and visual
 
 ## 🧠 Core Logic
 
-### 🔐 Token Authentication (Shohoz API)
+### 🔐 Token Authentication (Shohoz Railway API)
 
 ```http
 POST https://railspaapi.shohoz.com/v1.0/web/auth/sign-in
@@ -146,7 +146,7 @@ Returns seat layout grid with availability and ticket type.
 
 ```python
 def group_by_prefix(seats):
-    # Groups THA-1, THA-2, ... into a single group with count
+    # Groups KA-1, KA-2, ... into a single group with count
 ```
 
 ### Sorting Seats
@@ -270,7 +270,7 @@ python app.py
 
 ## ⚖️ Disclaimer on Data Usage
 
-This project **does not engage in illegal web scraping**. It interacts with publicly accessible endpoints provided by the Bangladesh Railway e-Ticketing platform (Shohoz API) that **do not require any reverse-engineering, bypassing of authentication, or scraping of HTML content**.
+This project **does not engage in illegal web scraping**. It interacts with publicly accessible endpoints provided by the Bangladesh Railway e-Ticketing platform (Shohoz Railway API) that **do not require any reverse-engineering, bypassing of authentication, or scraping of HTML content**.
 
 - All data is fetched through **open RESTful APIs** provided by the Shohoz platform.
 - The API endpoints used are **official**, public-facing, and **require user authentication** via a registered account.

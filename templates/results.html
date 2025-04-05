@@ -67,10 +67,10 @@
                     </span>
                 </p>
             </div>
-            {% set all_seats_422 = details['seat_data']|length > 0 and details['seat_data']|selectattr('is_422')|list|length == details['seat_data']|length %}
-            {% if all_seats_422 %}
+            {% if details['all_seats_422'] %}
             <div class="error-badge">
-                <i class="fas fa-exclamation-circle"></i> Please retry with a different account to get full info for this train.
+                <i class="fas fa-exclamation-circle"></i> 
+                {{ details['seat_data'][0]['error_message'] }}
             </div>
             {% else %}
             {% set has_no_seats = details['seat_data']|selectattr('is_422')|list|length > 0 or details['seat_data']|selectattr('available_count', 'equalto', 0)|selectattr('booking_process_count', 'equalto', 0)|list|length > 0 %}
@@ -79,7 +79,8 @@
                 {% for seat_type in details['seat_data'] %}
                 {% if seat_type['is_422'] %}
                 <div class="no-seats">
-                    <i class="fas fa-exclamation-circle"></i> Please retry with a different account to get full info for this train's {{ seat_type['type'] }} seats.
+                    <i class="fas fa-exclamation-circle"></i> 
+                    {{ seat_type['error_message'] }}
                 </div>
                 {% elif seat_type['available_count'] == 0 and seat_type['booking_process_count'] == 0 %}
                 <div class="no-seats">

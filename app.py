@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, make_response, abort, session, after_this_request
 from detailsSeatAvailability import main as detailsSeatAvailability, set_token
 from datetime import datetime, timedelta
-import requests, os, json, uuid, pytz, base64
+import requests, os, json, uuid, pytz, base64, re
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
@@ -185,22 +185,69 @@ def check_seats():
         result = detailsSeatAvailability(config)
 
         if "error" in result:
-            if result["error"] == "422 error occurred for all trains":
-                error = "An error occurred while fetching seat details. Please retry with a different account for the given criteria."
-                session['error'] = error
+            if result["error"] == "No trains found for the given criteria.":
+                session['error'] = result["error"]
                 return redirect(url_for('home'))
-            elif result["error"] == "No trains found for the given criteria.":
-                error = result["error"]
-                session['error'] = error
+            elif result["error"] == "422 error occurred for all trains":
+                details = result.get("details", {})
+                for train, train_details in details.items():
+                    for seat_type in train_details["seat_data"]:
+                        if seat_type["is_422"] and "error_info" in seat_type:
+                            error_info = seat_type["error_info"]
+                            message = error_info.get("message", "")
+                            error_key = error_info.get("errorKey", "")
+                            if "ticket purchase for this trip will be available" in message or "East Zone" in message or "West Zone" in message:
+                                time_match = re.search(r'(\d+:\d+\s*[APMapm]+)', message)
+                                retry_time = time_match.group(1) if time_match else "8:00 AM or 2:00 PM"
+                                session['error'] = f"Ticket purchasing for the selected criteria is not yet available, so seat info cannot be fetched at this moment. Please try again after {retry_time}. Alternatively, search for a different day."
+                                return redirect(url_for('home'))
+                            elif "Your purchase process is on-going" in message:
+                                time_match = re.search(r'(\d+)\s*minute[s]?\s*(\d+)\s*second[s]?', message, re.IGNORECASE)
+                                minutes = int(time_match.group(1))
+                                seconds = int(time_match.group(2))
+                                total_seconds = minutes * 60 + seconds
+                                retry_time = (datetime.now() + timedelta(seconds=total_seconds)).strftime('%I:%M:%S %p')
+                                session['error'] = f"Your purchase process for some tickets is ongoing for this account, so seat info cannot be fetched at this moment. Please try again after {retry_time} or retry with a different account."
+                                return redirect(url_for('home'))
+                            elif "Multiple order attempt detected" in message:
+                                time_match = re.search(r'(\d+)\s*minute[s]?\s*(\d+)\s*second[s]?', message, re.IGNORECASE)
+                                minutes = int(time_match.group(1))
+                                seconds = int(time_match.group(2))
+                                total_seconds = minutes * 60 + seconds
+                                retry_time = (datetime.now() + timedelta(seconds=total_seconds)).strftime('%I:%M:%S %p')
+                                session['error'] = f"You already have an active reservation process in this account, so seat info cannot be fetched at this moment. Please try again after {retry_time} or retry with a different account."
+                                return redirect(url_for('home'))
+                            elif error_key == "OrderLimitExceeded":
+                                session['error'] = "Please retry with a different account as you have reached the maximum order limit for the selected day, so seat info cannot be fetched at this moment. Alternatively, search for a different day."
+                                return redirect(url_for('home'))
+                session['error'] = "An error occurred while fetching seat details. Please retry with a different account for the given criteria."
                 return redirect(url_for('home'))
 
         for train, details in result.items():
             details['from_station'] = config['from_city']
             details['to_station'] = config['to_city']
 
+            train_has_422_error = False
+            train_error_message = None
             for seat_type in details['seat_data']:
+                if seat_type["is_422"] and "error_info" in seat_type:
+                    train_has_422_error = True
+                    error_info = seat_type["error_info"]
+                    message = error_info.get("message", "")
+                    error_key = error_info.get("errorKey", "")
+                    if error_key == "OrderLimitExceeded" and train_error_message is None:
+                        train_error_message = f"Please retry with a different account as you have reached the maximum order limit for this train on the selected day, so seat info cannot be fetched at this moment."
+                    elif train_error_message is None:
+                        train_error_message = "Please retry with a different account to get seat info for this train."
                 seat_type['grouped_seats'] = group_by_prefix(seat_type['available_seats'])
                 seat_type['grouped_booking_process'] = group_by_prefix(seat_type['booking_process_seats'])
+                if train_error_message:
+                    seat_type["error_message"] = train_error_message
+
+            if train_has_422_error and all(st["is_422"] for st in details['seat_data']):
+                details["all_seats_422"] = True
+            else:
+                details["all_seats_422"] = False
 
         result_id = str(uuid.uuid4())
         RESULT_CACHE[result_id] = result
@@ -241,21 +288,26 @@ def show_results():
     if raw_date:
         try:
             formatted_date = datetime.strptime(raw_date, '%d-%b-%Y').strftime('%d-%b-%Y')
+            journey_year = datetime.strptime(raw_date, '%d-%b-%Y').year
         except ValueError:
             formatted_date = ''
+            journey_year = datetime.now().year
     else:
         formatted_date = ''
+        journey_year = datetime.now().year
 
     seat_class = 'S_CHAIR'
 
     if result:
         def parse_departure_time(item):
-            journey_date = datetime.strptime(form_values['date'], '%d-%b-%Y').date()
             dep_time_str = item[1].get('departure_time', '')
             if not dep_time_str:
                 return datetime.max
-            dep_time = datetime.strptime(dep_time_str, '%d %b, %I:%M %p').time()
-            return datetime.combine(journey_date, dep_time)
+            full_date_str = f"{dep_time_str} {journey_year}"
+            try:
+                return datetime.strptime(full_date_str, '%d %b, %I:%M %p %Y')
+            except ValueError:
+                return datetime.max
 
         result = dict(sorted(result.items(), key=parse_departure_time))
 

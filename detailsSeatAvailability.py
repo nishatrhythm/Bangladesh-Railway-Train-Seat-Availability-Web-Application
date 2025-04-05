@@ -16,18 +16,14 @@ COACH_INDEX = {coach: idx for idx, coach in enumerate(BANGLA_COACH_ORDER)}
 TOKEN = None
 
 def set_token(token: str):
-    """Set the token dynamically."""
     global TOKEN
     TOKEN = token
 
 def sort_seat_number(seat: str) -> tuple:
-    """Custom sorting key for seat numbers like 'KA-1' or 'GHA-UP-14' in Bangla order, prioritizing number."""
     parts = seat.split('-')
     coach = parts[0]
-    
     coach_order = COACH_INDEX.get(coach, len(BANGLA_COACH_ORDER) + 1)
     coach_fallback = coach if coach not in COACH_INDEX else ""
-
     if len(parts) == 2:
         try:
             return (coach_order, coach_fallback, int(parts[1]), '')
@@ -40,7 +36,7 @@ def sort_seat_number(seat: str) -> tuple:
             return (coach_order, coach_fallback, 0, parts[1])
     return (len(BANGLA_COACH_ORDER) + 1, seat, 0, '')
 
-def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[str], int, int, bool]:
+def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[str], int, int, bool, dict]:
     url = f"{API_BASE_URL}/web/bookings/seat-layout"
     headers = {"Authorization": f"Bearer {TOKEN}"}
     params = {"trip_id": trip_id, "trip_route_id": trip_route_id}
@@ -71,15 +67,23 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
             available_seats_sorted = sorted(available_seats, key=sort_seat_number)
             booking_process_seats_sorted = sorted(booking_process_seats, key=sort_seat_number)
 
-            return (available_seats_sorted, booking_process_seats_sorted, len(available_seats), len(booking_process_seats), False)
+            return (available_seats_sorted, booking_process_seats_sorted, len(available_seats), len(booking_process_seats), False, {})
 
         except requests.RequestException as e:
             status_code = e.response.status_code if e.response is not None else None
             if status_code == 401:
                 raise Exception("Token expired or unauthorized")
             if status_code == 422:
-                return [], [], 0, 0, True
-            return [], [], 0, 0, False
+                error_data = e.response.json()
+                error_messages = error_data.get("error", {}).get("messages", [])
+                error_dict = {"is_422": True}
+                if isinstance(error_messages, list) and error_messages:
+                    error_dict["message"] = error_messages[0]
+                elif isinstance(error_messages, dict):
+                    error_dict["message"] = error_messages.get("message", "")
+                    error_dict["errorKey"] = error_messages.get("errorKey", "")
+                return [], [], 0, 0, True, error_dict
+            return [], [], 0, 0, False, {}
 
 def fetch_train_details(config: Dict) -> List[Dict]:
     url = f"{API_BASE_URL}/app/bookings/search-trips-v2"
@@ -112,18 +116,22 @@ def main(config: Dict) -> Dict:
     for train in train_data:
         seat_data = []
         for seat_type in train["seat_types"]:
-            available_seats, booking_process_seats, available_count, booking_process_count, is_422 = get_seat_layout(
+            available_seats, booking_process_seats, available_count, booking_process_count, is_422, error_info = get_seat_layout(
                 seat_type["trip_id"], seat_type["trip_route_id"]
             )
 
-            seat_data.append({
+            seat_info = {
                 "type": seat_type["type"],
                 "available_count": available_count,
                 "booking_process_count": booking_process_count,
                 "available_seats": available_seats,
                 "booking_process_seats": booking_process_seats,
                 "is_422": is_422
-            })
+            }
+            if is_422 and error_info:
+                seat_info["error_info"] = error_info
+
+            seat_data.append(seat_info)
 
             if not is_422:
                 all_failed_with_422 = False
@@ -135,6 +143,6 @@ def main(config: Dict) -> Dict:
         }
 
     if all_failed_with_422 and train_data:
-        return {"error": "422 error occurred for all trains"}
+        return {"error": "422 error occurred for all trains", "details": result}
 
     return result
