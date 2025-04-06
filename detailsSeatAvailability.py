@@ -37,7 +37,7 @@ def sort_seat_number(seat: str) -> tuple:
     return (len(BANGLA_COACH_ORDER) + 1, seat, 0, '')
 
 def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[str], int, int, bool, dict]:
-    url = f"{API_BASE_URL}/web/bookings/seat-layout"
+    url = f"{API_BASE_URL}/app/bookings/seat-layout"
     headers = {"Authorization": f"Bearer {TOKEN}"}
     params = {"trip_id": trip_id, "trip_route_id": trip_route_id}
     max_retries = 3
@@ -49,7 +49,7 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
             if response.status_code >= 500:
                 retry_count += 1
                 if retry_count == max_retries:
-                    raise Exception("We're facing a problem with the Bangladesh Railway website. Please try again in a few minutes.")
+                    raise Exception("We’re unable to connect to the Bangladesh Railway website right now. Please try again in a few minutes.")
                 continue
             response.raise_for_status()
             data = response.json()
@@ -97,7 +97,7 @@ def fetch_train_details(config: Dict) -> List[Dict]:
             if response.status_code >= 500:
                 retry_count += 1
                 if retry_count == max_retries:
-                    raise Exception("We're facing a problem with the Bangladesh Railway website. Please try again in a few minutes.")
+                    raise Exception("We’re unable to connect to the Bangladesh Railway website right now. Please try again in a few minutes.")
                 continue
             response.raise_for_status()
             train_data = response.json().get("data", {}).get("trains", [])
