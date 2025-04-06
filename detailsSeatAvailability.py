@@ -111,7 +111,7 @@ def main(config: Dict) -> Dict:
     all_failed_with_422 = True
 
     if not train_data:
-        return {"error": "No trains found for the given criteria."}
+        return {"error": "At this moment, no trains are found between your selected origin and destination stations on the selected day. Please retry with a different criteria."}
 
     for train in train_data:
         seat_data = []

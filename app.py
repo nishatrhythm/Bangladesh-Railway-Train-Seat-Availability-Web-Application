@@ -185,7 +185,7 @@ def check_seats():
         result = detailsSeatAvailability(config)
 
         if "error" in result:
-            if result["error"] == "No trains found for the given criteria.":
+            if result["error"] == "At this moment, no trains are found between your selected origin and destination stations on the selected day. Please retry with a different criteria.":
                 session['error'] = result["error"]
                 return redirect(url_for('home'))
             elif result["error"] == "422 error occurred for all trains":
@@ -218,7 +218,7 @@ def check_seats():
                                 session['error'] = f"You already have an active reservation process in this account, so seat info cannot be fetched at this moment. Please try again after {retry_time} or retry with a different account."
                                 return redirect(url_for('home'))
                             elif error_key == "OrderLimitExceeded":
-                                session['error'] = "Please retry with a different account as you have reached the maximum order limit for the selected day, so seat info cannot be fetched at this moment. Alternatively, search for a different day."
+                                session['error'] = "Please retry with a different account as you have reached the maximum order limit for all trains between your chosen stations on the selected day, so seat info cannot be fetched at this moment. Alternatively, search for a different day."
                                 return redirect(url_for('home'))
                 session['error'] = "An error occurred while fetching seat details. Please retry with a different account for the given criteria."
                 return redirect(url_for('home'))
