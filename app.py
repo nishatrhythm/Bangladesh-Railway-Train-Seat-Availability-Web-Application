@@ -184,9 +184,11 @@ def check_seats():
 
         result = detailsSeatAvailability(config)
 
+        bst_tz = pytz.timezone('Asia/Dhaka')
+
         if "error" in result:
-            if result["error"] == "At this moment, no trains are found between your selected origin and destination stations on the selected day. Please retry with a different criteria.":
-                session['error'] = result["error"]
+            if result["error"] == "No trains found for the given criteria.":
+                session['error'] = "At this moment, no trains are found between your selected origin and destination stations on the selected day. Please retry with a different criteria."
                 return redirect(url_for('home'))
             elif result["error"] == "422 error occurred for all trains":
                 details = result.get("details", {})
@@ -206,7 +208,7 @@ def check_seats():
                                 minutes = int(time_match.group(1))
                                 seconds = int(time_match.group(2))
                                 total_seconds = minutes * 60 + seconds
-                                retry_time = (datetime.now() + timedelta(seconds=total_seconds)).strftime('%I:%M:%S %p')
+                                retry_time = (datetime.now(bst_tz) + timedelta(seconds=total_seconds)).strftime('%I:%M:%S %p')
                                 session['error'] = f"Your purchase process for some tickets is ongoing for this account, so seat info cannot be fetched at this moment. Please try again after {retry_time} or retry with a different account."
                                 return redirect(url_for('home'))
                             elif "Multiple order attempt detected" in message:
@@ -214,7 +216,7 @@ def check_seats():
                                 minutes = int(time_match.group(1))
                                 seconds = int(time_match.group(2))
                                 total_seconds = minutes * 60 + seconds
-                                retry_time = (datetime.now() + timedelta(seconds=total_seconds)).strftime('%I:%M:%S %p')
+                                retry_time = (datetime.now(bst_tz) + timedelta(seconds=total_seconds)).strftime('%I:%M:%S %p')
                                 session['error'] = f"You already have an active reservation process in this account, so seat info cannot be fetched at this moment. Please try again after {retry_time} or retry with a different account."
                                 return redirect(url_for('home'))
                             elif error_key == "OrderLimitExceeded":
