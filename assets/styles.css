@@ -367,6 +367,7 @@ input[type="number"] {
     color: #006747;
     font-size: 18px;
     transition: color 0.3s;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .toggle-password:hover {
