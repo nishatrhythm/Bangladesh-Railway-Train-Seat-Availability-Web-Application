@@ -161,7 +161,7 @@ def check_seats():
 
             @after_this_request
             def set_cookie(response):
-                response.set_cookie('token', token, httponly=True, secure=True, samesite='Lax')
+                response.set_cookie('token', token, httponly=True, secure=True, samesite='Lax', max_age=86400)
                 return response
 
             set_token(token)
