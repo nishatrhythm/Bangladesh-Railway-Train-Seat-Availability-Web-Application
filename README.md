@@ -30,7 +30,8 @@ A full-stack, token-authenticated web application to **securely fetch and visual
 9. [Technologies Used](#-technologies-used)  
 10. [Setup Instructions](#-setup-instructions)  
 11. [Disclaimer on Data Usage](#️-disclaimer-on-data-usage)  
-12. [License](#-license)  
+12. [License](#-license)
+13. [Upcoming Features](#-upcoming-features)
 
 ---
 
@@ -284,3 +285,14 @@ This tool is intended purely for **personal, educational, and informational purp
 ## 📝 License
 
 Licensed under MIT. See `LICENSE` for more.
+
+---
+
+## 🚧 Upcoming Features
+
+| Feature | Description |
+|--------|-------------|
+| **🔌 Real-time User Tracking (Socket.IO)** | Display number of active users online using WebSocket communication. |
+| **📢 Live Data Fetch Notification** | Broadcast real-time messages during seat data fetching to improve user feedback and transparency. |
+| **🪑 Seat Matrix Integration** | Integrate segmented seat layout from [this terminal-based project](https://github.com/nishatrhythm/Bangladesh-Railway-Segmented-Seat-Matrix-and-Details-Seat-Availabilty/blob/main/seatMatrixWithSegmentation.py). Will be hosted at: [seat.onrender.com](https://seat.onrender.com). |
+| **🎨 Continuous UI/UX Improvements** | Enhanced design consistency, better transitions, and more intuitive mobile-first experience. |
