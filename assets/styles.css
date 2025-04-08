@@ -649,6 +649,7 @@ button:hover {
     -webkit-overflow-scrolling: touch;
     touch-action: auto;
     overscroll-behavior: contain;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .custom-dropdown div {
