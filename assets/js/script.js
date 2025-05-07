@@ -99,17 +99,28 @@ let suppressEvents = false;
 
 function showLoaderAndSubmit(event) {
     event.preventDefault();
-    const loader = document.getElementById('loader');
-    const progressContainer = document.getElementById('progressContainer');
     const form = event.target;
-
-    if (window.innerWidth <= 768 && progressContainer) {
-        progressContainer.style.display = 'block';
-        setTimeout(() => form.submit(), 10);
-    } else if (loader && form) {
-        loader.style.display = 'block';
-        setTimeout(() => form.submit(), 10);
+    const submitButton = form.querySelector('.btn-primary');
+    const searchIcon = submitButton.querySelector('.fas.fa-search');
+    
+    submitButton.disabled = true;
+    submitButton.style.opacity = '0.6';
+    submitButton.style.cursor = 'not-allowed';
+    
+    if (searchIcon) {
+        searchIcon.remove();
+        const loader = document.createElement('span');
+        loader.className = 'button-loader';
+        for (let i = 0; i < 8; i++) {
+            const segment = document.createElement('span');
+            segment.className = 'loader-segment';
+            segment.style.setProperty('--segment-index', i);
+            loader.appendChild(segment);
+        }
+        submitButton.prepend(loader);
     }
+    
+    setTimeout(() => form.submit(), 10);
 }
 
 function swapStations() {
@@ -394,6 +405,23 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     });
+
+    const submitButton = document.querySelector('#seatForm .btn-primary');
+    if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.style.opacity = '1';
+        submitButton.style.cursor = 'pointer';
+        const loader = submitButton.querySelector('.button-loader');
+        if (loader) {
+            loader.remove();
+            const existingIcon = submitButton.querySelector('.fas.fa-search');
+            if (!existingIcon) {
+                const searchIcon = document.createElement('i');
+                searchIcon.className = 'fas fa-search';
+                submitButton.prepend(searchIcon);
+            }
+        }
+    }
 });
 
 document.addEventListener("mousedown", (e) => {
