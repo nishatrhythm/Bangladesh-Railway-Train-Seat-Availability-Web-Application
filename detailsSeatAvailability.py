@@ -9,7 +9,7 @@ SEAT_AVAILABILITY = {'AVAILABLE': 1, 'IN_PROCESS': 2}
 
 BANGLA_COACH_ORDER = [
     "KA", "KHA", "GA", "GHA", "UMA", "CHA", "SCHA", "JA", "JHA", "NEO",
-    "TA", "THA", "DA", "DHA", "TO", "THO", "DOA", "DANT", "XTR1", "XTR2", "XTR3", "XTR4", "XTR5", "SLR"
+    "TA", "THA", "DA", "DHA", "TO", "THO", "DOA", "DANT", "XTR1", "XTR2", "XTR3", "XTR4", "XTR5", "SLR", "STD"
 ]
 COACH_INDEX = {coach: idx for idx, coach in enumerate(BANGLA_COACH_ORDER)}
 

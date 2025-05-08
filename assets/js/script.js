@@ -135,8 +135,11 @@ function swapStations() {
     setTimeout(() => suppressDropdown = false, 300);
 }
 
+let suppressCalendarOnError = false;
+
 function validateForm(event) {
     let isValid = true;
+    let firstEmptyField = null;
     const validations = [
         { id: 'phone_number', errorId: 'phone-error', message: 'Mobile Number is required' },
         { id: 'password', errorId: 'password-error', message: 'Password is required' },
@@ -153,10 +156,13 @@ function validateForm(event) {
             errorField.style.display = "block";
             errorField.classList.remove('hide');
             errorField.classList.add('show');
+            inputField.classList.add('error-input');
+            if (!firstEmptyField) firstEmptyField = inputField;
             isValid = false;
         } else if (inputField && errorField) {
             errorField.classList.remove('show');
             errorField.classList.add('hide');
+            inputField.classList.remove('error-input');
         }
     });
 
@@ -169,17 +175,36 @@ function validateForm(event) {
             phoneError.style.display = "block";
             phoneError.classList.remove('hide');
             phoneError.classList.add('show');
+            phoneField.classList.add('error-input');
+            if (!firstEmptyField) firstEmptyField = phoneField;
             isValid = false;
         } else if (phoneValue.length !== 11) {
             phoneError.textContent = "Mobile Number must be exactly 11 digits";
             phoneError.style.display = "block";
             phoneError.classList.remove('hide');
             phoneError.classList.add('show');
+            phoneField.classList.add('error-input');
+            if (!firstEmptyField) firstEmptyField = phoneField;
             isValid = false;
         } else {
             phoneError.classList.remove('show');
             phoneError.classList.add('hide');
+            phoneField.classList.remove('error-input');
         }
+    }
+
+    if (firstEmptyField) {
+        suppressCalendarOnError = firstEmptyField.id === 'date';
+        firstEmptyField.focus();
+        const rect = firstEmptyField.getBoundingClientRect();
+        if (rect.top < 0 || rect.bottom > window.innerHeight) {
+            setTimeout(() => {
+                firstEmptyField.scrollIntoView({ block: 'center' });
+            }, 150);
+        }
+        setTimeout(() => {
+            suppressCalendarOnError = false;
+        }, 300);
     }
 
     if (isValid) showLoaderAndSubmit(event);
@@ -261,11 +286,18 @@ function selectOption(inputId, dropdownId, value) {
                 suppressEvents = false;
             }, 200);
         }, 100);
+    } else if (inputId === 'origin' && destination && date) {
+        setTimeout(() => {
+            if (!destination.value.trim()) {
+                destination.focus();
+            } else if (!date.value.trim()) {
+                date.focus();
+                openMaterialCalendar();
+            }
+            suppressEvents = false;
+        }, 100);
     } else {
         setTimeout(() => {
-            if (inputId === 'origin' && destination && !destination.value.trim()) {
-                destination.focus();
-            }
             suppressEvents = false;
         }, 100);
     }
@@ -359,6 +391,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (errorField.classList.contains('show')) {
                         errorField.classList.remove('show');
                         errorField.classList.add('hide');
+                        inputField.classList.remove('error-input');
                     }
                 });
                 errorField.addEventListener('animationend', function (event) {
@@ -566,6 +599,7 @@ function generateMaterialCalendar() {
                 if (dateError && dateError.classList.contains('show')) {
                     dateError.classList.remove('show');
                     dateError.classList.add('hide');
+                    input.classList.remove('error-input');
                 }
             }
         });
@@ -615,8 +649,12 @@ function initMaterialCalendar() {
     }
     updateCalendarDates();
 
-    input.addEventListener("focus", openMaterialCalendar);
-    input.addEventListener("click", openMaterialCalendar);
+    input.addEventListener("focus", () => {
+        if (!suppressCalendarOnError) openMaterialCalendar();
+    });
+    input.addEventListener("click", () => {
+        if (!suppressCalendarOnError) openMaterialCalendar();
+    });
 
     const prevBtn = document.getElementById("prevMonthBtn");
     const nextBtn = document.getElementById("nextMonthBtn");

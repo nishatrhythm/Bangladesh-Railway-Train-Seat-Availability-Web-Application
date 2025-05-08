@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: 'Plus Jakarta Sans', sans-serif;
     background-color: #f7f9fc;
@@ -159,6 +163,20 @@ label {
     -webkit-tap-highlight-color: transparent;
     user-select: none;
     -webkit-user-select: none;
+}
+
+.input-with-icon input.error-input {
+    border-color: #c0392b;
+    box-shadow: 0 0 8px rgba(192, 57, 43, 0.3);
+}
+
+.input-with-icon input.error-input::placeholder {
+    color: #c0392b;
+}
+
+.input-with-icon input.error-input:focus {
+    border-color: #c0392b;
+    box-shadow: 0 0 8px rgba(192, 57, 43, 0.5);
 }
 
 .submit-btn button {
@@ -476,7 +494,7 @@ input[type="number"] {
 }
 
 .error-message {
-    color: #e74c3c;
+    color: #c0392b;
     font-size: 14px;
     font-weight: 600;
     margin-top: 5px;
