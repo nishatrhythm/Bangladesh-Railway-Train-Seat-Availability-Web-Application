@@ -36,7 +36,35 @@ def sort_seat_number(seat: str) -> tuple:
             return (coach_order, coach_fallback, 0, parts[1])
     return (len(BANGLA_COACH_ORDER) + 1, seat, 0, '')
 
-def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[str], int, int, bool, dict]:
+def analyze_seat_layout(data: Dict) -> Dict:
+    layout = data.get("data", {}).get("seatLayout", [])
+    if not layout:
+        return {}
+    seats = {1: [], 2: [], 3: [], 4: []}
+    for floor in layout:
+        for row in floor["layout"]:
+            for seat in row:
+                if seat["seat_number"] and seat["ticket_type"] in seats:
+                    seats[seat["ticket_type"]].append(seat["seat_number"])
+    ticket_types = {}
+    for t, label in [(1, "Released Tickets to Buy"),
+                     (3, "Released Tickets to Buy"),
+                     (2, "Soon-to-be-Released Tickets to Buy")]:
+        if seats[t]:
+            sorted_seats = sorted(seats[t], key=sort_seat_number)
+            ticket_types[t] = {
+                "label": label,
+                "seats": sorted_seats,
+                "count": len(sorted_seats)
+            }
+    
+    ticket_types["released_total"] = {
+        "count": len(seats[1]) + len(seats[3])
+    }
+
+    return ticket_types
+
+def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[str], int, int, bool, dict, dict]:
     url = f"{API_BASE_URL}/app/bookings/seat-layout"
     headers = {"Authorization": f"Bearer {TOKEN}"}
     params = {"trip_id": trip_id, "trip_route_id": trip_route_id}
@@ -49,7 +77,7 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
             if response.status_code >= 500:
                 retry_count += 1
                 if retry_count == max_retries:
-                    raise Exception("We’re unable to connect to the Bangladesh Railway website right now. Please try again in a few minutes.")
+                    raise Exception("We're unable to connect to the Bangladesh Railway website right now. Please try again in a few minutes.")
                 continue
             response.raise_for_status()
             data = response.json()
@@ -67,7 +95,9 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
             available_seats_sorted = sorted(available_seats, key=sort_seat_number)
             booking_process_seats_sorted = sorted(booking_process_seats, key=sort_seat_number)
 
-            return (available_seats_sorted, booking_process_seats_sorted, len(available_seats), len(booking_process_seats), False, {})
+            ticket_types = analyze_seat_layout(data)
+
+            return (available_seats_sorted, booking_process_seats_sorted, len(available_seats), len(booking_process_seats), False, {}, ticket_types)
 
         except requests.RequestException as e:
             status_code = e.response.status_code if e.response is not None else None
@@ -82,8 +112,8 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
                 elif isinstance(error_messages, dict):
                     error_dict["message"] = error_messages.get("message", "")
                     error_dict["errorKey"] = error_messages.get("errorKey", "")
-                return [], [], 0, 0, True, error_dict
-            return [], [], 0, 0, False, {}
+                return [], [], 0, 0, True, error_dict, {}
+            return [], [], 0, 0, False, {}, {}
 
 def fetch_train_details(config: Dict) -> List[Dict]:
     url = f"{API_BASE_URL}/app/bookings/search-trips-v2"
@@ -116,7 +146,7 @@ def main(config: Dict) -> Dict:
     for train in train_data:
         seat_data = []
         for seat_type in train["seat_types"]:
-            available_seats, booking_process_seats, available_count, booking_process_count, is_422, error_info = get_seat_layout(
+            available_seats, booking_process_seats, available_count, booking_process_count, is_422, error_info, ticket_types = get_seat_layout(
                 seat_type["trip_id"], seat_type["trip_route_id"]
             )
 
@@ -126,7 +156,8 @@ def main(config: Dict) -> Dict:
                 "booking_process_count": booking_process_count,
                 "available_seats": available_seats,
                 "booking_process_seats": booking_process_seats,
-                "is_422": is_422
+                "is_422": is_422,
+                "ticket_types": ticket_types
             }
             if is_422 and error_info:
                 seat_info["error_info"] = error_info

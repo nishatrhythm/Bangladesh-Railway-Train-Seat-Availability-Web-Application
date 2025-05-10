@@ -243,6 +243,10 @@ def check_seats():
                         train_error_message = "Please retry with a different account to get seat info for this train."
                 seat_type['grouped_seats'] = group_by_prefix(seat_type['available_seats'])
                 seat_type['grouped_booking_process'] = group_by_prefix(seat_type['booking_process_seats'])
+                seat_type['grouped_ticket_types'] = {
+                    t: group_by_prefix(info['seats']) for t, info in seat_type.get('ticket_types', {}).items()
+                    if 'seats' in info
+                }
                 if train_error_message:
                     seat_type["error_message"] = train_error_message
 

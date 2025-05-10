@@ -327,6 +327,31 @@ function start404Countdown() {
     }
 }
 
+function initializeCollapsibleSections() {
+    const toggles = document.querySelectorAll('.collapsible-toggle');
+
+    toggles.forEach(toggle => {
+        toggle.addEventListener('click', () => {
+            const targetId = toggle.getAttribute('data-target');
+            const content = document.getElementById(targetId);
+            const icon = toggle.querySelector('i');
+
+            if (!content.style.maxHeight || content.style.maxHeight === "0px") {
+                content.style.display = "block";
+                content.style.maxHeight = content.scrollHeight + "px";
+                content.classList.add('animated-fade-in');
+                toggle.innerHTML = `<i class="fas fa-chevron-up"></i> Collapse to hide Released Seats`;
+            } else {
+                content.style.maxHeight = "0px";
+                toggle.innerHTML = `<i class="fas fa-chevron-down"></i> Expand to view Released Seats`;
+                setTimeout(() => {
+                    content.style.display = "none";
+                }, 300);
+            }
+        });
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     Promise.all([loadStations(), loadBannerImage()]).then(() => {
         document.querySelectorAll('a[class^="btn-"], button[class^="btn-"]').forEach(el => {
@@ -403,6 +428,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         start404Countdown();
+        initializeCollapsibleSections();
 
         const configData = JSON.parse(document.getElementById('app-config').textContent);
         const forceBanner = configData.force_banner || 0;

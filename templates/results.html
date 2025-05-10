@@ -44,7 +44,7 @@
         </a>
 
         <p class="note result-disclaimer">
-            <span class="note-bold highlight">Note:</span> Seat availability info may change frequently as this website does not collect the seat info and dynamically updates it every time. To get the latest info, please make a search again.
+            <span class="note-bold highlight">Note:</span> Seat availability info may change frequently as this website does not dynamically fetch the seat data in real time. To get the latest info, please perform a new search. Also, the released seats info may not be fully accurate.
         </p>
 
         {% if result %}
@@ -74,35 +74,71 @@
             </div>
             {% else %}
             {% set has_no_seats = details['seat_data']|selectattr('is_422')|list|length > 0 or details['seat_data']|selectattr('available_count', 'equalto', 0)|selectattr('booking_process_count', 'equalto', 0)|list|length > 0 %}
-            {% if has_no_seats %}
-            <div class="seat-status-wrapper">
-                {% for seat_type in details['seat_data'] %}
-                {% if seat_type['is_422'] %}
-                <div class="no-seats">
-                    <i class="fas fa-exclamation-circle"></i> 
-                    {{ seat_type['error_message'] }}
+            {% for seat_type in details['seat_data'] %}
+            {% if not seat_type['is_422'] %}
+            <h3><i class="fas fa-chair"></i> Seat Type: {{ seat_type['type'] }}</h3>
+            {% set released_count = seat_type['ticket_types'].released_total.count if seat_type['ticket_types'].released_total else 0 %}
+            {% if seat_type['ticket_types'] and released_count > 0 %}
+            <div class="collapsible-section">
+                <button class="collapsible-toggle" data-target="ticket-types-{{ train }}-{{ seat_type['type'] | replace(' ', '-') }}">
+                    <i class="fas fa-chevron-down"></i> Expand to view Released Seats
+                </button>
+                <div class="collapsible-content" id="ticket-types-{{ train }}-{{ seat_type['type'] | replace(' ', '-') }}" style="display: none;">
+                    <div class="badge-wrapper">
+                        {% if seat_type['ticket_types'].released_total %}
+                        {% set count = seat_type['ticket_types'].released_total.count %}
+                        <h3>
+                            <i class="fas fa-ticket-alt"></i> {{ count }} Seat{{ '' if count == 1 else 's' }} Released for Purchase
+                        </h3>
+                        {% endif %}
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ticket Category</th>
+                                <th>Coach (Ticket Count)</th>
+                                <th>Seat Numbers</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for type_id, type_info in seat_type['ticket_types'].items() if type_id != 'released_total' %}
+                            {% for coach, group in seat_type['grouped_ticket_types'][type_id].items() %}
+                            <tr>
+                                <td>{{ type_info['label'] }}</td>
+                                <td>{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] == 1 else 'tickets' }})</td>
+                                <td>{{ ', '.join(group['seats']) }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                {% elif seat_type['available_count'] == 0 and seat_type['booking_process_count'] == 0 %}
-                <div class="no-seats">
-                    <i class="fas fa-exclamation-circle"></i> No seat details available for seat type: {{ seat_type['type'] }}
-                </div>
-                {% endif %}
-                {% endfor %}
             </div>
             {% endif %}
-            {% for seat_type in details['seat_data'] %}
-            {% if not seat_type['is_422'] and (seat_type['available_count'] > 0 or seat_type['booking_process_count'] > 0) %}
-            <h3><i class="fas fa-chair"></i> Seat Type: {{ seat_type['type'] }}</h3>
+
+            {% if seat_type['available_count'] == 0 and seat_type['booking_process_count'] == 0 %}
+            {% set released_count = seat_type['ticket_types'].released_total.count if seat_type['ticket_types'].released_total else 0 %}
+            {% if released_count > 0 %}
+            <div class="no-seats">
+                <i class="fas fa-exclamation-circle"></i> All seats have been booked for seat type {{ seat_type['type'] }}
+            </div>
+            {% else %}
+            <div class="no-seats">
+                <i class="fas fa-exclamation-circle"></i> No seats were released for seat type {{ seat_type['type'] }}
+            </div>
+            {% endif %}
+        {% else %}
             <p>
                 <span class="status status-available">
                     <i class="fas fa-check-circle"></i> Available: {{ seat_type['available_count'] }}
-                    {{ 'ticket' if seat_type['available_count'] <= 1 else 'tickets' }}
+                    {{ 'ticket' if seat_type['available_count'] == 1 else 'tickets' }}
                 </span>
                 <span class="status status-in-process">
                     <i class="fas fa-spinner"></i> In Booking: {{ seat_type['booking_process_count'] }}
-                    {{ 'ticket' if seat_type['booking_process_count'] <= 1 else 'tickets' }}
+                    {{ 'ticket' if seat_type['booking_process_count'] == 1 else 'tickets' }}
                 </span>
             </p>
+
             <table>
                 <thead>
                     <tr>
@@ -119,7 +155,7 @@
                                 <i class="fas fa-check-circle"></i> Available
                             </span>
                         </td>
-                        <td>{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] <= 1 else 'tickets' }})</td>
+                        <td>{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] == 1 else 'tickets' }})</td>
                         <td>{{ ', '.join(group['seats']) }}</td>
                     </tr>
                     {% endfor %}
@@ -130,12 +166,13 @@
                                 <i class="fas fa-spinner"></i> In Booking
                             </span>
                         </td>
-                        <td>{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] <= 1 else 'tickets' }})</td>
+                        <td>{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] == 1 else 'tickets' }})</td>
                         <td>{{ ', '.join(group['seats']) }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            {% endif %}
             {% endif %}
             {% endfor %}
             {% endif %}
