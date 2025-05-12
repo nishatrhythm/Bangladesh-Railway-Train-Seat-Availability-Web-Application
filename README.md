@@ -48,9 +48,9 @@ A full-stack, token-authenticated web application to **securely fetch and visual
 ├── assets/
 │   ├── images/
 │   │   └── sample_banner.png     # Default fallback banner image
-│   └── js/
-│       └── script.js             # Frontend JS for validation, UX, calendar, dropdowns
-├── styles.css                    # Fully responsive, modern UI with animations
+│   ├── js/
+│   │   └── script.js             # Frontend JS for validation, UX, calendar, dropdowns
+│   └── styles.css                # Fully responsive, modern UI with animations
 ├── images/
 │   ├── link_share_image.png      # Social sharing preview image
 │   ├── Screenshot_1.png          # Screenshot for documentation
