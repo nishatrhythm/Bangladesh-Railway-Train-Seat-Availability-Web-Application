@@ -519,11 +519,15 @@ input[type="number"] {
     align-items: center;
     justify-content: center;
     color: #e74c3c;
-    text-align: center;
-    margin: 20px 0;
+    background-color: #fdecea;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 15px;
+    margin-bottom: 15px;
     font-size: 16px;
+    text-align: center;
     font-weight: 600;
-    animation: fadeIn 0.6s ease-in-out;
+    animation: shake 0.6s ease-in-out;
 }
 
 .error-icon {
@@ -533,8 +537,21 @@ input[type="number"] {
     vertical-align: middle;
 }
 
-.animated-fade-in {
-    animation: fadeIn 1s ease-in-out;
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25%,
+    75% {
+        transform: translateX(-5px);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
 }
 
 @keyframes fadeIn {
@@ -697,7 +714,6 @@ button:hover {
 
 .custom-dropdown div:hover {
     background-color: #f1f8f3;
-    transform: translateX(5px);
 }
 
 .styled-dropdown {
@@ -1159,35 +1175,6 @@ tr:hover {
 
 .btn-primary i {
     margin-right: 5px;
-}
-
-.error {
-    color: #e74c3c;
-    background-color: #fdecea;
-    padding: 15px;
-    border-radius: 5px;
-    margin-top: 15px;
-    margin-bottom: 15px;
-    font-size: 16px;
-    text-align: center;
-    animation: shake 0.6s ease-in-out;
-}
-
-@keyframes shake {
-
-    0%,
-    100% {
-        transform: translateX(0);
-    }
-
-    25%,
-    75% {
-        transform: translateX(-5px);
-    }
-
-    50% {
-        transform: translateX(5px);
-    }
 }
 
 .note {
