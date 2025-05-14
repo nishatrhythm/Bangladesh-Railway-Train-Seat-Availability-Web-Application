@@ -518,6 +518,7 @@ input[type="number"] {
     display: flex;
     align-items: center;
     justify-content: center;
+    line-height: 1.6;
     color: #e74c3c;
     background-color: #fdecea;
     padding: 15px;
@@ -533,7 +534,7 @@ input[type="number"] {
 .error-icon {
     color: #e74c3c;
     font-size: 18px;
-    margin-right: 8px;
+    margin-right: 4px;
     vertical-align: middle;
 }
 
