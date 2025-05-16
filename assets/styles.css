@@ -31,6 +31,7 @@ h1 {
     font-family: 'Plus Jakarta Sans', sans-serif;
     color: rgb(0, 103, 71);
     font-weight: 800;
+    line-height: 1.5;
     margin: 30px 0px 40px;
     animation: fadeInTranslate 0.8s ease-out;
 }
@@ -518,7 +519,7 @@ input[type="number"] {
     display: flex;
     align-items: center;
     justify-content: center;
-    line-height: 1.6;
+    line-height: 1.5;
     color: #e74c3c;
     background-color: #fdecea;
     padding: 15px;
@@ -534,7 +535,7 @@ input[type="number"] {
 .error-icon {
     color: #e74c3c;
     font-size: 18px;
-    margin-right: 4px;
+    margin-right: 6px;
     vertical-align: middle;
 }
 
