@@ -1246,6 +1246,46 @@ tr:hover {
     text-decoration: underline;
 }
 
+.footer-links {
+    width: 100%;
+    margin-top: 30px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: #006747;
+    letter-spacing: 0.01em;
+    user-select: none;
+    animation: fadeInUp 1.4s ease-in-out;
+    background: rgba(0, 103, 71, 0.08);
+    border-radius: 8px;
+    padding: 14px 0 12px 0;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.03);
+}
+
+.footer-links a {
+    color: rgb(0, 103, 71);
+    text-decoration: none;
+    font-weight: 700;
+    margin: 0 4px;
+    transition: color 0.2s, text-decoration 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-drag: none;
+}
+
+.footer-links a:hover {
+    color: rgb(0, 85, 58);
+    text-decoration: underline;
+}
+
+.footer-links .dot {
+    margin: 0 8px;
+    color: #006747;
+    font-weight: bold;
+    font-size: 15px;
+    pointer-events: none;
+    user-select: none;
+}
+
 .main-content {
     display: none;
 }
@@ -1994,6 +2034,15 @@ footer a:hover {
         margin-top: 30px;
     }
 
+    .footer-links {
+        padding: 12px 0 10px 0;
+    }
+
+    .footer-links a,
+    .footer-links .dot {
+        margin: 0 3px;
+    }
+
     .note {
         font-size: 12px;
     }
@@ -2286,6 +2335,22 @@ footer a:hover {
 
     .new-footer {
         font-size: 12px;
+    }
+
+    .footer-links {
+        font-size: 12px;
+        padding: 10px 0 8px 0;
+        word-break: break-word;
+    }
+
+    .footer-links a,
+    .footer-links .dot {
+        display: inline-block;
+        margin: 0 2px;
+    }
+
+    .footer-links .dot {
+        font-size: 13px;
     }
 
     table th:nth-child(1),
