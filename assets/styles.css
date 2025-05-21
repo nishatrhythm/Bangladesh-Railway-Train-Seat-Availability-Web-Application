@@ -359,7 +359,6 @@ label {
 
 input[type="text"],
 input[type="number"],
-input[type="password"],
 input[type="email"],
 select {
     cursor: text;
@@ -375,22 +374,6 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"] {
     -moz-appearance: textfield;
     appearance: none;
-}
-
-.toggle-password {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: #006747;
-    font-size: 18px;
-    transition: color 0.3s;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.toggle-password:hover {
-    color: rgb(0, 85, 58);
 }
 
 .inline-form {
@@ -568,7 +551,6 @@ input[type="number"] {
 
 input[type="text"],
 input[type="number"],
-input[type="password"],
 input[type="date"],
 select {
     font-family: 'Plus Jakarta Sans', sans-serif;
@@ -585,7 +567,6 @@ select {
 
 input[type="text"]:focus,
 input[type="number"]:focus,
-input[type="password"]:focus,
 input[type="date"]:focus,
 select:focus {
     border-color: rgb(0, 103, 71);
@@ -599,7 +580,6 @@ select:focus {
 
 input[type="text"]:not(#date),
 input[type="number"],
-input[type="password"],
 input[type="email"],
 select {
     cursor: text;
@@ -623,45 +603,11 @@ button:hover {
     transform: scale(1.01);
 }
 
-.btn-clear {
-    display: inline-block;
-    margin-bottom: 30px;
-    margin-top: 10px;
-    background-color: #e74c3c;
-    color: white;
-    border-radius: 5px;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    animation: fadeIn 0.6s ease-in-out;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -webkit-user-drag: none;
-}
-
-.btn-clear:hover {
-    background-color: #c9302c;
-    transform: scale(1.01);
-}
-
-.btn-clear i {
-    margin-right: 5px;
-}
-
-.buy-button-wrapper {
-    margin-top: 10px;
-    text-align: center;
-}
-
 .btn-buy {
     display: inline-block;
-    background-color: rgb(0, 103, 71);
+    margin-left: 10px;
+    margin-bottom: 10px;
+    background-color: #008080;
     color: white;
     border-radius: 5px;
     text-decoration: none;
@@ -681,7 +627,7 @@ button:hover {
 }
 
 .btn-buy:hover {
-    background-color: rgb(0, 85, 58);
+    background-color: #005757;
     transform: scale(1.01);
 }
 
@@ -1994,7 +1940,6 @@ footer a:hover {
         padding: 8px 16px;
     }
 
-    .btn-clear,
     .btn-buy,
     .btn-primary {
         font-size: 12px;
@@ -2223,10 +2168,6 @@ footer a:hover {
 
     h3 {
         font-size: 14px;
-    }
-
-    .btn-primary {
-        padding: 10px 12px;
     }
 
     .train-card {

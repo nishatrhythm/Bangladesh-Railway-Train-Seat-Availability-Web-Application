@@ -37,8 +37,13 @@
             <i class="fas fa-arrow-left"></i> Back to Search
         </a>
 
+        <a href="https://eticket.railway.gov.bd/booking/train/search?fromcity={{ origin }}&tocity={{ destination }}&doj={{ date }}&class={{ seat_class }}"
+            target="_blank" class="btn-buy" draggable="false">
+            <i class="fas fa-external-link-alt"></i> Buy Tickets
+        </a>
+
         <p class="note result-disclaimer">
-            <span class="note-bold highlight">Note:</span> Seat availability info may change frequently as this website does not dynamically fetch the seat data in real time. To get the latest info, please perform a new search. Also, the released seats info may not be fully accurate. For optimal performance and experience, it is recommended to use a Chromium-based browser.
+            <span class="note-bold highlight">Note:</span> Seat availability info may change frequently as this website does not dynamically fetch the seat data in real time. To get the latest info, please perform a new search. Also, the released seats info may not be fully accurate.
         </p>
 
         {% if result %}
@@ -72,13 +77,6 @@
             {% if not seat_type['is_422'] %}
             <h3><i class="fas fa-chair"></i> Seat Type: {{ seat_type['type'] }}</h3>
             {% set released_count = seat_type['ticket_types'].released_total.count if seat_type['ticket_types'].released_total else 0 %}
-            {% if released_count > 0 %}
-            <div class="buy-button-wrapper">
-                <a href="https://eticket.railway.gov.bd/booking/train/search?fromcity={{ details['from_station']|urlencode }}&tocity={{ details['to_station']|urlencode }}&doj={{ date }}&class={{ seat_type['type']|urlencode }}#:~:text={{ train }}" target="_blank" class="btn-buy" draggable="false">
-                <i class="fas fa-external-link-alt"></i> Buy Tickets
-                </a>
-            </div>
-            {% endif %}
             {% if seat_type['ticket_types'] and released_count > 0 %}
             <div class="collapsible-section">
                 <button class="collapsible-toggle" data-target="ticket-types-{{ train }}-{{ seat_type['type'] | replace(' ', '-') }}">
