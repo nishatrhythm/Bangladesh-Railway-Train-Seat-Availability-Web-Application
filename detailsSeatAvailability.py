@@ -1,6 +1,10 @@
 from typing import Dict, List, Tuple
-import requests
+import requests, os
 from colorama import Fore, init
+from datetime import datetime, timedelta
+from dotenv import load_dotenv
+
+load_dotenv('/etc/secrets/.env')
 
 init(autoreset=True)
 
@@ -14,10 +18,57 @@ BANGLA_COACH_ORDER = [
 COACH_INDEX = {coach: idx for idx, coach in enumerate(BANGLA_COACH_ORDER)}
 
 TOKEN = None
+TOKEN_TIMESTAMP = None
 
 def set_token(token: str):
-    global TOKEN
+    global TOKEN, TOKEN_TIMESTAMP
     TOKEN = token
+    TOKEN_TIMESTAMP = datetime.utcnow()
+
+def check_token_validity() -> bool:
+    if not TOKEN or not TOKEN_TIMESTAMP:
+        return False
+    if (datetime.utcnow() - TOKEN_TIMESTAMP).total_seconds() > 24 * 3600:
+        return False
+    url = f"{API_BASE_URL}/web/auth/profile"
+    headers = {"Authorization": f"Bearer {TOKEN}"}
+    try:
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            return True
+        elif response.status_code == 401:
+            return False
+    except requests.RequestException:
+        return False
+    return False
+
+def fetch_token() -> str:
+    mobile_number = os.getenv("FIXED_MOBILE_NUMBER")
+    password = os.getenv("FIXED_PASSWORD")
+    if not mobile_number or not password:
+        raise Exception("Fixed mobile number or password not configured.")
+    url = f"{API_BASE_URL}/app/auth/sign-in"
+    payload = {"mobile_number": mobile_number, "password": password}
+    max_retries = 3
+    retry_count = 0
+    while retry_count < max_retries:
+        try:
+            response = requests.post(url, json=payload)
+            if response.status_code == 422:
+                raise Exception("Mobile Number or Password is incorrect.")
+            elif response.status_code >= 500:
+                retry_count += 1
+                if retry_count == max_retries:
+                    raise Exception("We're facing a problem with the Bangladesh Railway website. Please try again in a few minutes.")
+                continue
+            data = response.json()
+            token = data["data"]["token"]
+            return token
+        except requests.RequestException as e:
+            error_str = str(e)
+            if "NameResolutionError" in error_str or "Failed to resolve" in error_str:
+                raise Exception("We couldn't reach the Bangladesh Railway website. Please try again in a few minutes.")
+            raise Exception(f"Failed to fetch token: {error_str}")
 
 def sort_seat_number(seat: str) -> tuple:
     parts = seat.split('-')
@@ -66,6 +117,11 @@ def analyze_seat_layout(data: Dict) -> Dict:
     return ticket_types
 
 def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[str], int, int, bool, dict, dict]:
+    global TOKEN
+    if not check_token_validity():
+        TOKEN = fetch_token()
+        set_token(TOKEN)
+    
     url = f"{API_BASE_URL}/app/bookings/seat-layout"
     headers = {"Authorization": f"Bearer {TOKEN}"}
     params = {"trip_id": trip_id, "trip_route_id": trip_route_id}
@@ -117,6 +173,11 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
             return [], [], 0, 0, False, {}, {}
 
 def fetch_train_details(config: Dict) -> List[Dict]:
+    global TOKEN
+    if not check_token_validity():
+        TOKEN = fetch_token()
+        set_token(TOKEN)
+    
     url = f"{API_BASE_URL}/app/bookings/search-trips-v2"
     headers = {"Authorization": f"Bearer {TOKEN}"}
     max_retries = 3

@@ -1,4 +1,7 @@
 Flask==3.1.0
 requests==2.32.3
 colorama==0.4.6
-pytz==2025.2
+pytz==2024.2
+python-dotenv==1.0.1
+gunicorn==23.0.0
+Jinja2==3.1.4

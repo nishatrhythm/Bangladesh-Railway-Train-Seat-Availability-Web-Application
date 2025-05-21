@@ -59,13 +59,13 @@
     <div class="container main-content">
         <h1><i class="fas fa-subway"></i> BR Train Seat Availability</h1>
 
-        {% if token %}
+        <!-- {% if token %}
         <form action="/clear_token" method="POST" class="inline-form">
             <button type="submit" class="btn-clear" draggable="false">
                 <i class="fas fa-trash-alt"></i> Delete Auth Token
             </button>
         </form>
-        {% endif %}
+        {% endif %} -->
 
         {% if error %}
         <div class="error shake">
@@ -73,8 +73,9 @@
         </div>
         {% endif %}
 
-        <form action="/check_seats" method="POST" id="seatForm">
-            {% if not token %}
+        <!-- <form action="/check_seats" method="POST" id="seatForm"> -->
+        <form method="POST" action="{{ url_for('check_seats') }}" id="seatForm">
+            <!-- {% if not token %}
             <div class="form-row">
                 <div class="form-group">
                     <label for="phone_number">Mobile Number</label>
@@ -97,7 +98,7 @@
                     <span class="error-message" id="password-error">Password is required</span>
                 </div>
             </div>
-            {% endif %}
+            {% endif %} -->
 
             <div class="form-row">
                 <div class="form-group">
@@ -162,7 +163,7 @@
             </div>
         </form>
 
-        {% if show_disclaimer %}
+        <!-- {% if show_disclaimer %}
         <p class="note">
             <span class="note-bold highlight">Disclaimer:</span> Your mobile number and password registered with the
             Bangladesh Railway website are used solely to generate an authorization token through an API request to the
@@ -172,7 +173,7 @@
             convenience, the authorization token is saved in your browser's cookies, allowing us to reuse it without
             requiring you to re-enter your credentials.
         </p>
-        {% endif %}
+        {% endif %} -->
 
         <footer class="new-footer">
             <p>This project is open source. Check it out on <a

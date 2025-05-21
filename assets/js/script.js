@@ -141,8 +141,8 @@ function validateForm(event) {
     let isValid = true;
     let firstEmptyField = null;
     const validations = [
-        { id: 'phone_number', errorId: 'phone-error', message: 'Mobile Number is required' },
-        { id: 'password', errorId: 'password-error', message: 'Password is required' },
+        // { id: 'phone_number', errorId: 'phone-error', message: 'Mobile Number is required' },
+        // { id: 'password', errorId: 'password-error', message: 'Password is required' },
         { id: 'origin', errorId: 'origin-error', message: 'Origin Station is required' },
         { id: 'destination', errorId: 'destination-error', message: 'Destination Station is required' },
         { id: 'date', errorId: 'date-error', message: 'Date of Journey is required' }
@@ -166,32 +166,32 @@ function validateForm(event) {
         }
     });
 
-    const phoneField = document.getElementById('phone_number');
-    if (phoneField) {
-        const phoneValue = phoneField.value.trim();
-        const phoneError = document.getElementById('phone-error');
-        if (phoneValue === "") {
-            phoneError.textContent = "Mobile Number is required";
-            phoneError.style.display = "block";
-            phoneError.classList.remove('hide');
-            phoneError.classList.add('show');
-            phoneField.classList.add('error-input');
-            if (!firstEmptyField) firstEmptyField = phoneField;
-            isValid = false;
-        } else if (phoneValue.length !== 11) {
-            phoneError.textContent = "Mobile Number must be exactly 11 digits";
-            phoneError.style.display = "block";
-            phoneError.classList.remove('hide');
-            phoneError.classList.add('show');
-            phoneField.classList.add('error-input');
-            if (!firstEmptyField) firstEmptyField = phoneField;
-            isValid = false;
-        } else {
-            phoneError.classList.remove('show');
-            phoneError.classList.add('hide');
-            phoneField.classList.remove('error-input');
-        }
-    }
+    // const phoneField = document.getElementById('phone_number');
+    // if (phoneField) {
+    //     const phoneValue = phoneField.value.trim();
+    //     const phoneError = document.getElementById('phone-error');
+    //     if (phoneValue === "") {
+    //         phoneError.textContent = "Mobile Number is required";
+    //         phoneError.style.display = "block";
+    //         phoneError.classList.remove('hide');
+    //         phoneError.classList.add('show');
+    //         phoneField.classList.add('error-input');
+    //         if (!firstEmptyField) firstEmptyField = phoneField;
+    //         isValid = false;
+    //     } else if (phoneValue.length !== 11) {
+    //         phoneError.textContent = "Mobile Number must be exactly 11 digits";
+    //         phoneError.style.display = "block";
+    //         phoneError.classList.remove('hide');
+    //         phoneError.classList.add('show');
+    //         phoneField.classList.add('error-input');
+    //         if (!firstEmptyField) firstEmptyField = phoneField;
+    //         isValid = false;
+    //     } else {
+    //         phoneError.classList.remove('show');
+    //         phoneError.classList.add('hide');
+    //         phoneField.classList.remove('error-input');
+    //     }
+    // }
 
     if (firstEmptyField) {
         suppressCalendarOnError = firstEmptyField.id === 'date';
@@ -372,10 +372,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const seatForm = document.getElementById("seatForm");
         if (seatForm) seatForm.addEventListener("submit", validateForm);
 
-        const phoneNumber = document.getElementById("phone_number");
-        if (phoneNumber) phoneNumber.addEventListener("input", function () {
-            validateBangladeshPhoneNumber(this);
-        });
+        // const phoneNumber = document.getElementById("phone_number");
+        // if (phoneNumber) phoneNumber.addEventListener("input", function () {
+        //     validateBangladeshPhoneNumber(this);
+        // });
 
         const origin = document.getElementById("origin");
         if (origin) {
@@ -401,8 +401,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const fields = [
-            { id: 'phone_number', errorId: 'phone-error' },
-            { id: 'password', errorId: 'password-error' },
+            // { id: 'phone_number', errorId: 'phone-error' },
+            // { id: 'password', errorId: 'password-error' },
             { id: 'origin', errorId: 'origin-error' },
             { id: 'destination', errorId: 'destination-error' },
             { id: 'date', errorId: 'date-error' }

@@ -7,7 +7,6 @@ app = Flask(__name__)
 app.secret_key = "your_secret_key"
 
 RESULT_CACHE = {}
-TOKEN_API_URL = "https://railspaapi.shohoz.com/v1.0/app/auth/sign-in"
 STATION_NAME_MAPPING = {"Coxs Bazar": "Cox's Bazar"}
 
 with open('config.json', 'r', encoding='utf-8') as config_file:
@@ -36,34 +35,8 @@ def filter_cloudflare_requests():
     if request.path.startswith('/cdn-cgi/'):
         return '', 404
 
-def fetch_token(phone_number, password):
-    payload = {"mobile_number": phone_number, "password": password}
-    max_retries = 3
-    retry_count = 0
-
-    while retry_count < max_retries:
-        try:
-            response = requests.post(TOKEN_API_URL, json=payload)
-            if response.status_code == 422:
-                raise Exception("Mobile Number or Password is incorrect.")
-            elif response.status_code >= 500:
-                retry_count += 1
-                if retry_count == max_retries:
-                    raise Exception("We're facing a problem with the Bangladesh Railway website. Please try again in a few minutes.")
-                continue
-            data = response.json()
-            token = data["data"]["token"]
-            return token
-        except requests.RequestException as e:
-            error_str = str(e)
-            if "NameResolutionError" in error_str or "Failed to resolve" in error_str:
-                raise Exception("We couldn't reach the Bangladesh Railway website. Please try again in a few minutes.")
-            raise Exception(f"Failed to fetch token: {error_str}")
-
 @app.after_request
 def add_cache_control_headers(response):
-    if 'set-cookie' in response.headers:
-        return response
     response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '0'
@@ -89,9 +62,6 @@ def home():
         except ValueError:
             form_values['date'] = ''
 
-    token = request.cookies.get('token')
-    show_disclaimer = token is None
-
     bst_tz = pytz.timezone('Asia/Dhaka')
     bst_now = datetime.now(bst_tz)
     min_date = bst_now.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -104,10 +74,8 @@ def home():
 
     return render_template(
         'index.html',
-        token=token,
         error=error,
         form_values=form_values,
-        show_disclaimer=show_disclaimer,
         min_date=min_date.strftime('%Y-%m-%d'),
         max_date=max_date.strftime('%Y-%m-%d'),
         bst_midnight_utc=bst_midnight_utc,
@@ -130,7 +98,6 @@ def check_seats():
         abort(404)
     try:
         form_values = {
-            'phone_number': request.form.get('phone_number', ''),
             'origin': request.form.get('origin', ''),
             'destination': request.form.get('destination', ''),
             'date': request.form.get('date', '')
@@ -140,33 +107,6 @@ def check_seats():
         form_values['destination'] = STATION_NAME_MAPPING.get(form_values['destination'], form_values['destination'])
 
         session['form_values'] = form_values
-
-        token = request.cookies.get('token')
-
-        if not token:
-            phone_number = request.form.get('phone_number')
-            password = request.form.get('password')
-
-            if not phone_number or not password:
-                error = "Session expired. Please log in again."
-                session['error'] = error
-                return redirect(url_for('home'))
-
-            try:
-                token = fetch_token(phone_number, password)
-            except Exception as e:
-                error = str(e)
-                session['error'] = error
-                return redirect(url_for('home'))
-
-            @after_this_request
-            def set_cookie(response):
-                response.set_cookie('token', token, httponly=True, secure=True, samesite='Lax', max_age=86400)
-                return response
-
-            set_token(token)
-        else:
-            set_token(token)
 
         raw_date = request.form['date']
         try:
@@ -263,15 +203,7 @@ def check_seats():
 
     except Exception as e:
         error_msg = str(e)
-        if "Token expired" in error_msg or "unauthorized" in error_msg.lower():
-            @after_this_request
-            def clear_cookie(response):
-                response.delete_cookie('token')
-                return response
-            error = "Authorization token expired. Please log in again."
-        else:
-            error = f"An unexpected error occurred: {error_msg}"
-        session['error'] = error
+        session['error'] = f"An unexpected error occurred: {error_msg}"
         return redirect(url_for('home'))
 
 @app.route('/show_results')
@@ -348,9 +280,9 @@ def clear_token():
 
     if request.method == 'GET':
         abort(404)
-    response = make_response(redirect(url_for('home')))
-    response.delete_cookie('token')
-    return response
+    from detailsSeatAvailability import set_token
+    set_token(None)
+    return redirect(url_for('home'))
 
 @app.errorhandler(404)
 def page_not_found(e):
