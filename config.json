@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
-    "is_maintenance": 0,
-    "maintenance_message": "This website will remain temporarily unavailable from May 24, 2025 to June 7, 2025 due to Eid ticket sales. We apologize for the inconvenience and appreciate your understanding.",
+    "is_maintenance": 1,
+    "maintenance_message": "This website is currently undergoing scheduled maintenance. We are working on a feature that will allow users to access the website without providing their mobile number and password. We strictly maintain user data privacy and will not compromise on data security. We expect the patch update to be live within the day.",
     "is_banner_enabled": 1,
     "image_link": "",
     "force_banner": 0
