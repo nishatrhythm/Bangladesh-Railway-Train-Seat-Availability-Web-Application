@@ -1,6 +1,14 @@
 # 🚆 Bangladesh Railway Train Seat Availability Web Application
 
-A full-stack, token-authenticated web application to **securely fetch and visualize real-time train seat availability** from the official Bangladesh Railway e-ticketing API. This version focuses on **efficiency, user experience, and privacy** — fully aligned with official data, built using Flask + Vanilla JS + REST APIs.
+A full-stack web application to **securely fetch and visualize real-time train seat availability** from the official Bangladesh Railway e-ticketing API. This version focuses on **efficiency, user experience, and serverless operation** — fully aligned with official data, built using Flask + Vanilla JS + REST APIs.
+
+✨ **Key Features:**
+- 🔍 **Real-time Seat Availability**: Check available seats across all trains between stations
+- 🧮 **Visual Coach Layout**: See seats grouped by coach with clear status indicators
+- 🗓️ **Next 10 Days Availability**: Plan trips with date-specific seat information
+- 🚄 **All Bangladesh Railway Routes**: Complete coverage of official train routes
+- 📱 **Mobile-Optimized Interface**: Fully responsive design for all devices
+- ⚡ **Zero Login Required**: No account creation or user authentication needed
 
 ---
 
@@ -31,7 +39,6 @@ A full-stack, token-authenticated web application to **securely fetch and visual
 10. [Setup Instructions](#-setup-instructions)  
 11. [Disclaimer on Data Usage](#️-disclaimer-on-data-usage)  
 12. [License](#-license)
-13. [Upcoming Features](#-upcoming-features)
 
 ---
 
@@ -68,7 +75,7 @@ A full-stack, token-authenticated web application to **securely fetch and visual
 
 | Feature                                  | Status ✅ | Description |
 |------------------------------------------|-----------|-------------|
-| Token-based login (Shohoz Railway API)   | ✅        | Secure token via POST, stored as HTTP-only cookie |
+| Server-side API Authentication           | ✅        | Secure token management with environment variables |
 | Train list + seat availability API       | ✅        | Live API integration for real-time data |
 | Animated, Material UI Date Picker        | ✅        | Custom calendar with range check, BST logic |
 | Auto-suggestions with station filtering  | ✅        | Live dropdown using fuzzy match |
@@ -80,7 +87,7 @@ A full-stack, token-authenticated web application to **securely fetch and visual
 | Offline + Slow Internet Notifications    | ✅        | Detects network status and alerts user |
 | Sorting of Trains by Departure Time      | ✅        | Intelligent ordering of result cards |
 | Grouped Seat View (by coach prefix)      | ✅        | Easy-to-understand coach-wise layout |
-| Cookie-based Session Flow                | ✅        | Token + form caching + redirect-based UX |
+| Session-based Form Flow                  | ✅        | Server-managed state + redirect-based UX |
 | Custom 404 Page with Countdown           | ✅        | Auto-redirect after 10s for broken links |
 | Accessibility & Tap Optimization         | ✅        | Full support for mobile gestures, tap highlights |
 
@@ -88,10 +95,11 @@ A full-stack, token-authenticated web application to **securely fetch and visual
 
 ## 🔒 Privacy & Security
 
-- **No storage of credentials**: Mobile number & password are used *only once* to fetch token.
-- **HTTP-only secure cookie**: Token stored server-side with secure flags.
+- **Server-side credential management**: Fixed mobile number and password managed securely using environment variables (.env).
+- **No user login required**: System handles API authentication automatically.
 - **Input sanitation**: All form fields validated both client-side and server-side.
 - **Session-specific result handling**: Data purged on redirect or session expiration.
+- **Token validation**: Automatic token refreshing when expired.
 - **LocalStorage data**:
   - Used **only** for:
     - Station list cache
@@ -103,21 +111,22 @@ A full-stack, token-authenticated web application to **securely fetch and visual
 
 ## 🧠 Core Logic
 
-### 🔐 Token Authentication (Shohoz Railway API)
+### 🔐 Server-side Token Authentication (Shohoz Railway API)
 
 ```http
-POST https://railspaapi.shohoz.com/v1.0/web/auth/sign-in
+POST https://railspaapi.shohoz.com/v1.0/app/auth/sign-in
 Params:
   mobile_number, password
 ```
+- Uses fixed credentials from environment variables (.env).
 - Validates and retrieves JWT token.
-- Stored as `token` cookie (HttpOnly, Secure, Lax).
-- Expired token is detected automatically, and user is re-prompted to login.
+- Token maintained in server memory with automatic refresh.
+- Expired tokens are automatically refreshed without user intervention.
 
 ### 🚂 Train Search API
 
 ```http
-GET /web/bookings/search-trips-v2
+GET /app/bookings/search-trips-v2
 Params:
   from_city, to_city, date_of_journey, seat_class=S_CHAIR
 ```
@@ -127,7 +136,7 @@ Returns matching train list with trip IDs and trip route IDs.
 
 Sends the `JWT token` in the Authorization header:
 ```http
-GET /web/bookings/seat-layout
+GET /app/bookings/seat-layout
 Params:
   trip_id, trip_route_id
 ```
@@ -137,7 +146,7 @@ Returns seat layout grid with availability and ticket type.
 
 - Retries 3 times on 500+ errors.
 - Graceful fallback for 422 errors (no layout).
-- 401 error → clears cookie and redirects to login.
+- 401 error → refreshes token automatically.
 
 ---
 
@@ -178,7 +187,8 @@ sorted(result.items(), key=lambda x: parsed_dep_time)
 ### 2. Validation & UX
 
 - Validates:
-  - Phone: Must be 11 digits, starts with 01[3-9]
+  - Origin and destination stations
+  - Date format and range
   - All fields required
 - Displays inline error using animation (`fadeInScale`)
 - Prevents multiple submission / empty values
@@ -204,7 +214,7 @@ sorted(result.items(), key=lambda x: parsed_dep_time)
 
 | Error Type     | Description           | Action                                         |
 |----------------|-----------------------|------------------------------------------------|
-| 401            | Unauthorized Token    | Token cookie deleted; login required           |
+| 401            | Unauthorized Token    | Token refreshed automatically                  |
 | 422            | Invalid Layout        | Error flag used to show fallback message       |
 | 500+           | Server-side issues    | Retried 3 times; final message shown           |
 | Empty Train    | No trains             | Clear message: try different station/date      |
@@ -253,19 +263,27 @@ git clone https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availabi
 cd Bangladesh-Railway-Train-Seat-Availability-Web-Application
 ```
 
-2. **Install dependencies**
+2. **Set up environment variables**
+
+Create a `.env` file in `/etc/secrets/` (or adjust path in code) with:
+```
+FIXED_MOBILE_NUMBER=01XXXXXXXXX
+FIXED_PASSWORD=your_password
+```
+
+3. **Install dependencies**
 
 ```bash
 pip install -r requirements.txt
 ```
 
-3. **Run locally**
+4. **Run locally**
 
 ```bash
 python app.py
 ```
 
-4. **Access**:  Visit `http://localhost:5000`
+5. **Access**:  Visit `http://localhost:5000`
 
 ---
 
@@ -274,8 +292,8 @@ python app.py
 This project **does not engage in illegal web scraping**. It interacts with publicly accessible endpoints provided by the Bangladesh Railway e-Ticketing platform (Shohoz Railway API) that **do not require any reverse-engineering, bypassing of authentication, or scraping of HTML content**.
 
 - All data is fetched through **open RESTful APIs** provided by the Shohoz platform.
-- The API endpoints used are **official**, public-facing, and **require user authentication** via a registered account.
-- Users must **log in using their own credentials**, and no credentials are stored or misused.
+- The API endpoints used are **official** and public-facing.
+- Server-side authentication is performed using a registered account's credentials stored securely in environment variables.
 - No attempt is made to interfere with or overload the service.
 
 This tool is intended purely for **personal, educational, and informational purposes** — helping users visualize seat availability efficiently. If requested by the official service provider, access can be removed or adjusted accordingly.
@@ -285,14 +303,3 @@ This tool is intended purely for **personal, educational, and informational purp
 ## 📝 License
 
 Licensed under MIT. See `LICENSE` for more.
-
----
-
-## 🚧 Upcoming Features
-
-| Feature | Description |
-|--------|-------------|
-| **🔌 Real-time User Tracking (Socket.IO)** | Display number of active users online using WebSocket communication. |
-| **📢 Live Data Fetch Notification** | Broadcast real-time messages during seat data fetching to improve user feedback and transparency. |
-| **🪑 Seat Matrix Integration** | Integrate segmented seat layout from [this terminal-based project](https://github.com/nishatrhythm/Bangladesh-Railway-Segmented-Seat-Matrix-and-Details-Seat-Availabilty/blob/main/seatMatrixWithSegmentation.py). Will be hosted at: [seat.onrender.com](https://seat.onrender.com). |
-| **🎨 Continuous UI/UX Improvements** | Enhanced design consistency, better transitions, and more intuitive mobile-first experience. |

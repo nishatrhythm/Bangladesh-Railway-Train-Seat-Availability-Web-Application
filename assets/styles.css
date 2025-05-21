@@ -32,7 +32,7 @@ h1 {
     color: rgb(0, 103, 71);
     font-weight: 800;
     line-height: 1.5;
-    margin: 30px 0px 40px;
+    margin: 20px 0px 30px;
     animation: fadeInTranslate 0.8s ease-out;
 }
 
@@ -654,11 +654,14 @@ button:hover {
     margin-right: 5px;
 }
 
+.buy-button-wrapper {
+    margin-top: 10px;
+    text-align: center;
+}
+
 .btn-buy {
     display: inline-block;
-    margin-left: 10px;
-    margin-bottom: 10px;
-    background-color: #008080;
+    background-color: rgb(0, 103, 71);
     color: white;
     border-radius: 5px;
     text-decoration: none;
@@ -678,7 +681,7 @@ button:hover {
 }
 
 .btn-buy:hover {
-    background-color: #005757;
+    background-color: rgb(0, 85, 58);
     transform: scale(1.01);
 }
 
@@ -1223,7 +1226,7 @@ tr:hover {
 
 .new-footer {
     text-align: center;
-    margin-top: 50px;
+    margin-top: 70px;
     font-size: 14px;
     font-weight: 500;
     color: #2c3e50;
@@ -1862,10 +1865,6 @@ footer a:hover {
 
     h3 {
         font-size: 16px;
-    }
-
-    #loader {
-        display: none !important;
     }
 
     .swap-icon-wrapper {

@@ -59,47 +59,13 @@
     <div class="container main-content">
         <h1><i class="fas fa-subway"></i> BR Train Seat Availability</h1>
 
-        <!-- {% if token %}
-        <form action="/clear_token" method="POST" class="inline-form">
-            <button type="submit" class="btn-clear" draggable="false">
-                <i class="fas fa-trash-alt"></i> Delete Auth Token
-            </button>
-        </form>
-        {% endif %} -->
-
         {% if error %}
         <div class="error shake">
             <i class="fas fa-exclamation-circle error-icon"></i> {{ error }}
         </div>
         {% endif %}
 
-        <!-- <form action="/check_seats" method="POST" id="seatForm"> -->
         <form method="POST" action="{{ url_for('check_seats') }}" id="seatForm">
-            <!-- {% if not token %}
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="phone_number">Mobile Number</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-phone input-icon"></i>
-                        <input type="number" id="phone_number" name="phone_number"
-                            placeholder="Enter your mobile number"
-                            value="{{ form_values.phone_number if form_values and form_values.phone_number is not none else '' }}"
-                            maxlength="11">
-                    </div>
-                    <span class="error-message" id="phone-error">Mobile Number is required</span>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-lock input-icon"></i>
-                        <input type="password" id="password" name="password" placeholder="Enter your password">
-                        <i class="fas fa-eye toggle-password"></i>
-                    </div>
-                    <span class="error-message" id="password-error">Password is required</span>
-                </div>
-            </div>
-            {% endif %} -->
-
             <div class="form-row">
                 <div class="form-group">
                     <label for="origin">Origin Station</label>
@@ -162,18 +128,6 @@
                 </div>
             </div>
         </form>
-
-        <!-- {% if show_disclaimer %}
-        <p class="note">
-            <span class="note-bold highlight">Disclaimer:</span> Your mobile number and password registered with the
-            Bangladesh Railway website are used solely to generate an authorization token through an API request to the
-            Bangladesh Railway website. This token is necessary to fetch seat availability details. Rest assured, we do
-            not store your mobile number or password. Your data remains private and secure, directly between you and
-            Bangladesh Railway. We do not access or intercept your information during the API request. For your
-            convenience, the authorization token is saved in your browser's cookies, allowing us to reuse it without
-            requiring you to re-enter your credentials.
-        </p>
-        {% endif %} -->
 
         <footer class="new-footer">
             <p>This project is open source. Check it out on <a

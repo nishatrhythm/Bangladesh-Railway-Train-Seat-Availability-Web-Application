@@ -30,7 +30,7 @@ def check_token_validity() -> bool:
         return False
     if (datetime.utcnow() - TOKEN_TIMESTAMP).total_seconds() > 24 * 3600:
         return False
-    url = f"{API_BASE_URL}/web/auth/profile"
+    url = f"{API_BASE_URL}/app/auth/profile"
     headers = {"Authorization": f"Bearer {TOKEN}"}
     try:
         response = requests.get(url, headers=headers)
@@ -55,7 +55,7 @@ def fetch_token() -> str:
         try:
             response = requests.post(url, json=payload)
             if response.status_code == 422:
-                raise Exception("Mobile Number or Password is incorrect.")
+                raise Exception("Server-side Mobile Number or Password is incorrect. Please wait a moment while we resolve this issue.")
             elif response.status_code >= 500:
                 retry_count += 1
                 if retry_count == max_retries:
@@ -189,7 +189,7 @@ def fetch_train_details(config: Dict) -> List[Dict]:
             if response.status_code >= 500:
                 retry_count += 1
                 if retry_count == max_retries:
-                    raise Exception("We’re unable to connect to the Bangladesh Railway website right now. Please try again in a few minutes.")
+                    raise Exception("We're unable to connect to the Bangladesh Railway website right now. Please try again in a few minutes.")
                 continue
             response.raise_for_status()
             train_data = response.json().get("data", {}).get("trains", [])
