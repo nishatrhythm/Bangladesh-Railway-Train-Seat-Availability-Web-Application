@@ -1109,7 +1109,6 @@ tr:hover {
     text-decoration: none;
     display: inline-block;
     margin-top: 20px;
-    margin-bottom: 10px;
     transition: background-color 0.3s ease, transform 0.3s ease;
     animation: fadeIn 0.6s ease-in-out;
     -webkit-tap-highlight-color: transparent;

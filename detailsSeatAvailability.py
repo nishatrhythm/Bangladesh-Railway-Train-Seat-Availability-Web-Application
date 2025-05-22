@@ -118,7 +118,7 @@ def analyze_seat_layout(data: Dict) -> Dict:
 
 def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[str], int, int, bool, dict, dict]:
     global TOKEN
-    if not check_token_validity():
+    if not TOKEN:
         TOKEN = fetch_token()
         set_token(TOKEN)
     
@@ -127,6 +127,7 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
     params = {"trip_id": trip_id, "trip_route_id": trip_route_id}
     max_retries = 3
     retry_count = 0
+    has_retried_with_new_token = False
 
     while retry_count < max_retries:
         try:
@@ -136,6 +137,22 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
                 if retry_count == max_retries:
                     raise Exception("We're unable to connect to the Bangladesh Railway website right now. Please try again in a few minutes.")
                 continue
+            if response.status_code == 401 and not has_retried_with_new_token:
+                try:
+                    error_data = response.json()
+                    error_messages = error_data.get("error", {}).get("messages", [])
+                    if isinstance(error_messages, list) and any("Invalid User Access Token!" in msg for msg in error_messages):
+                        TOKEN = fetch_token()
+                        set_token(TOKEN)
+                        headers["Authorization"] = f"Bearer {TOKEN}"
+                        has_retried_with_new_token = True
+                        continue
+                except ValueError:
+                    TOKEN = fetch_token()
+                    set_token(TOKEN)
+                    headers["Authorization"] = f"Bearer {TOKEN}"
+                    has_retried_with_new_token = True
+                    continue
             response.raise_for_status()
             data = response.json()
             seat_layout = data.get("data", {}).get("seatLayout", [])
@@ -158,8 +175,22 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
 
         except requests.RequestException as e:
             status_code = e.response.status_code if e.response is not None else None
-            if status_code == 401:
-                raise Exception("Token expired or unauthorized")
+            if status_code == 401 and not has_retried_with_new_token:
+                try:
+                    error_data = e.response.json()
+                    error_messages = error_data.get("error", {}).get("messages", [])
+                    if isinstance(error_messages, list) and any("Invalid User Access Token!" in msg for msg in error_messages):
+                        TOKEN = fetch_token()
+                        set_token(TOKEN)
+                        headers["Authorization"] = f"Bearer {TOKEN}"
+                        has_retried_with_new_token = True
+                        continue
+                except ValueError:
+                    TOKEN = fetch_token()
+                    set_token(TOKEN)
+                    headers["Authorization"] = f"Bearer {TOKEN}"
+                    has_retried_with_new_token = True
+                    continue
             if status_code == 422:
                 error_data = e.response.json()
                 error_messages = error_data.get("error", {}).get("messages", [])
