@@ -21,9 +21,25 @@
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:url" content="https://trainseat.vercel.app">
-    <meta property="og:type" content="website">
-
-    <style>{{ styles_css | safe }}</style>
+    <meta property="og:type" content="website">    <style>{{ styles_css | safe }}</style>
+    <style>
+        .queue-info {
+            background-color: #e9f7fe;
+            border-left: 3px solid #00a8ff;
+            padding: 12px 15px;
+            margin: 15px 0;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #444;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .queue-info i {
+            color: #00a8ff;
+            margin-right: 8px;
+        }
+    </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
     <link rel="icon"
         href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png"
@@ -57,11 +73,15 @@
     </noscript>
 
     <div class="container main-content">
-        <h1><i class="fas fa-subway"></i> BR Train Seat Availability</h1>
-
-        {% if error %}
+        <h1><i class="fas fa-subway"></i> BR Train Seat Availability</h1>        {% if error %}
         <div class="error shake">
             <i class="fas fa-exclamation-circle error-icon"></i> {{ error }}
+        </div>
+        {% endif %}
+        
+        {% if CONFIG and CONFIG.queue_enabled %}
+        <div class="note" style="background-color: #e9f7fe; border-left: 3px solid #00a8ff; margin-bottom: 20px;">
+            <i class="fas fa-info-circle" style="color: #00a8ff;"></i> We've implemented a queue system to prevent overloading the Railway API. Your search will be processed in queue order, and you'll see real-time status updates while waiting.
         </div>
         {% endif %}
 

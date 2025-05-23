@@ -5,3 +5,5 @@ pytz==2024.2
 python-dotenv==1.0.1
 gunicorn==23.0.0
 Jinja2==3.1.4
+# Queue system dependencies
+queue==1.0.2

@@ -39,8 +39,8 @@ def fetch_token() -> str:
             print(f"[DEBUG] Sending POST request to {url} with payload: {payload}")
             response = requests.post(url, json=payload)
             print(f"[DEBUG] Response status code: {response.status_code}")
-            print(f"[DEBUG] Response headers: {response.headers}")
-            print(f"[DEBUG] Response body: {response.text}")
+            # print(f"[DEBUG] Response headers: {response.headers}")
+            # print(f"[DEBUG] Response body: {response.text}")
             if response.status_code == 422:
                 raise Exception("Server-side Mobile Number or Password is incorrect. Please wait a moment while we resolve this issue.")
             elif response.status_code >= 500:
@@ -208,24 +208,33 @@ def fetch_train_details(config: Dict) -> List[Dict]:
             print(f"[DEBUG] Sending GET request to {url} with params: {config}, headers: {headers}")
             response = requests.get(url, params=config, headers=headers)
             print(f"[DEBUG] Response status code: {response.status_code}")
-            print(f"[DEBUG] Response headers: {response.headers}")
+            # print(f"[DEBUG] Response headers: {response.headers}")
             try:
                 response_body = response.json()
-                print(f"[DEBUG] Response body: {response_body}")
+                # print(f"[DEBUG] Response body: {response_body}")
             except ValueError:
                 print(f"[DEBUG] Failed to parse response as JSON: {response.text}")
+            
+            if response.status_code == 403:
+                # Specifically handle 403 errors
+                print(f"[DEBUG] 403 Forbidden error received - likely due to rate limiting")
+                raise Exception("Rate limit exceeded. Please try again later.")
+                
             if response.status_code >= 500:
                 retry_count += 1
                 print(f"[DEBUG] Server error (status {response.status_code}), retry {retry_count}/{max_retries}")
                 if retry_count == max_retries:
                     raise Exception("We're unable to connect to the Bangladesh Railway website right now. Please try again in a few minutes.")
                 continue
+                
             response.raise_for_status()
             train_data = response.json().get("data", {}).get("trains", [])
-            print(f"[DEBUG] Successfully fetched train data: {train_data}")
+            # print(f"[DEBUG] Successfully fetched train data: {train_data}")
             return train_data
         except requests.RequestException as e:
             print(f"[DEBUG] Request exception: {str(e)}")
+            if hasattr(e, 'response') and e.response and e.response.status_code == 403:
+                raise Exception("Rate limit exceeded. Please try again later.")
             return []
 
 def main(config: Dict) -> Dict:
