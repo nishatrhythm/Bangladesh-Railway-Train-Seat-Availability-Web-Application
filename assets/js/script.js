@@ -231,29 +231,19 @@ function selectOption(inputId, dropdownId, value) {
     const destination = document.getElementById('destination');
     const date = document.getElementById('date');
 
-    if (inputId === 'destination' && date && !date.value.trim()) {
-        setTimeout(() => {
-            date.focus();
-            openMaterialCalendar();
-            setTimeout(() => {
-                suppressEvents = false;
-            }, 200);
-        }, 100);
-    } else if (inputId === 'origin' && destination && date) {
-        setTimeout(() => {
-            if (!destination.value.trim()) {
-                destination.focus();
-            } else if (!date.value.trim()) {
+    setTimeout(() => {
+        if (origin && destination && date) {
+            if (origin.value.trim() && destination.value.trim() && !date.value.trim()) {
                 date.focus();
                 openMaterialCalendar();
+            } else if (inputId === 'origin' && !destination.value.trim()) {
+                destination.focus();
+            } else if (inputId === 'destination' && !origin.value.trim()) {
+                origin.focus();
             }
-            suppressEvents = false;
-        }, 100);
-    } else {
-        setTimeout(() => {
-            suppressEvents = false;
-        }, 100);
-    }
+        }
+        suppressEvents = false;
+    }, 100);
 
     const stopPropagation = (e) => e.stopPropagation();
     document.addEventListener('mousedown', stopPropagation, { once: true });
@@ -303,6 +293,25 @@ function initializeCollapsibleSections() {
             }
         });
     });
+}
+
+function resetSubmitButton() {
+    const submitButton = document.querySelector('#seatForm .btn-primary');
+    if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.style.opacity = '1';
+        submitButton.style.cursor = 'pointer';
+        const loader = submitButton.querySelector('.button-loader');
+        if (loader) {
+            loader.remove();
+        }
+        const existingIcon = submitButton.querySelector('.fas.fa-search');
+        if (!existingIcon) {
+            const searchIcon = document.createElement('i');
+            searchIcon.className = 'fas fa-search';
+            submitButton.prepend(searchIcon);
+        }
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -398,24 +407,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         }
+        resetSubmitButton();
     });
-
-    const submitButton = document.querySelector('#seatForm .btn-primary');
-    if (submitButton) {
-        submitButton.disabled = false;
-        submitButton.style.opacity = '1';
-        submitButton.style.cursor = 'pointer';
-        const loader = submitButton.querySelector('.button-loader');
-        if (loader) {
-            loader.remove();
-            const existingIcon = submitButton.querySelector('.fas.fa-search');
-            if (!existingIcon) {
-                const searchIcon = document.createElement('i');
-                searchIcon.className = 'fas fa-search';
-                submitButton.prepend(searchIcon);
-            }
+    window.addEventListener('pageshow', function (event) {
+        if (document.getElementById('seatForm')) {
+            resetSubmitButton();
         }
-    }
+    });
 });
 
 document.addEventListener("mousedown", (e) => {
@@ -562,6 +560,18 @@ function generateMaterialCalendar() {
                     dateError.classList.add('hide');
                     input.classList.remove('error-input');
                 }
+
+                const origin = document.getElementById('origin');
+                const destination = document.getElementById('destination');
+                setTimeout(() => {
+                    if (origin && destination) {
+                        if (!origin.value.trim()) {
+                            origin.focus();
+                        } else if (!destination.value.trim()) {
+                            destination.focus();
+                        }
+                    }
+                }, 200);
             }
         });
 

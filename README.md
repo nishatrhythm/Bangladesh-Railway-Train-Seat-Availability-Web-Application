@@ -9,6 +9,7 @@ A full-stack web application to **securely fetch and visualize real-time train s
 - 🚄 **All Bangladesh Railway Routes**: Complete coverage of official train routes
 - 📱 **Mobile-Optimized Interface**: Fully responsive design for all devices
 - ⚡ **Zero Login Required**: No account creation or user authentication needed
+- ⏳ **Queue System for API Requests**: Efficiently handles multiple user requests by queuing them to prevent API overload and ensure smooth operation.
 
 ---
 
@@ -48,6 +49,7 @@ A full-stack web application to **securely fetch and visualize real-time train s
 ├── app.py                        # Flask backend with routes, session mgmt, auth & rendering
 ├── config.json                   # Dynamic config: banner, maintenance, app version
 ├── detailsSeatAvailability.py    # Seat logic, API integrations, retry, error handling
+├── request_queue.py              # Queue system for managing API requests
 ├── LICENSE                       # Project license
 ├── README.md                     # Project documentation (this file)
 ├── requirements.txt              # Python dependencies
@@ -66,6 +68,7 @@ A full-stack web application to **securely fetch and visualize real-time train s
     ├── 404.html                  # Custom error page
     ├── index.html                # Home form page
     ├── notice.html               # Maintenance banner
+    ├── queue.html                # Queue status page
     └── results.html              # Seat result visualizer
 ```
 
@@ -90,6 +93,7 @@ A full-stack web application to **securely fetch and visualize real-time train s
 | Session-based Form Flow                  | ✅        | Server-managed state + redirect-based UX |
 | Custom 404 Page with Countdown           | ✅        | Auto-redirect after 10s for broken links |
 | Accessibility & Tap Optimization         | ✅        | Full support for mobile gestures, tap highlights |
+| Queue System for API Requests            | ✅        | Ensures smooth operation by queuing and processing requests sequentially |
 
 ---
 
@@ -141,6 +145,16 @@ Params:
   trip_id, trip_route_id
 ```
 Returns seat layout grid with availability and ticket type.
+
+### ⏳ Queue System for API Requests
+
+- **Purpose**: Prevents API overload by queuing user requests.
+- **Implementation**:
+  - Requests are added to a queue managed by `request_queue.py`.
+  - Each request is processed sequentially to ensure smooth operation.
+  - Users are shown a queue status page (`queue.html`) with their position in the queue.
+- **Fallbacks**:
+  - Graceful handling of timeouts or API failures.
 
 ### ⚛️ Retry Logic
 
@@ -241,6 +255,7 @@ Expires: 0
 - **Python 3.10+**
 - **Flask 3.1**
 - `requests`, `colorama`, `pytz`
+- **Queue Management**: Custom implementation in `request_queue.py`
 
 ### Frontend
 
