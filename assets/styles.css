@@ -406,30 +406,37 @@ input[type="number"] {
     transform: translate(-50%, -50%) rotate(0deg) translateY(-10px);
     animation-delay: 0s;
 }
+
 .loader-segment:nth-child(2) {
     transform: translate(-50%, -50%) rotate(45deg) translateY(-10px);
     animation-delay: -0.15s;
 }
+
 .loader-segment:nth-child(3) {
     transform: translate(-50%, -50%) rotate(90deg) translateY(-10px);
     animation-delay: -0.3s;
 }
+
 .loader-segment:nth-child(4) {
     transform: translate(-50%, -50%) rotate(135deg) translateY(-10px);
     animation-delay: -0.45s;
 }
+
 .loader-segment:nth-child(5) {
     transform: translate(-50%, -50%) rotate(180deg) translateY(-10px);
     animation-delay: -0.6s;
 }
+
 .loader-segment:nth-child(6) {
     transform: translate(-50%, -50%) rotate(225deg) translateY(-10px);
     animation-delay: -0.75s;
 }
+
 .loader-segment:nth-child(7) {
     transform: translate(-50%, -50%) rotate(270deg) translateY(-10px);
     animation-delay: -0.9s;
 }
+
 .loader-segment:nth-child(8) {
     transform: translate(-50%, -50%) rotate(315deg) translateY(-10px);
     animation-delay: -1.05s;
@@ -439,15 +446,19 @@ input[type="number"] {
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }
 }
 
 @keyframes fadeSegment {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 0.4;
     }
+
     50% {
         opacity: 1;
     }
@@ -617,7 +628,7 @@ button:hover {
     border: none;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease;
-    animation: fadeIn 0.6s ease-in-out;
+    animation: fadeInUp 0.6s ease-in-out;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
     -webkit-user-select: none;
@@ -1110,7 +1121,7 @@ tr:hover {
     display: inline-block;
     margin-top: 20px;
     transition: background-color 0.3s ease, transform 0.3s ease;
-    animation: fadeIn 0.6s ease-in-out;
+    animation: fadeInUp 0.6s ease-in-out;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
     -webkit-user-select: none;
@@ -1718,6 +1729,176 @@ footer a:hover {
     color: #004f3a;
 }
 
+.queue-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.queue-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 103, 71, 0.1);
+    border: 1px solid #006747;
+    padding: 25px;
+    margin-bottom: 20px;
+    animation: fadeInUp 0.8s ease-in-out;
+    transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.queue-card:hover {
+    box-shadow: 0 6px 16px rgba(0, 103, 71, 0.2);
+}
+
+.queue-header {
+    background: linear-gradient(to bottom, #f2f6fa, #ffffff);
+    padding: 20px;
+    border-radius: 8px;
+    border-top: 3px solid #006747;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.queue-header h2 {
+    font-size: 22px;
+    color: #006747;
+    font-weight: 700;
+    margin: 0 0 10px;
+    padding: 4px 10px;
+    background-color: rgba(0, 103, 71, 0.1);
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.queue-header p {
+    font-size: 16px;
+    color: #444;
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.queue-header p i {
+    color: #006747;
+    margin-right: 5px;
+}
+
+.progress-container {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.progress-bar {
+    width: 100%;
+    background-color: #ecf0f1;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 12px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #006747;
+    border-radius: 10px;
+    transition: width 0.5s ease-in-out;
+    width: 0%;
+}
+
+.queue-status {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #006747;
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    animation: fadeIn 0.5s ease-in;
+}
+
+.queue-status i {
+    font-size: 1.4rem;
+}
+
+.queue-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95rem;
+    color: #333;
+    margin: 10px 0;
+}
+
+.queue-info span {
+    font-weight: 600;
+}
+
+.queue-timer {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #006747;
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.note i {
+    margin-right: 5px;
+}
+
+.cancel-btn {
+    background-color: #e74c3c;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 20px;
+    animation: fadeInUp 1.2s ease-in-out;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-drag: none;
+}
+
+.cancel-btn:hover {
+    background-color: #c0392b;
+    transform: scale(1.01);
+}
+
+.cancel-btn i {
+    margin-right: 5px;
+}
+
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 103, 71, 0.3);
+    border-top: 3px solid #006747;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 #backToTopBtn {
     position: fixed;
     bottom: 30px;
@@ -1917,7 +2098,7 @@ footer a:hover {
     .collapsible-content .badge-wrapper {
         width: 100%;
     }
-    
+
     .collapsible-content table {
         font-size: 12px;
     }
@@ -2146,6 +2327,35 @@ footer a:hover {
     .flyout-notification::before {
         font-size: 16px;
         margin-right: 8px;
+    }
+
+    .queue-container {
+        padding: 15px;
+    }
+
+    .queue-card {
+        padding: 15px;
+    }
+
+    .queue-header h2 {
+        font-size: 18px;
+    }
+
+    .queue-header p {
+        font-size: 14px;
+    }
+
+    .queue-status {
+        font-size: 1rem;
+    }
+
+    .queue-timer {
+        font-size: 1.2rem;
+    }
+
+    .queue-info {
+        flex-direction: column;
+        gap: 8px;
     }
 }
 
@@ -2452,5 +2662,34 @@ footer a:hover {
     .flyout-notification::before {
         font-size: 14px;
         margin-right: 6px;
+    }
+
+    .queue-container {
+        padding: 10px;
+    }
+
+    .queue-card {
+        padding: 10px;
+    }
+
+    .queue-header h2 {
+        font-size: 16px;
+    }
+
+    .queue-header p {
+        font-size: 13px;
+    }
+
+    .queue-status {
+        font-size: 0.9rem;
+    }
+
+    .queue-timer {
+        font-size: 1rem;
+    }
+
+    .cancel-btn {
+        font-size: 12px;
+        padding: 8px 15px;
     }
 }

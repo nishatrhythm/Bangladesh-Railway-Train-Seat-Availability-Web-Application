@@ -1,233 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>In Queue | Train Seat Availability</title>
-    <link rel="icon"
-        href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png"
-        type="image/x-icon" sizes="30x30">
-    <style>{{ styles_css | safe }}</style>
+    <link rel="icon" href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png" type="image/x-icon" sizes="30x30">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
-    <style>
-        .queue-container {
-            text-align: center;
-            padding: 30px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .queue-card {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            padding: 25px;
-            margin-bottom: 20px;
-        }
-
-        .progress-container {
-            margin: 25px 0;
-        }
-
-        .progress-bar {
-            width: 100%;
-            background-color: #f1f1f1;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 20px;
-            background-color: #4CAF50;
-            border-radius: 10px;
-            transition: width 1s;
-            width: 0%;
-        }
-
-        .queue-info {
-            display: flex;
-            justify-content: space-between;
-            margin: 10px 0;
-        }
-
-        .queue-status {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #333;
-            margin: 15px 0;
-        }
-
-        .queue-timer {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #4CAF50;
-            margin: 20px 0;
-        }
-
-        .pulsating-text {
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                opacity: 0.6;
-            }
-            50% {
-                opacity: 1;
-            }
-            100% {
-                opacity: 0.6;
-            }
-        }
-        
-        .queue-details {
-            background-color: #f9f9f9;
-            border-radius: 6px;
-            padding: 15px;
-            margin: 15px 0;
-            text-align: left;
-        }
-        
-        .queue-details p {
-            margin: 8px 0;
-            font-size: 0.95rem;
-            color: #555;
-        }
-        
-        .queue-details strong {
-            color: #333;
-        }
-    </style>
+    <style>{{ styles_css | safe }}</style>
 </head>
 
 <body>
     <div class="container">
-        <h1>
-            <i class="fas fa-train"></i> BR Train Seat Availability
-        </h1>
-
-        <div class="queue-container">
-            <div class="queue-card animated-fade-in">
-                <h2><i class="fas fa-hourglass-half"></i> Request In Queue</h2>
-                
-                <div class="queue-status" id="queueStatus">
-                    <span class="pulsating-text">Your request is in queue...</span>
+        <div class="flyout-notification" id="flyoutNotification">
+            <span id="flyoutMessage"></span>
+            <i class="fas fa-times flyout-close" id="flyoutClose"></i>
+        </div>
+        <noscript>
+            <div class="container noscript-warning">
+                <h2>
+                    <i class="fas fa-exclamation-circle"></i> Please Enable JavaScript
+                </h2>
+                <p>This website requires JavaScript to function properly. Enable it in your browser settings to access full functionality and check train seat availability.</p>
+                <div class="instructions">
+                    <strong>How to enable:</strong> Go to your browser settings > Privacy/Security > Enable JavaScript. Refresh the page after enabling.
                 </div>
-                
+            </div>
+        </noscript>
+
+        <h1><i class="fas fa-train"></i> BR Train Seat Availability</h1>
+        <div class="queue-container">
+            <div class="queue-card">
+                <div class="queue-header">
+                    <h2><i class="fas fa-hourglass-half"></i> Request In Queue</h2>
+                    <p><i class="fas fa-map-marker-alt"></i> {{ form_values.origin }} to {{ form_values.destination }}</p>
+                    <p><i class="fas fa-calendar-alt"></i> {{ form_values.date }}</p>
+                </div>
+                <div class="queue-status" id="queueStatus" aria-live="polite">
+                    {% if status.status == 'queued' %}
+                        <span>Your request is in queue...</span>
+                    {% else %}
+                        <span class="spinner"></span> Processing your request...
+                    {% endif %}
+                </div>
                 <div class="progress-container">
                     <div class="progress-bar">
                         <div class="progress-fill" id="progressBar"></div>
                     </div>
-                    <div class="queue-info">
-                        <span>Position: <strong id="queuePosition">{{ status.position }}</strong></span>
-                        <span>Estimated time: <strong id="estimatedTime">{{ status.estimated_time }}</strong> seconds</span>
+                    <div class="queue-info" id="queueInfo">
+                        {% if status.status == 'queued' %}
+                            <span>Position: <strong id="queuePosition">{{ status.position }}</strong></span>
+                            <span>Estimated time: <strong id="estimatedTime">{{ status.estimated_time }}</strong> seconds</span>
+                        {% else %}
+                            <span></span>
+                            <span></span>
+                        {% endif %}
                     </div>
                 </div>
-                
-                <div class="queue-timer" id="queueTimer">
+                <div class="queue-timer">
                     <i class="fas fa-clock"></i> <span id="timerCounter">0</span>s
                 </div>
-                
-                <div class="queue-details">
-                    <p><strong>Origin:</strong> <span id="originStation">{{ form_values.origin }}</span></p>
-                    <p><strong>Destination:</strong> <span id="destStation">{{ form_values.destination }}</span></p>
-                    <p><strong>Date:</strong> <span id="journeyDate">{{ form_values.date }}</span></p>
-                </div>
-                
                 <p class="note">
                     <i class="fas fa-info-circle"></i> Please wait while we check for available seats. Do not refresh this page.
                 </p>
             </div>
-            
-            <a href="/" class="btn-primary" draggable="false">
+            <a href="/" class="cancel-btn">
                 <i class="fas fa-arrow-left"></i> Cancel and Go Back
             </a>
         </div>
     </div>
 
     <script>
-        // Queue polling variables
         const requestId = "{{ request_id }}";
         let timer = 0;
         let intervalId = null;
-        
-        // Start the timer
+
         function startTimer() {
             intervalId = setInterval(() => {
                 timer++;
-                document.getElementById('timerCounter').textContent = timer;
-                
-                // Poll for status
-                if (timer % 3 === 0) {  // Check status every 3 seconds
+                const minutes = Math.floor(timer / 60);
+                const seconds = timer % 60;
+                if (timer > 60) {
+                    document.getElementById('timerCounter').textContent = `${minutes} min ${seconds} sec`;
+                } else {
+                    document.getElementById('timerCounter').textContent = timer;
+                }
+                if (timer % 3 === 0) {
                     checkQueueStatus();
                 }
             }, 1000);
         }
-        
-        // Check queue status
+
         async function checkQueueStatus() {
             try {
                 const response = await fetch('/queue_status/' + requestId);
                 const data = await response.json();
-                
+
+                if (data.error) {
+                    clearInterval(intervalId);
+                    document.getElementById('queueStatus').innerHTML = '<i class="fas fa-exclamation-circle"></i> Request failed!';
+                    document.getElementById('queueStatus').style.color = '#e74c3c';
+                    document.getElementById('queueInfo').innerHTML = `<span>Error: <strong>${data.errorMessage || "There was a problem processing your request."}</strong></span>`;
+                    document.getElementById('progressBar').style.width = '0%';
+                    setTimeout(() => { window.location.href = '/'; }, 3000);
+                    return;
+                }
+
                 if (data.status === 'completed') {
                     clearInterval(intervalId);
                     document.getElementById('queueStatus').innerHTML = '<i class="fas fa-check-circle"></i> Request completed!';
-                    document.getElementById('queueStatus').style.color = '#4CAF50';
+                    document.getElementById('queueStatus').style.color = '#006747';
                     document.getElementById('progressBar').style.width = '100%';
-                    
-                    // Redirect to results
-                    setTimeout(() => {
-                        window.location.href = '/show_results/' + requestId;
-                    }, 500);
-                }                else if (data.status === 'failed') {
+                    setTimeout(() => { window.location.href = '/show_results/' + requestId; }, 500);
+                } else if (data.status === 'failed') {
                     clearInterval(intervalId);
                     document.getElementById('queueStatus').innerHTML = '<i class="fas fa-exclamation-circle"></i> Request failed!';
-                    document.getElementById('queueStatus').style.color = '#f44336';
-                    
-                    // Add more detailed error message if available
-                    const errorMessage = data.errorMessage || "There was a problem processing your request. This could be due to rate limiting or a server issue.";
-                    document.getElementById('queuePosition').parentElement.innerHTML = `<span>Error: <strong>${errorMessage}</strong></span>`;
-                    document.getElementById('estimatedTime').parentElement.innerHTML = '<span>Redirecting to home page in <strong id="redirectCounter">3</strong> seconds...</span>';
-                    
-                    // Countdown for redirection
-                    let count = 3;
-                    const countdownInterval = setInterval(() => {
-                        count--;
-                        document.getElementById('redirectCounter').textContent = count;
-                        if (count <= 0) {
-                            clearInterval(countdownInterval);
-                            window.location.href = '/';
-                        }
-                    }, 1000);
-                }
-                else {
-                    // Update queue position and progress
-                    document.getElementById('queuePosition').textContent = data.position;
-                    document.getElementById('estimatedTime').textContent = data.estimated_time;
-                    
-                    // Calculate progress percentage (inverse of position)
-                    const progressPercent = data.position <= 1 ? 90 : Math.max(10, 100 - (data.position * 20));
-                    document.getElementById('progressBar').style.width = progressPercent + '%';
-                    
-                    // Update status text
+                    document.getElementById('queueStatus').style.color = '#e74c3c';
+                    document.getElementById('queueInfo').innerHTML = `<span>Error: <strong>${data.errorMessage || "There was a problem processing your request."}</strong></span>`;
+                    document.getElementById('progressBar').style.width = '0%';
+                    setTimeout(() => { window.location.href = '/'; }, 3000);
+                } else {
                     if (data.status === 'processing') {
-                        document.getElementById('queueStatus').innerHTML = '<i class="fas fa-cog fa-spin"></i> Processing your request...';
-                        document.getElementById('queueStatus').style.color = '#2196F3';
+                        document.getElementById('queueStatus').innerHTML = '<span class="spinner"></span> Processing your request...';
+                        document.getElementById('queueStatus').style.color = '#006747';
+                        document.getElementById('queueInfo').innerHTML = '';
+                        document.getElementById('progressBar').style.width = '90%';
+                    } else {
+                        document.getElementById('queueStatus').innerHTML = '<span>Your request is in queue...</span>';
+                        document.getElementById('queueStatus').style.color = '#006747';
+                        document.getElementById('queueInfo').innerHTML = `
+                            <span>Position: <strong id="queuePosition">${data.position}</strong></span>
+                            <span>Estimated time: <strong id="estimatedTime">${data.estimated_time}</strong> seconds</span>
+                        `;
+                        const progressPercent = data.position <= 1 ? 90 : Math.max(10, 100 - (data.position * 15));
+                        document.getElementById('progressBar').style.width = progressPercent + '%';
                     }
                 }
             } catch (error) {
                 console.error('Error checking queue status:', error);
             }
         }
-        
-        // Start everything when the page loads
-        window.addEventListener('load', function() {
+
+        window.addEventListener('load', function () {
             startTimer();
-            checkQueueStatus(); // Check immediately on load
+            checkQueueStatus();
         });
     </script>
-</body>
 
+    <script>{{ script_js | safe }}</script>
+</body>
 </html>

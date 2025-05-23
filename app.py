@@ -13,20 +13,13 @@ STATION_NAME_MAPPING = {"Coxs Bazar": "Cox's Bazar"}
 with open('config.json', 'r', encoding='utf-8') as config_file:
     CONFIG = json.load(config_file)
     
-# Configure the request queue based on settings in config.json
 def configure_request_queue():
     max_concurrent = CONFIG.get("queue_max_concurrent", 1)
     cooldown_period = CONFIG.get("queue_cooldown_period", 3)
     
-    # Create a new global request queue with these settings
     global request_queue
     request_queue = RequestQueue(max_concurrent=max_concurrent, cooldown_period=cooldown_period)
     
-    print(f"[INFO] Configured request queue with max_concurrent={max_concurrent}, cooldown_period={cooldown_period}")
-
-# Initialize request queue with config settings
-configure_request_queue()
-
 with open('assets/js/script.js', 'r', encoding='utf-8') as js_file:
     SCRIPT_JS_CONTENT = js_file.read()
 with open('assets/styles.css', 'r', encoding='utf-8') as css_file:
@@ -137,34 +130,26 @@ def check_seats():
             'seat_class': 'S_CHAIR'
         }
 
-        # Check if queueing is enabled in config
         if CONFIG.get("queue_enabled", True):
-            # Add the request to our queue system
             request_id = request_queue.add_request(
                 process_seat_request,
                 {'config': config, 'form_values': form_values}
             )
             
-            # Store the request ID in the session
             session['queue_request_id'] = request_id
             
-            # Redirect to the queue waiting page
             return redirect(url_for('queue_wait'))
         else:
-            # Process request immediately (legacy behavior)
             result = detailsSeatAvailability(config)
             
-            # Handle errors in the result
             if "error" in result:
                 session['error'] = result["error"]
                 return redirect(url_for('home'))
                 
-            # Process the result as before
             for train, details in result.items():
                 details['from_station'] = config['from_city']
                 details['to_station'] = config['to_city']
                 
-                # Process train details...
                 train_has_422_error = False
                 train_error_message = None
                 for seat_type in details['seat_data']:
@@ -191,7 +176,6 @@ def check_seats():
                 else:
                     details["all_seats_422"] = False
                     
-            # Store result in cache (legacy behavior)
             result_id = str(uuid.uuid4())
             RESULT_CACHE[result_id] = result
             session['result_id'] = result_id
@@ -203,7 +187,6 @@ def check_seats():
         return redirect(url_for('home'))
 
 def process_seat_request(config, form_values):
-    """Process the seat request in the queue"""
     try:
         result = detailsSeatAvailability(config)
         bst_tz = pytz.timezone('Asia/Dhaka')
@@ -283,7 +266,6 @@ def process_seat_request(config, form_values):
 
 @app.route('/queue_wait')
 def queue_wait():
-    """Show waiting page for queued requests"""
     maintenance_response = check_maintenance()
     if maintenance_response:
         return maintenance_response
@@ -293,7 +275,6 @@ def queue_wait():
         session['error'] = "Your request session has expired. Please search again."
         return redirect(url_for('home'))
     
-    # Get the current status of the request
     status = request_queue.get_request_status(request_id)
     if not status:
         session['error'] = "Your request could not be found. Please search again."
@@ -312,12 +293,10 @@ def queue_wait():
 
 @app.route('/queue_status/<request_id>')
 def queue_status(request_id):
-    """API endpoint to get the current status of a queued request"""
     status = request_queue.get_request_status(request_id)
     if not status:
         return jsonify({"error": "Request not found"}), 404
     
-    # Check if the request failed and include error message
     if status["status"] == "failed":
         result = request_queue.get_request_result(request_id)
         if result and "error" in result:
@@ -327,7 +306,6 @@ def queue_status(request_id):
 
 @app.route('/show_results')
 def show_results():
-    """Legacy show results route - redirects to new route with request_id"""
     request_id = session.get('queue_request_id')
     if not request_id:
         session['error'] = "Your request session has expired. Please search again."
@@ -336,15 +314,12 @@ def show_results():
 
 @app.route('/show_results/<request_id>')
 def show_results_with_id(request_id):
-    """Show results for a completed queued request"""
     maintenance_response = check_maintenance()
     if maintenance_response:
         return maintenance_response
 
-    # Get the result from the queue system
     queue_result = request_queue.get_request_result(request_id)
     
-    # Handle errors or no results
     if not queue_result:
         session['error'] = "Your request has expired or could not be found. Please search again."
         return redirect(url_for('home'))
@@ -357,7 +332,6 @@ def show_results_with_id(request_id):
         session['error'] = "An error occurred while processing your request. Please try again."
         return redirect(url_for('home'))
     
-    # Extract the actual result data
     result = queue_result.get("result", {})
     
     form_values = session.get('form_values', {})
@@ -441,4 +415,4 @@ def group_by_prefix(seats):
     return {prefix: {"seats": seats, "count": len(seats)} for prefix, seats in groups.items()}
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5001)))

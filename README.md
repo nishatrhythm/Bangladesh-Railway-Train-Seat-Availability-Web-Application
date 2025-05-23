@@ -9,7 +9,6 @@ A full-stack web application to **securely fetch and visualize real-time train s
 - 🚄 **All Bangladesh Railway Routes**: Complete coverage of official train routes
 - 📱 **Mobile-Optimized Interface**: Fully responsive design for all devices
 - ⚡ **Zero Login Required**: No account creation or user authentication needed
-- 🔄 **Queue System**: Prevents API rate limiting with smart request queue
 
 ---
 
@@ -35,12 +34,11 @@ A full-stack web application to **securely fetch and visualize real-time train s
 5. [Data Processing](#-data-processing)  
 6. [Frontend Features](#️-frontend-features)  
 7. [API Error Handling](#-api-error-handling)  
-8. [Queue System](#-queue-system)  
-9. [Cache Control](#-cache-control)  
-10. [Technologies Used](#-technologies-used)  
-11. [Setup Instructions](#-setup-instructions)  
-12. [Disclaimer on Data Usage](#️-disclaimer-on-data-usage)  
-13. [License](#-license)
+8. [Cache Control](#-cache-control)  
+9. [Technologies Used](#-technologies-used)  
+10. [Setup Instructions](#-setup-instructions)  
+11. [Disclaimer on Data Usage](#️-disclaimer-on-data-usage)  
+12. [License](#-license)
 
 ---
 
@@ -221,41 +219,6 @@ sorted(result.items(), key=lambda x: parsed_dep_time)
 | 500+           | Server-side issues    | Retried 3 times; final message shown           |
 | Empty Train    | No trains             | Clear message: try different station/date      |
 | Invalid Date   | Corrupt input         | Session flushed and redirected                 |
-
----
-
-## 🔄 Queue System
-
-The application implements a smart request queue to prevent API rate limiting and 403 errors while handling multiple concurrent users:
-
-### Features
-
-- **Controlled Concurrency**: Limits concurrent API requests to prevent overloading
-- **Cooldown Periods**: Enforces delay between batches of requests
-- **Real-time Status Updates**: Users see position in queue and estimated wait time 
-- **Retry Mechanism**: Automatically retries 403 errors with exponential backoff
-- **Error Handling**: Gracefully handles failures and provides feedback
-- **Request Expiry**: Cleans up stale requests to prevent memory leaks
-
-### Queue Architecture
-
-```
-User Request → Queue → Worker Thread → API Request → Response
-                 ↑                            ↓
-                 └── Status Updates  ←  Result Cache
-```
-
-### Configuration
-
-Queue behavior can be adjusted via `config.json`:
-
-```json
-{
-  "queue_max_concurrent": 1,  // Max concurrent API requests
-  "queue_cooldown_period": 3, // Seconds between request batches
-  "queue_enabled": true       // Toggle queue system
-}
-```
 
 ---
 

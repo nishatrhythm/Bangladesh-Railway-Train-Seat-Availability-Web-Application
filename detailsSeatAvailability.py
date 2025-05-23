@@ -36,11 +36,7 @@ def fetch_token() -> str:
     retry_count = 0
     while retry_count < max_retries:
         try:
-            print(f"[DEBUG] Sending POST request to {url} with payload: {payload}")
             response = requests.post(url, json=payload)
-            print(f"[DEBUG] Response status code: {response.status_code}")
-            # print(f"[DEBUG] Response headers: {response.headers}")
-            # print(f"[DEBUG] Response body: {response.text}")
             if response.status_code == 422:
                 raise Exception("Server-side Mobile Number or Password is incorrect. Please wait a moment while we resolve this issue.")
             elif response.status_code >= 500:
@@ -50,11 +46,9 @@ def fetch_token() -> str:
                 continue
             data = response.json()
             token = data["data"]["token"]
-            print(f"[DEBUG] Successfully fetched token: {token}")
             return token
         except requests.RequestException as e:
             error_str = str(e)
-            print(f"[DEBUG] Request exception in fetch_token: {error_str}")
             if "NameResolutionError" in error_str or "Failed to resolve" in error_str:
                 raise Exception("We couldn't reach the Bangladesh Railway website. Please try again in a few minutes.")
             raise Exception(f"Failed to fetch token: {error_str}")
@@ -107,7 +101,6 @@ def analyze_seat_layout(data: Dict) -> Dict:
 
 def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[str], int, int, bool, dict, dict]:
     global TOKEN
-    # Ensure TOKEN exists; fetch if None
     if not TOKEN:
         TOKEN = fetch_token()
         set_token(TOKEN)
@@ -128,7 +121,6 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
                     raise Exception("We're unable to connect to the Bangladesh Railway website right now. Please try again in a few minutes.")
                 continue
             if response.status_code == 401 and not has_retried_with_new_token:
-                # Check if the error is specifically "Invalid User Access Token!"
                 try:
                     error_data = response.json()
                     error_messages = error_data.get("error", {}).get("messages", [])
@@ -139,7 +131,6 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
                         has_retried_with_new_token = True
                         continue
                 except ValueError:
-                    # If response is not JSON, treat as generic 401 and retry with new token
                     TOKEN = fetch_token()
                     set_token(TOKEN)
                     headers["Authorization"] = f"Bearer {TOKEN}"
@@ -168,7 +159,6 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
         except requests.RequestException as e:
             status_code = e.response.status_code if e.response is not None else None
             if status_code == 401 and not has_retried_with_new_token:
-                # Check if the error is specifically "Invalid User Access Token!"
                 try:
                     error_data = e.response.json()
                     error_messages = error_data.get("error", {}).get("messages", [])
@@ -179,7 +169,6 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
                         has_retried_with_new_token = True
                         continue
                 except ValueError:
-                    # If response is not JSON, treat as generic 401 and retry with new token
                     TOKEN = fetch_token()
                     set_token(TOKEN)
                     headers["Authorization"] = f"Bearer {TOKEN}"
@@ -199,40 +188,26 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
 
 def fetch_train_details(config: Dict) -> List[Dict]:
     url = f"{API_BASE_URL}/app/bookings/search-trips-v2"
-    headers = {}  # No Authorization header required
+    headers = {}
     max_retries = 3
     retry_count = 0
 
     while retry_count < max_retries:
         try:
-            print(f"[DEBUG] Sending GET request to {url} with params: {config}, headers: {headers}")
             response = requests.get(url, params=config, headers=headers)
-            print(f"[DEBUG] Response status code: {response.status_code}")
-            # print(f"[DEBUG] Response headers: {response.headers}")
-            try:
-                response_body = response.json()
-                # print(f"[DEBUG] Response body: {response_body}")
-            except ValueError:
-                print(f"[DEBUG] Failed to parse response as JSON: {response.text}")
-            
             if response.status_code == 403:
-                # Specifically handle 403 errors
-                print(f"[DEBUG] 403 Forbidden error received - likely due to rate limiting")
                 raise Exception("Rate limit exceeded. Please try again later.")
                 
             if response.status_code >= 500:
                 retry_count += 1
-                print(f"[DEBUG] Server error (status {response.status_code}), retry {retry_count}/{max_retries}")
                 if retry_count == max_retries:
                     raise Exception("We're unable to connect to the Bangladesh Railway website right now. Please try again in a few minutes.")
                 continue
                 
             response.raise_for_status()
             train_data = response.json().get("data", {}).get("trains", [])
-            # print(f"[DEBUG] Successfully fetched train data: {train_data}")
             return train_data
         except requests.RequestException as e:
-            print(f"[DEBUG] Request exception: {str(e)}")
             if hasattr(e, 'response') and e.response and e.response.status_code == 403:
                 raise Exception("Rate limit exceeded. Please try again later.")
             return []
