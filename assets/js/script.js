@@ -315,13 +315,13 @@ function resetSubmitButton() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+    const seatForm = document.getElementById("seatForm");
+    if (seatForm) seatForm.addEventListener("submit", validateForm);
+
     Promise.all([loadStations(), loadBannerImage()]).then(() => {
         document.querySelectorAll('a[class^="btn-"], button[class^="btn-"]').forEach(el => {
             el.setAttribute('draggable', 'false');
         });
-
-        const seatForm = document.getElementById("seatForm");
-        if (seatForm) seatForm.addEventListener("submit", validateForm);
 
         const origin = document.getElementById("origin");
         if (origin) {

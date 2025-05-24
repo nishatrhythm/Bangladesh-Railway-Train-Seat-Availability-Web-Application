@@ -279,6 +279,11 @@ def queue_wait():
     if not status:
         session['error'] = "Your request could not be found. Please search again."
         return redirect(url_for('home'))
+    if request.args.get('refresh_check') == 'true':
+        request_queue.cancel_request(request_id)
+        session.pop('queue_request_id', None)
+        session['error'] = "Page was refreshed. Please start a new search."
+        return redirect(url_for('home'))
     
     form_values = session.get('form_values', {})
     
@@ -303,6 +308,28 @@ def queue_status(request_id):
             status["errorMessage"] = result["error"]
     
     return jsonify(status)
+
+@app.route('/cancel_request/<request_id>', methods=['POST'])
+def cancel_request(request_id):
+    """Cancel a queue request"""
+    try:
+        removed = request_queue.cancel_request(request_id)
+        
+        if session.get('queue_request_id') == request_id:
+            session.pop('queue_request_id', None)
+        
+        return jsonify({"cancelled": removed, "status": "success"})
+    except Exception as e:
+        return jsonify({"cancelled": False, "status": "error", "error": str(e)}), 500
+
+@app.route('/cancel_request_beacon/<request_id>', methods=['POST'])
+def cancel_request_beacon(request_id):
+    """Cancel a queue request via sendBeacon (no response needed)"""
+    try:
+        request_queue.cancel_request(request_id)
+        return '', 204
+    except Exception:
+        return '', 204
 
 @app.route('/show_results')
 def show_results():

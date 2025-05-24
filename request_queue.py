@@ -68,6 +68,31 @@ class RequestQueue:
                 return result
             return None
     
+    def cancel_request(self, request_id):
+        with self.lock:
+            if request_id in self.statuses:
+                del self.statuses[request_id]
+            
+            if request_id in self.results:
+                del self.results[request_id]
+            
+            temp_queue = queue.Queue()
+            removed = False
+            
+            while not self.queue.empty():
+                try:
+                    item = self.queue.get_nowait()
+                    if item[0] != request_id:
+                        temp_queue.put(item)
+                    else:
+                        removed = True
+                except queue.Empty:
+                    break
+            
+            self.queue = temp_queue
+            
+            return removed
+    
     def _process_queue(self):
         while True:
             batch = []
@@ -81,20 +106,29 @@ class RequestQueue:
                 
                 while len(batch) < self.max_concurrent and not self.queue.empty():
                     item = self.queue.get()
-                    batch.append(item)
                     request_id = item[0]
-                    self.statuses[request_id]["status"] = "processing"
+                    if request_id in self.statuses:
+                        batch.append(item)
+                        self.statuses[request_id]["status"] = "processing"
                 
                 if batch:
                     self.last_request_time = datetime.now()
             
             for request_id, request_func, params in batch:
+                with self.lock:
+                    if request_id not in self.statuses:
+                        continue
+                
                 try:
                     max_retries = 3
                     retry_count = 0
                     retry_delay = 5
                     
                     while retry_count < max_retries:
+                        with self.lock:
+                            if request_id not in self.statuses:
+                                break
+                        
                         try:
                             result = request_func(**params)
                             break
@@ -108,12 +142,14 @@ class RequestQueue:
                             raise
                     
                     with self.lock:
-                        self.results[request_id] = result
-                        self.statuses[request_id]["status"] = "completed"
+                        if request_id in self.statuses:
+                            self.results[request_id] = result
+                            self.statuses[request_id]["status"] = "completed"
                 except Exception as e:
                     with self.lock:
-                        self.results[request_id] = {"error": str(e)}
-                        self.statuses[request_id]["status"] = "failed"
+                        if request_id in self.statuses:
+                            self.results[request_id] = {"error": str(e)}
+                            self.statuses[request_id]["status"] = "failed"
             
             if not batch:
                 time.sleep(1)

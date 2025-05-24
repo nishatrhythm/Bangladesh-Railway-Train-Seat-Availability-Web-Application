@@ -61,20 +61,77 @@
                 </div>
                 <p class="note">
                     <i class="fas fa-info-circle"></i> Please wait while we check for available seats. Do not refresh this page.
-                </p>
-            </div>
-            <a href="/" class="cancel-btn">
+                </p>            </div>
+            <button onclick="cancelRequest()" class="cancel-btn">
                 <i class="fas fa-arrow-left"></i> Cancel and Go Back
-            </a>
+            </button>
         </div>
-    </div>
-
-    <script>
+    </div>    <script>
         const requestId = "{{ request_id }}";
         let timer = 0;
         let intervalId = null;
+        let pageVisited = false;
+        window.addEventListener('load', function () {
+            const currentStatus = "{{ status.status }}";
+            
+            const queueRedirecting = sessionStorage.getItem('queueRedirecting');
+            if (queueRedirecting === 'true') {
+                sessionStorage.removeItem('queueRedirecting');
+                sessionStorage.removeItem('queuePageVisited');
+                window.location.href = '/';
+                return;
+            }
 
-        function startTimer() {
+            if (performance.navigation.type === 1) {
+                const previousPageVisit = sessionStorage.getItem('queuePageVisited');
+                const lastStatusCheck = sessionStorage.getItem('lastStatusCheck');
+                const now = Date.now();
+                
+                if (previousPageVisit === 'true' && 
+                    lastStatusCheck && 
+                    (now - parseInt(lastStatusCheck)) < 5000 &&
+                    (currentStatus === 'queued' || currentStatus === 'processing')) {
+                    
+                    window.location.href = '/queue_wait?refresh_check=true';
+                    return;
+                }
+            }
+            
+            sessionStorage.setItem('queuePageVisited', 'true');
+            pageVisited = true;
+            
+            startTimer();
+            checkQueueStatus();
+        });
+        window.addEventListener('beforeunload', function(event) {
+            const queueRedirecting = sessionStorage.getItem('queueRedirecting');
+            
+            if (pageVisited && queueRedirecting !== 'true') {
+                navigator.sendBeacon('/cancel_request_beacon/' + requestId, '');
+                sessionStorage.removeItem('queuePageVisited');
+                sessionStorage.removeItem('lastStatusCheck');
+            }
+        });
+        document.addEventListener('visibilitychange', function() {
+        });function cancelRequest() {
+            clearInterval(intervalId);
+            sessionStorage.removeItem('queuePageVisited');
+            sessionStorage.removeItem('lastStatusCheck');
+            sessionStorage.removeItem('queueRedirecting');
+            pageVisited = false;
+            
+            fetch('/cancel_request/' + requestId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }).then(response => response.json())
+            .then(data => {
+                window.location.href = '/';
+            }).catch(() => {
+                window.location.href = '/';
+            });
+        }function startTimer() {
             intervalId = setInterval(() => {
                 timer++;
                 const minutes = Math.floor(timer / 60);
@@ -84,19 +141,20 @@
                 } else {
                     document.getElementById('timerCounter').textContent = timer;
                 }
-                if (timer % 3 === 0) {
+                if (timer % 2 === 0) {
                     checkQueueStatus();
                 }
             }, 1000);
-        }
-
-        async function checkQueueStatus() {
+        }        async function checkQueueStatus() {
             try {
+                sessionStorage.setItem('lastStatusCheck', Date.now().toString());
+                
                 const response = await fetch('/queue_status/' + requestId);
                 const data = await response.json();
 
                 if (data.error) {
                     clearInterval(intervalId);
+                    sessionStorage.removeItem('lastStatusCheck');
                     document.getElementById('queueStatus').innerHTML = '<i class="fas fa-exclamation-circle"></i> Request failed!';
                     document.getElementById('queueStatus').style.color = '#e74c3c';
                     document.getElementById('queueInfo').innerHTML = `<span>Error: <strong>${data.errorMessage || "There was a problem processing your request."}</strong></span>`;
@@ -107,12 +165,20 @@
 
                 if (data.status === 'completed') {
                     clearInterval(intervalId);
+                    sessionStorage.setItem('queueRedirecting', 'true');
+                    sessionStorage.removeItem('lastStatusCheck');
+                    sessionStorage.removeItem('queuePageVisited');
+                    pageVisited = false;
+                    
                     document.getElementById('queueStatus').innerHTML = '<i class="fas fa-check-circle"></i> Request completed!';
                     document.getElementById('queueStatus').style.color = '#006747';
                     document.getElementById('progressBar').style.width = '100%';
-                    setTimeout(() => { window.location.href = '/show_results/' + requestId; }, 500);
+                    setTimeout(() => { 
+                        window.location.href = '/show_results/' + requestId; 
+                    }, 500);
                 } else if (data.status === 'failed') {
                     clearInterval(intervalId);
+                    sessionStorage.removeItem('lastStatusCheck');
                     document.getElementById('queueStatus').innerHTML = '<i class="fas fa-exclamation-circle"></i> Request failed!';
                     document.getElementById('queueStatus').style.color = '#e74c3c';
                     document.getElementById('queueInfo').innerHTML = `<span>Error: <strong>${data.errorMessage || "There was a problem processing your request."}</strong></span>`;
@@ -139,11 +205,6 @@
                 console.error('Error checking queue status:', error);
             }
         }
-
-        window.addEventListener('load', function () {
-            startTimer();
-            checkQueueStatus();
-        });
     </script>
 
     <script>{{ script_js | safe }}</script>
