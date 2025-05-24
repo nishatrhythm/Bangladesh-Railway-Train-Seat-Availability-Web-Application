@@ -163,6 +163,11 @@
     </div>
 
     <script>
+        sessionStorage.removeItem('queuePageVisited');
+        sessionStorage.removeItem('queueRedirecting');
+        sessionStorage.removeItem('lastStatusCheck');
+    </script>
+    <script>
         window.minDate = "{{ min_date }}";
         window.maxDate = "{{ max_date }}";
         window.bannerImageUrl = "{{ banner_image | safe }}";
