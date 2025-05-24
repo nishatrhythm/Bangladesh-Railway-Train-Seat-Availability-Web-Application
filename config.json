@@ -7,5 +7,7 @@
     "force_banner": 0,
     "queue_max_concurrent": 1,
     "queue_cooldown_period": 3,
-    "queue_enabled": true
+    "queue_enabled": true,
+    "queue_enhanced_cleanup": true,
+    "queue_heartbeat_timeout": 90
 }

@@ -113,6 +113,9 @@
             }
         });
         document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                sendHeartbeat();
+            }
         });function cancelRequest() {
             clearInterval(intervalId);
             sessionStorage.removeItem('queuePageVisited');
@@ -145,9 +148,10 @@
                     checkQueueStatus();
                 }
             }, 1000);
-        }        async function checkQueueStatus() {
-            try {
+        }        async function checkQueueStatus() {            try {
                 sessionStorage.setItem('lastStatusCheck', Date.now().toString());
+                
+                await sendHeartbeat();
                 
                 const response = await fetch('/queue_status/' + requestId);
                 const data = await response.json();
@@ -203,6 +207,19 @@
                 }
             } catch (error) {
                 console.error('Error checking queue status:', error);
+            }
+        }
+
+        async function sendHeartbeat() {
+            try {
+                await fetch('/queue_heartbeat/' + requestId, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+            } catch (error) {
+                console.log('Heartbeat failed:', error);
             }
         }
     </script>

@@ -311,7 +311,6 @@ def queue_status(request_id):
 
 @app.route('/cancel_request/<request_id>', methods=['POST'])
 def cancel_request(request_id):
-    """Cancel a queue request"""
     try:
         removed = request_queue.cancel_request(request_id)
         
@@ -324,7 +323,6 @@ def cancel_request(request_id):
 
 @app.route('/cancel_request_beacon/<request_id>', methods=['POST'])
 def cancel_request_beacon(request_id):
-    """Cancel a queue request via sendBeacon (no response needed)"""
     try:
         request_queue.cancel_request(request_id)
         return '', 204
@@ -440,6 +438,22 @@ def group_by_prefix(seats):
         prefix = seat.split('-')[0]
         groups.setdefault(prefix, []).append(seat)
     return {prefix: {"seats": seats, "count": len(seats)} for prefix, seats in groups.items()}
+
+@app.route('/queue_heartbeat/<request_id>', methods=['POST'])
+def queue_heartbeat(request_id):
+    try:
+        updated = request_queue.update_heartbeat(request_id)
+        return jsonify({"status": "success", "active": updated})
+    except Exception as e:
+        return jsonify({"status": "error", "error": str(e)}), 500
+
+@app.route('/queue_stats')
+def queue_stats():
+    try:
+        stats = request_queue.get_queue_stats()
+        return jsonify(stats)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5001)))
