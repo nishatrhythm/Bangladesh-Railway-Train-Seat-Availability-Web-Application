@@ -10,23 +10,23 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="flyout-notification" id="flyoutNotification">
-            <span id="flyoutMessage"></span>
-            <i class="fas fa-times flyout-close" id="flyoutClose"></i>
-        </div>
-        <noscript>
-            <div class="container noscript-warning">
-                <h2>
-                    <i class="fas fa-exclamation-circle"></i> Please Enable JavaScript
-                </h2>
-                <p>This website requires JavaScript to function properly. Enable it in your browser settings to access full functionality and check train seat availability.</p>
-                <div class="instructions">
-                    <strong>How to enable:</strong> Go to your browser settings > Privacy/Security > Enable JavaScript. Refresh the page after enabling.
-                </div>
+    <div class="flyout-notification" id="flyoutNotification">
+        <span id="flyoutMessage"></span>
+        <i class="fas fa-times flyout-close" id="flyoutClose"></i>
+    </div>
+    <noscript>
+        <div class="container noscript-warning">
+            <h2><i class="fas fa-exclamation-circle"></i> Please Enable JavaScript</h2>
+            <p>This website requires JavaScript to function properly. Enable it in your browser settings to access full
+                functionality and check train seat availability.</p>
+            <div class="instructions">
+                <strong>How to enable:</strong> Go to your browser settings > Privacy/Security > Enable JavaScript.
+                Refresh the page after enabling.
             </div>
-        </noscript>
-
+        </div>
+    </noscript>
+    
+    <div class="container">
         <h1><i class="fas fa-train"></i> BR Train Seat Availability</h1>
         <div class="queue-container">
             <div class="queue-card">
@@ -116,12 +116,15 @@
             if (!document.hidden) {
                 sendHeartbeat();
             }
-        });function cancelRequest() {
+        });        function cancelRequest() {
             clearInterval(intervalId);
             sessionStorage.removeItem('queuePageVisited');
             sessionStorage.removeItem('lastStatusCheck');
             sessionStorage.removeItem('queueRedirecting');
             pageVisited = false;
+            
+            document.getElementById('queueStatus').innerHTML = '<i class="fas fa-times-circle"></i> Cancelling request...';
+            document.getElementById('queueStatus').style.color = '#f39c12';
             
             fetch('/cancel_request/' + requestId, {
                 method: 'POST',
@@ -130,7 +133,13 @@
                 }
             }).then(response => response.json())
             .then(data => {
-                window.location.href = '/';
+                if (data.cancelled) {
+                    document.getElementById('queueStatus').innerHTML = '<i class="fas fa-check-circle"></i> Request cancelled successfully';
+                    document.getElementById('queueStatus').style.color = '#27ae60';
+                }
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1000);
             }).catch(() => {
                 window.location.href = '/';
             });
@@ -144,14 +153,23 @@
                 } else {
                     document.getElementById('timerCounter').textContent = timer;
                 }
-                if (timer % 2 === 0) {
+                
+                if (timer % 3 === 0) {
                     checkQueueStatus();
                 }
             }, 1000);
-        }        async function checkQueueStatus() {            try {
+        }
+        
+        let lastKnownStatus = null;
+        let heartbeatInterval = 3;
+        
+        async function checkQueueStatus() {            
+            try {
                 sessionStorage.setItem('lastStatusCheck', Date.now().toString());
                 
-                await sendHeartbeat();
+                if (timer % heartbeatInterval === 0) {
+                    await sendHeartbeat();
+                }
                 
                 const response = await fetch('/queue_status/' + requestId);
                 const data = await response.json();
@@ -166,6 +184,13 @@
                     setTimeout(() => { window.location.href = '/'; }, 3000);
                     return;
                 }
+
+                if (data.status === 'processing' && lastKnownStatus !== 'processing') {
+                    heartbeatInterval = 6;
+                } else if (data.status === 'queued' && lastKnownStatus !== 'queued') {
+                    heartbeatInterval = 3;
+                }
+                lastKnownStatus = data.status;
 
                 if (data.status === 'completed') {
                     clearInterval(intervalId);

@@ -16,9 +16,18 @@ with open('config.json', 'r', encoding='utf-8') as config_file:
 def configure_request_queue():
     max_concurrent = CONFIG.get("queue_max_concurrent", 1)
     cooldown_period = CONFIG.get("queue_cooldown_period", 3)
+    batch_cleanup_threshold = CONFIG.get("queue_batch_cleanup_threshold", 10)
+    cleanup_interval = CONFIG.get("queue_cleanup_interval", 30)
+    heartbeat_timeout = CONFIG.get("queue_heartbeat_timeout", 90)
     
     global request_queue
-    request_queue = RequestQueue(max_concurrent=max_concurrent, cooldown_period=cooldown_period)
+    request_queue = RequestQueue(
+        max_concurrent=max_concurrent, 
+        cooldown_period=cooldown_period,
+        batch_cleanup_threshold=batch_cleanup_threshold,
+        cleanup_interval=cleanup_interval,
+        heartbeat_timeout=heartbeat_timeout
+    )
     
 with open('assets/js/script.js', 'r', encoding='utf-8') as js_file:
     SCRIPT_JS_CONTENT = js_file.read()
@@ -317,6 +326,10 @@ def cancel_request(request_id):
         if session.get('queue_request_id') == request_id:
             session.pop('queue_request_id', None)
         
+        stats = request_queue.get_queue_stats()
+        if stats.get('cancelled_pending', 0) > 5:
+            request_queue.force_cleanup()
+        
         return jsonify({"cancelled": removed, "status": "success"})
     except Exception as e:
         return jsonify({"cancelled": False, "status": "error", "error": str(e)}), 500
@@ -454,6 +467,17 @@ def queue_stats():
         return jsonify(stats)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route('/queue_cleanup', methods=['POST'])
+def queue_cleanup():
+    try:
+        request_queue.force_cleanup()
+        stats = request_queue.get_queue_stats()
+        return jsonify({"status": "success", "message": "Cleanup completed", "stats": stats})
+    except Exception as e:
+        return jsonify({"status": "error", "error": str(e)}), 500
+
+configure_request_queue()
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5001)))

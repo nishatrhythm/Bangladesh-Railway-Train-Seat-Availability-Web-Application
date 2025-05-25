@@ -8,6 +8,7 @@
     "queue_max_concurrent": 1,
     "queue_cooldown_period": 3,
     "queue_enabled": true,
-    "queue_enhanced_cleanup": true,
-    "queue_heartbeat_timeout": 90
+    "queue_batch_cleanup_threshold": 10,
+    "queue_cleanup_interval": 30,
+    "queue_heartbeat_timeout": 60
 }

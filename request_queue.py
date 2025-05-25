@@ -1,10 +1,10 @@
-﻿import threading, time, uuid, queue, random
+import threading, time, uuid, queue, random
 from typing import Dict, Any, Optional, Callable
 from datetime import datetime, timedelta
-from collections import deque
+from collections import deque, OrderedDict
 
 class RequestQueue:
-    def __init__(self, max_concurrent=1, cooldown_period=3):
+    def __init__(self, max_concurrent=1, cooldown_period=3, batch_cleanup_threshold=10, cleanup_interval=30, heartbeat_timeout=60):
         self.queue = queue.Queue()
         self.results = {}
         self.statuses = {}
@@ -14,12 +14,17 @@ class RequestQueue:
         self.lock = threading.Lock()
         self.last_request_time = None
         
+        self.queue_order = OrderedDict()
+        self.cancelled_requests = set()
+        
         self.requests = {}
         self.processing_history = deque(maxlen=50)
         self.abandonment_history = deque(maxlen=100)
         self.avg_processing_time = 8.0
-        self.cleanup_interval = 60
+        self.cleanup_interval = cleanup_interval
         self.last_cleanup = time.time()
+        self.batch_cleanup_threshold = batch_cleanup_threshold
+        self.heartbeat_timeout = heartbeat_timeout
         
         self.worker_thread = threading.Thread(target=self._process_queue)
         self.worker_thread.daemon = True
@@ -36,6 +41,8 @@ class RequestQueue:
         with self.lock:
             self.queue.put((request_id, request_func, params))
             queue_size = self.queue.qsize()
+            
+            self.queue_order[request_id] = current_time
             
             self.requests[request_id] = {
                 'request_func': request_func,
@@ -98,11 +105,7 @@ class RequestQueue:
                 status_data = self.statuses[request_id].copy()
                 
                 if status_data["status"] == "queued":
-                    position = 0
-                    for i, (rid, _, _) in enumerate(list(self.queue.queue)):
-                        if rid == request_id:
-                            position = i + 1
-                            break
+                    position = self._get_fast_position(request_id)
                     status_data["position"] = position
                     status_data["estimated_time"] = self._enhanced_estimate_wait_time(position)
                 elif status_data["status"] == "processing":
@@ -110,6 +113,21 @@ class RequestQueue:
                     status_data["estimated_time"] = 0
                 return status_data
             return None
+    
+    def _get_fast_position(self, request_id):
+        if request_id not in self.queue_order:
+            return 0
+        
+        position = 1
+        target_time = self.queue_order[request_id]
+        
+        for rid, timestamp in self.queue_order.items():
+            if timestamp < target_time and rid not in self.cancelled_requests:
+                position += 1
+            elif rid == request_id:
+                break
+        
+        return position
     
     def get_request_result(self, request_id):
         with self.lock:
@@ -125,7 +143,9 @@ class RequestQueue:
             removed = False
             
             if request_id in self.statuses:
+                self.cancelled_requests.add(request_id)
                 status = self.statuses[request_id]
+                
                 if status["status"] == "queued":
                     abandonment_data = {
                         'position': status.get("position", 0),
@@ -133,6 +153,7 @@ class RequestQueue:
                         'timestamp': time.time()
                     }
                     self.abandonment_history.append(abandonment_data)
+                
                 del self.statuses[request_id]
                 removed = True
             
@@ -142,26 +163,44 @@ class RequestQueue:
             if request_id in self.requests:
                 del self.requests[request_id]
             
-            temp_queue = queue.Queue()
+            if request_id in self.queue_order:
+                del self.queue_order[request_id]
             
-            while not self.queue.empty():
-                try:
-                    item = self.queue.get_nowait()
-                    if item[0] != request_id:
-                        temp_queue.put(item)
-                    else:
-                        removed = True
-                except queue.Empty:
-                    break
-            
-            self.queue = temp_queue
+            if len(self.cancelled_requests) >= self.batch_cleanup_threshold:
+                self._batch_remove_cancelled()
             
             return removed
+    
+    def _batch_remove_cancelled(self):
+        if not self.cancelled_requests:
+            return
+        
+        temp_queue = queue.Queue()
+        removed_count = 0
+        
+        while not self.queue.empty():
+            try:
+                item = self.queue.get_nowait()
+                if item[0] not in self.cancelled_requests:
+                    temp_queue.put(item)
+                else:
+                    removed_count += 1
+            except queue.Empty:
+                break
+        
+        self.queue = temp_queue
+        self.cancelled_requests.clear()
+        
+        if removed_count > 0:
+            print(f"Batch cleanup: Removed {removed_count} cancelled requests from queue")
     
     def _process_queue(self):
         while True:
             batch = []
             with self.lock:
+                if self.cancelled_requests:
+                    self._batch_remove_cancelled()
+                
                 if self.last_request_time and (datetime.now() - self.last_request_time) < timedelta(seconds=self.cooldown_period):
                     time_to_wait = (self.last_request_time + timedelta(seconds=self.cooldown_period) - datetime.now()).total_seconds()
                     if time_to_wait > 0:
@@ -172,9 +211,15 @@ class RequestQueue:
                 while len(batch) < self.max_concurrent and not self.queue.empty():
                     item = self.queue.get()
                     request_id = item[0]
+                    
+                    if request_id in self.cancelled_requests:
+                        self.cancelled_requests.discard(request_id)
+                        continue
+                    
                     if request_id in self.statuses:
                         batch.append(item)
                         self.statuses[request_id]["status"] = "processing"
+                        self.queue_order.pop(request_id, None)
                 
                 if batch:
                     self.last_request_time = datetime.now()
@@ -245,11 +290,16 @@ class RequestQueue:
                     del self.results[request_id]
                 if request_id in self.statuses:
                     del self.statuses[request_id]
+                if request_id in self.queue_order:
+                    del self.queue_order[request_id]
     
     def _enhanced_cleanup_loop(self):
         while True:
             time.sleep(self.cleanup_interval)
             self._enhanced_cleanup()
+            with self.lock:
+                if self.cancelled_requests:
+                    self._batch_remove_cancelled()
     
     def _enhanced_cleanup(self):
         current_time = time.time()
@@ -259,7 +309,7 @@ class RequestQueue:
             for request_id, status in self.statuses.items():
                 if status["status"] == "queued":
                     last_heartbeat = status.get("last_heartbeat", 0)
-                    if current_time - last_heartbeat > 90:
+                    if current_time - last_heartbeat > self.heartbeat_timeout:
                         stale_requests.append(request_id)
         
         for request_id in stale_requests:
@@ -267,6 +317,13 @@ class RequestQueue:
         
         if stale_requests:
             print(f"Enhanced cleanup: Removed {len(stale_requests)} stale requests")
+    
+    def force_cleanup(self):
+        with self.lock:
+            if self.cancelled_requests:
+                self._batch_remove_cancelled()
+        self._enhanced_cleanup()
+        self._cleanup_old_entries()
     
     def get_queue_stats(self):
         with self.lock:
@@ -280,7 +337,8 @@ class RequestQueue:
                 "processing": total_processing,
                 "avg_processing_time": round(self.avg_processing_time, 2),
                 "recent_abandonments": recent_abandonments,
-                "queue_size": self.queue.qsize()
+                "queue_size": self.queue.qsize(),
+                "cancelled_pending": len(self.cancelled_requests)
             }
 
 request_queue = RequestQueue()
