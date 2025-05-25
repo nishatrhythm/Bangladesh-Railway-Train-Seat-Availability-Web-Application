@@ -1890,7 +1890,7 @@ footer a:hover {
     border-top: 3px solid #006747;
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    margin-right: 10px;
+    margin-right: 5px;
 }
 
 @keyframes spin {
