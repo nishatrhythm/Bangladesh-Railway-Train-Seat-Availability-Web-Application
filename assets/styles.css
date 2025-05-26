@@ -1017,7 +1017,6 @@ tr:hover {
 
 .collapsible-toggle:hover {
     background-color: #d1e7ce;
-    transform: translateY(-2px);
 }
 
 .collapsible-toggle i {

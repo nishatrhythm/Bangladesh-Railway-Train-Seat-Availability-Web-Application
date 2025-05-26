@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>In Queue | Train Seat Availability</title>
-    <link rel="icon" href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png" type="image/x-icon" sizes="30x30">
+    <link rel="icon"
+        href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png"
+        type="image/x-icon" sizes="30x30">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
     <style>{{ styles_css | safe }}</style>
 </head>
@@ -25,21 +28,22 @@
             </div>
         </div>
     </noscript>
-    
+
     <div class="container">
         <h1><i class="fas fa-train"></i> BR Train Seat Availability</h1>
         <div class="queue-container">
             <div class="queue-card">
                 <div class="queue-header">
                     <h2><i class="fas fa-hourglass-half"></i> Request In Queue</h2>
-                    <p><i class="fas fa-map-marker-alt"></i> {{ form_values.origin }} to {{ form_values.destination }}</p>
+                    <p><i class="fas fa-map-marker-alt"></i> {{ form_values.origin }} → {{ form_values.destination }}
+                    </p>
                     <p><i class="fas fa-calendar-alt"></i> {{ form_values.date }}</p>
                 </div>
                 <div class="queue-status" id="queueStatus" aria-live="polite">
                     {% if status.status == 'queued' %}
-                        <span>Your request is in queue...</span>
+                    <span>Your request is in queue...</span>
                     {% else %}
-                        <span class="spinner"></span> Processing your request...
+                    <span class="spinner"></span> Processing your request...
                     {% endif %}
                 </div>
                 <div class="progress-container">
@@ -48,32 +52,44 @@
                     </div>
                     <div class="queue-info" id="queueInfo">
                         {% if status.status == 'queued' %}
-                            <span>Position: <strong id="queuePosition">{{ status.position }}</strong></span>
-                            <span>Estimated time: <strong id="estimatedTime">{{ status.estimated_time }}</strong> seconds</span>
+                        <span>Position: <strong id="queuePosition">{{ status.position }}</strong></span>
+                        <span>Estimated time: <strong id="estimatedTime">
+                                {% if status.estimated_time > 60 %}
+                                {% set minutes = (status.estimated_time // 60) %}
+                                {% set seconds = (status.estimated_time % 60) %}
+                                {{ minutes }} min{{ 's' if minutes != 1 else '' }} {{ seconds }} sec{{ 's' if seconds !=
+                                1 else '' }}
+                                {% else %}
+                                {{ status.estimated_time }} sec{{ 's' if status.estimated_time != 1 else '' }}
+                                {% endif %}
+                            </strong></span>
                         {% else %}
-                            <span></span>
-                            <span></span>
+                        <span></span>
+                        <span></span>
                         {% endif %}
                     </div>
                 </div>
                 <div class="queue-timer">
-                    <i class="fas fa-clock"></i> <span id="timerCounter">0</span>s
+                    <i class="fas fa-clock"></i> <span id="timerCounter">0</span>
                 </div>
                 <p class="note">
-                    <i class="fas fa-info-circle"></i> Please wait while we check for available seats. Do not refresh this page.
-                </p>            </div>
+                    <i class="fas fa-info-circle"></i> Please wait while we check for available seats. Do not refresh
+                    this page.
+                </p>
+            </div>
             <button onclick="cancelRequest()" class="cancel-btn">
                 <i class="fas fa-arrow-left"></i> Cancel and Go Back
             </button>
         </div>
-    </div>    <script>
+    </div>
+    <script>
         const requestId = "{{ request_id }}";
         let timer = 0;
         let intervalId = null;
         let pageVisited = false;
         window.addEventListener('load', function () {
             const currentStatus = "{{ status.status }}";
-            
+
             const queueRedirecting = sessionStorage.getItem('queueRedirecting');
             if (queueRedirecting === 'true') {
                 sessionStorage.removeItem('queueRedirecting');
@@ -86,91 +102,91 @@
                 const previousPageVisit = sessionStorage.getItem('queuePageVisited');
                 const lastStatusCheck = sessionStorage.getItem('lastStatusCheck');
                 const now = Date.now();
-                
-                if (previousPageVisit === 'true' && 
-                    lastStatusCheck && 
+
+                if (previousPageVisit === 'true' &&
+                    lastStatusCheck &&
                     (now - parseInt(lastStatusCheck)) < 5000 &&
                     (currentStatus === 'queued' || currentStatus === 'processing')) {
-                    
+
                     window.location.href = '/queue_wait?refresh_check=true';
                     return;
                 }
             }
-            
+
             sessionStorage.setItem('queuePageVisited', 'true');
             pageVisited = true;
-            
+
             startTimer();
             checkQueueStatus();
         });
-        window.addEventListener('beforeunload', function(event) {
+        window.addEventListener('beforeunload', function (event) {
             const queueRedirecting = sessionStorage.getItem('queueRedirecting');
-            
+
             if (pageVisited && queueRedirecting !== 'true') {
                 navigator.sendBeacon('/cancel_request_beacon/' + requestId, '');
                 sessionStorage.removeItem('queuePageVisited');
                 sessionStorage.removeItem('lastStatusCheck');
             }
         });
-        document.addEventListener('visibilitychange', function() {
+        document.addEventListener('visibilitychange', function () {
             if (!document.hidden) {
                 sendHeartbeat();
             }
-        });        function cancelRequest() {
+        }); function cancelRequest() {
             clearInterval(intervalId);
             sessionStorage.removeItem('queuePageVisited');
             sessionStorage.removeItem('lastStatusCheck');
             sessionStorage.removeItem('queueRedirecting');
             pageVisited = false;
-            
+
             document.getElementById('queueStatus').innerHTML = '<i class="fas fa-times-circle"></i> Cancelling request...';
-            document.getElementById('queueStatus').style.color = '#f39c12';
-            
+            document.getElementById('queueStatus').style.color = '#e74c3c';
+
             fetch('/cancel_request/' + requestId, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 }
             }).then(response => response.json())
-            .then(data => {
-                if (data.cancelled) {
-                    document.getElementById('queueStatus').innerHTML = '<i class="fas fa-check-circle"></i> Request cancelled successfully';
-                    document.getElementById('queueStatus').style.color = '#27ae60';
-                }
-                setTimeout(() => {
+                .then(data => {
+                    if (data.cancelled) {
+                        document.getElementById('queueStatus').innerHTML = '<i class="fas fa-check-circle"></i> Request cancelled successfully';
+                        document.getElementById('queueStatus').style.color = '#006747';
+                    }
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1000);
+                }).catch(() => {
                     window.location.href = '/';
-                }, 1000);
-            }).catch(() => {
-                window.location.href = '/';
-            });
-        }function startTimer() {
+                });
+        } function startTimer() {
             intervalId = setInterval(() => {
                 timer++;
                 const minutes = Math.floor(timer / 60);
                 const seconds = timer % 60;
                 if (timer > 60) {
-                    document.getElementById('timerCounter').textContent = `${minutes} min ${seconds} sec`;
+                    document.getElementById('timerCounter').textContent = `${minutes} min${minutes !== 1 ? 's' : ''} ${seconds} sec${seconds !== 1 ? 's' : ''}`;
                 } else {
-                    document.getElementById('timerCounter').textContent = timer;
+                    document.getElementById('timerCounter').textContent = `${timer} sec${timer !== 1 ? 's' : ''}`;
                 }
-                
+
                 if (timer % 3 === 0) {
                     checkQueueStatus();
                 }
             }, 1000);
         }
-        
+
         let lastKnownStatus = null;
         let heartbeatInterval = 3;
-        
-        async function checkQueueStatus() {            
+
+        async function checkQueueStatus() {
             try {
                 sessionStorage.setItem('lastStatusCheck', Date.now().toString());
-                
+
                 if (timer % heartbeatInterval === 0) {
                     await sendHeartbeat();
                 }
-                
+
                 const response = await fetch('/queue_status/' + requestId);
                 const data = await response.json();
 
@@ -198,12 +214,12 @@
                     sessionStorage.removeItem('lastStatusCheck');
                     sessionStorage.removeItem('queuePageVisited');
                     pageVisited = false;
-                    
+
                     document.getElementById('queueStatus').innerHTML = '<i class="fas fa-check-circle"></i> Request completed!';
                     document.getElementById('queueStatus').style.color = '#006747';
                     document.getElementById('progressBar').style.width = '100%';
-                    setTimeout(() => { 
-                        window.location.href = '/show_results/' + requestId; 
+                    setTimeout(() => {
+                        window.location.href = '/show_results/' + requestId;
                     }, 500);
                 } else if (data.status === 'failed') {
                     clearInterval(intervalId);
@@ -224,7 +240,11 @@
                         document.getElementById('queueStatus').style.color = '#006747';
                         document.getElementById('queueInfo').innerHTML = `
                             <span>Position: <strong id="queuePosition">${data.position}</strong></span>
-                            <span>Estimated time: <strong id="estimatedTime">${data.estimated_time}</strong> seconds</span>
+                            <span>Estimated time: <strong id="estimatedTime">
+                                ${data.estimated_time > 60
+                                ? `${Math.floor(data.estimated_time / 60)} min${Math.floor(data.estimated_time / 60) !== 1 ? 's' : ''} ${data.estimated_time % 60} sec${data.estimated_time % 60 !== 1 ? 's' : ''}`
+                                : `${data.estimated_time} sec${data.estimated_time !== 1 ? 's' : ''}`}
+                            </strong></span>
                         `;
                         const progressPercent = data.position <= 1 ? 90 : Math.max(10, 100 - (data.position * 15));
                         document.getElementById('progressBar').style.width = progressPercent + '%';
@@ -251,4 +271,5 @@
 
     <script>{{ script_js | safe }}</script>
 </body>
+
 </html>
