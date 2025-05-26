@@ -1164,6 +1164,21 @@ tr:hover {
     font-weight: 800;
 }
 
+.note a {
+    color: rgb(0, 103, 71);
+    text-decoration: underline;
+    font-weight: 600;
+    transition: color 0.3s, text-decoration-color 0.3s;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-drag: none;
+}
+
+.note a:hover {
+    color: rgb(0, 80, 55);
+    text-decoration-color: rgb(0, 80, 55);
+    text-decoration-thickness: 2px;
+}
+
 @keyframes fadeInUp {
     0% {
         transform: translateY(20px);
