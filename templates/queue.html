@@ -164,8 +164,8 @@
                 timer++;
                 const minutes = Math.floor(timer / 60);
                 const seconds = timer % 60;
-                if (timer > 60) {
-                    document.getElementById('timerCounter').textContent = `${minutes} min${minutes !== 1 ? 's' : ''} ${seconds} sec${seconds !== 1 ? 's' : ''}`;
+                if (timer >= 60) {
+                    document.getElementById('timerCounter').textContent = `${minutes} min${minutes !== 1 ? 's' : ''}${seconds > 0 ? ` ${seconds} sec${seconds !== 1 ? 's' : ''}` : ''}`;
                 } else {
                     document.getElementById('timerCounter').textContent = `${timer} sec${timer !== 1 ? 's' : ''}`;
                 }
@@ -241,9 +241,9 @@
                         document.getElementById('queueInfo').innerHTML = `
                             <span>Position: <strong id="queuePosition">${data.position}</strong></span>
                             <span>Estimated time: <strong id="estimatedTime">
-                                ${data.estimated_time > 60
-                                ? `${Math.floor(data.estimated_time / 60)} min${Math.floor(data.estimated_time / 60) !== 1 ? 's' : ''} ${data.estimated_time % 60} sec${data.estimated_time % 60 !== 1 ? 's' : ''}`
-                                : `${data.estimated_time} sec${data.estimated_time !== 1 ? 's' : ''}`}
+                                ${data.estimated_time >= 60
+                                    ? `${Math.floor(data.estimated_time / 60)} min${Math.floor(data.estimated_time / 60) !== 1 ? 's' : ''}${data.estimated_time % 60 > 0 ? ` ${data.estimated_time % 60} sec${data.estimated_time % 60 !== 1 ? 's' : ''}` : ''}`
+                                    : `${data.estimated_time} sec${data.estimated_time !== 1 ? 's' : ''}`}
                             </strong></span>
                         `;
                         const progressPercent = data.position <= 1 ? 90 : Math.max(10, 100 - (data.position * 15));
