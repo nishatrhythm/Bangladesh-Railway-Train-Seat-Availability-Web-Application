@@ -81,9 +81,9 @@ def analyze_seat_layout(data: Dict) -> Dict:
                 if seat["seat_number"] and seat["ticket_type"] in seats:
                     seats[seat["ticket_type"]].append(seat["seat_number"])
     ticket_types = {}
-    for t, label in [(1, "Released Tickets to Buy"),
-                     (3, "Released Tickets to Buy"),
-                     (2, "Soon-to-be-Released Tickets to Buy"),
+    for t, label in [(1, "Issued Tickets to Buy"),
+                     (3, "Issued Tickets to Buy"),
+                     (2, "Soon-to-be-Issued Tickets to Buy"),
                      (4, "Reserved Tickets (not for sale)")]:
         if seats[t]:
             sorted_seats = sorted(seats[t], key=sort_seat_number)
@@ -92,8 +92,8 @@ def analyze_seat_layout(data: Dict) -> Dict:
                 "seats": sorted_seats,
                 "count": len(sorted_seats)
             }
-    
-    ticket_types["released_total"] = {
+
+    ticket_types["issued_total"] = {
         "count": len(seats[1]) + len(seats[3])
     }
 

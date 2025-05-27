@@ -283,10 +283,10 @@ function initializeCollapsibleSections() {
                 content.style.display = "block";
                 content.style.maxHeight = content.scrollHeight + "px";
                 content.classList.add('animated-fade-in');
-                toggle.innerHTML = `<i class="fas fa-chevron-up"></i> Collapse to hide Released Seats`;
+                toggle.innerHTML = `<i class="fas fa-chevron-up"></i> Collapse to hide Issued Ticket List`;
             } else {
                 content.style.maxHeight = "0px";
-                toggle.innerHTML = `<i class="fas fa-chevron-down"></i> Expand to view Released Seats`;
+                toggle.innerHTML = `<i class="fas fa-chevron-down"></i> Expand to view Issued Ticket List`;
                 setTimeout(() => {
                     content.style.display = "none";
                 }, 300);

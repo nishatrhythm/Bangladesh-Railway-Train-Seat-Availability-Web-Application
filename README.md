@@ -6,7 +6,7 @@ A comprehensive web application to **check real-time seat availability** for Ban
 - 🎯 **Real-Time Seat Checking**: Live seat availability for all Bangladesh Railway trains
 - 🚂 **Detailed Coach Layout**: View available seats by coach and seat type
 - 📊 **Multiple Seat Classes**: Support for all seat types (S_CHAIR, SNIGDHA, AC_B, etc.)
-- 🎫 **Ticket Type Analysis**: Shows released, soon-to-be-released, and reserved tickets
+- 🎫 **Ticket Type Analysis**: Shows issued, soon-to-be-issued, and reserved tickets
 - ⏳ **Smart Queue System**: Intelligent request management to prevent API overload
 - 🔄 **Authentication Management**: Automated token handling and refresh
 - 📱 **Mobile-Optimized Interface**: Fully responsive design for all devices
@@ -95,7 +95,7 @@ A comprehensive web application to **check real-time seat availability** for Ban
 | Real-Time Seat Availability             | ✅        | Live data from Bangladesh Railway systems |
 | Coach-wise Seat Breakdown              | ✅        | Detailed view of available seats by coach |
 | Multiple Seat Class Support            | ✅        | All Bangladesh Railway seat types supported |
-| Ticket Type Classification             | ✅        | Released, soon-to-be-released, reserved tickets |
+| Ticket Type Classification             | ✅        | Issued, soon-to-be-issued, reserved tickets |
 | Smart Authentication System            | ✅        | Automated token management and refresh |
 | Advanced Queue Management              | ✅        | Prevents API overload with intelligent queuing |
 | Responsive Design                      | ✅        | Mobile-optimized interface |
@@ -146,8 +146,8 @@ def set_token(token: str)
 Supports all Bangladesh Railway seat classes with detailed analysis:
 - **Available Seats**: Ready for booking
 - **Booking Process Seats**: Currently being processed
-- **Released Tickets**: Tickets available for purchase
-- **Soon-to-be-Released**: Tickets becoming available soon
+- **Issued Tickets**: Tickets available for purchase
+- **Soon-to-be-Issued**: Tickets becoming available soon
 - **Reserved Tickets**: Not available for public booking
 
 ---
@@ -419,7 +419,7 @@ Visit `http://localhost:5000` in your browser
                 "is_422": false,
                 "ticket_types": {
                     "1": {
-                        "label": "Released Tickets to Buy",
+                        "label": "Issued Tickets to Buy",
                         "seats": ["KA-1", "KA-2"],
                         "count": 2
                     }

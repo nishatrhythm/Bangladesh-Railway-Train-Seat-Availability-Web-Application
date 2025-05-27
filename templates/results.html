@@ -43,7 +43,7 @@
         </a>
 
         <p class="note result-disclaimer">
-            <span class="note-bold highlight">Note:</span> Seat availability info may change frequently as this website does not dynamically fetch the seat data in real time. To get the latest info, please perform a new search. Also, the released seats info may not be fully accurate.
+            <span class="note-bold highlight">Note:</span> Seat availability info may change frequently as this website does not dynamically fetch the seat data in real time. To get the latest info, please perform a new search. Also, the issued tickets info may not be fully accurate.
         </p>
 
         {% if result %}
@@ -76,18 +76,18 @@
             {% for seat_type in details['seat_data'] %}
             {% if not seat_type['is_422'] %}
             <h3><i class="fas fa-chair"></i> Seat Type: {{ seat_type['type'] }}</h3>
-            {% set released_count = seat_type['ticket_types'].released_total.count if seat_type['ticket_types'].released_total else 0 %}
-            {% if seat_type['ticket_types'] and released_count > 0 %}
+            {% set issued_count = seat_type['ticket_types'].issued_total.count if seat_type['ticket_types'].issued_total else 0 %}
+            {% if seat_type['ticket_types'] and issued_count > 0 %}
             <div class="collapsible-section">
                 <button class="collapsible-toggle" data-target="ticket-types-{{ train }}-{{ seat_type['type'] | replace(' ', '-') }}">
-                    <i class="fas fa-chevron-down"></i> Expand to view Released Seats
+                    <i class="fas fa-chevron-down"></i> Expand to view Issued Ticket List
                 </button>
                 <div class="collapsible-content" id="ticket-types-{{ train }}-{{ seat_type['type'] | replace(' ', '-') }}" style="display: none;">
                     <div class="badge-wrapper">
-                        {% if seat_type['ticket_types'].released_total %}
-                        {% set count = seat_type['ticket_types'].released_total.count %}
+                        {% if seat_type['ticket_types'].issued_total %}
+                        {% set count = seat_type['ticket_types'].issued_total.count %}
                         <h3>
-                            <i class="fas fa-ticket-alt"></i> {{ count }} Seat{{ '' if count == 1 else 's' }} Released for Purchase
+                            <i class="fas fa-ticket-alt"></i> {{ count }} Seat{{ '' if count == 1 else 's' }} Issued for Purchase
                         </h3>
                         {% endif %}
                     </div>
@@ -100,7 +100,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for type_id, type_info in seat_type['ticket_types'].items() if type_id != 'released_total' %}
+                            {% for type_id, type_info in seat_type['ticket_types'].items() if type_id != 'issued_total' %}
                             {% for coach, group in seat_type['grouped_ticket_types'][type_id].items() %}
                             <tr>
                                 <td>{{ type_info['label'] }}</td>
@@ -116,14 +116,14 @@
             {% endif %}
 
             {% if seat_type['available_count'] == 0 and seat_type['booking_process_count'] == 0 %}
-            {% set released_count = seat_type['ticket_types'].released_total.count if seat_type['ticket_types'].released_total else 0 %}
-            {% if released_count > 0 %}
+            {% set issued_count = seat_type['ticket_types'].issued_total.count if seat_type['ticket_types'].issued_total else 0 %}
+            {% if issued_count > 0 %}
             <div class="no-seats">
                 <i class="fas fa-exclamation-circle"></i> All seats have been booked for seat type {{ seat_type['type'] }}
             </div>
             {% else %}
             <div class="no-seats">
-                <i class="fas fa-exclamation-circle"></i> No seats were released for seat type {{ seat_type['type'] }}
+                <i class="fas fa-exclamation-circle"></i> No seats were issued for seat type {{ seat_type['type'] }}
             </div>
             {% endif %}
         {% else %}
