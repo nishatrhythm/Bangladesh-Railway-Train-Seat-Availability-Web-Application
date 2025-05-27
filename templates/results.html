@@ -87,7 +87,7 @@
                         {% if seat_type['ticket_types'].issued_total %}
                         {% set count = seat_type['ticket_types'].issued_total.count %}
                         <h3>
-                            <i class="fas fa-ticket-alt"></i> {{ count }} Seat{{ '' if count == 1 else 's' }} Issued for Purchase
+                            <i class="fas fa-ticket-alt"></i> {{ count }} Ticket{{ '' if count == 1 else 's' }} Issued for Purchase
                         </h3>
                         {% endif %}
                     </div>
