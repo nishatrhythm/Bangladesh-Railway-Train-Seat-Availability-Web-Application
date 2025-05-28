@@ -426,18 +426,6 @@ def show_results_with_id(request_id):
         banner_image=banner_image
     )
 
-@app.route('/clear_token', methods=['GET', 'POST'])
-def clear_token():
-    maintenance_response = check_maintenance()
-    if maintenance_response:
-        return maintenance_response
-
-    if request.method == 'GET':
-        abort(404)
-    from detailsSeatAvailability import set_token
-    set_token(None)
-    return redirect(url_for('home'))
-
 @app.errorhandler(404)
 def page_not_found(e):
     maintenance_response = check_maintenance()
