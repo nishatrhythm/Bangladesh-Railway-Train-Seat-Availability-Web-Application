@@ -583,6 +583,9 @@ function generateMaterialCalendar() {
 function openMaterialCalendar() {
     const calendar = document.getElementById("materialCalendar");
     if (!calendar) return;
+    
+    updateCalendarDates();
+    
     calendar.style.display = "block";
     generateMaterialCalendar();
 
@@ -606,7 +609,17 @@ function updateCalendarDates() {
     const todayBST = getBSTDate();
     calendarMinDate = new Date(todayBST);
     calendarMaxDate = addDays(todayBST, DATE_LIMIT_DAYS - 1);
-    calendarCurrentMonth = new Date(calendarMinDate.getFullYear(), calendarMinDate.getMonth(), 1);
+    
+    if (input && input.value) {
+        try {
+            const selectedDate = parseDate(input.value);
+            calendarCurrentMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
+        } catch (e) {
+            calendarCurrentMonth = new Date(calendarMinDate.getFullYear(), calendarMinDate.getMonth(), 1);
+        }
+    } else {
+        calendarCurrentMonth = new Date(calendarMinDate.getFullYear(), calendarMinDate.getMonth(), 1);
+    }
 
     const calendar = document.getElementById("materialCalendar");
     if (calendar && calendar.style.display === "block") {
