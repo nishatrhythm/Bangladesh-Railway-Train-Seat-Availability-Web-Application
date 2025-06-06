@@ -1,14 +1,9 @@
 {
     "version": "1.1.1",
     "is_maintenance": 0,
-    "maintenance_message": "This website is currently undergoing scheduled maintenance. We are working on a feature that will allow users to access the website without providing their mobile number and password. We strictly maintain user data privacy and will not compromise on data security. We expect the patch update to be live within the day.",
+    "maintenance_message": "This website is currently undergoing scheduled maintenance.",
     "is_banner_enabled": 1,
     "image_link": "https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application/refs/heads/main/static/images/eid-al-adha-2025.png",
     "force_banner": 1,
-    "queue_max_concurrent": 1,
-    "queue_cooldown_period": 3,
-    "queue_enabled": true,
-    "queue_batch_cleanup_threshold": 10,
-    "queue_cleanup_interval": 30,
-    "queue_heartbeat_timeout": 60
+    "queue_enabled": false
 }
