@@ -770,3 +770,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('scroll', handleScroll);
 })();
+
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('legal-modal')) {
+        const modalId = event.target.id;
+        closeModal(modalId);
+    }
+});
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const activeModals = document.querySelectorAll('.legal-modal[style*="display: block"]');
+        activeModals.forEach(modal => {
+            closeModal(modal.id);
+        });
+    }
+});

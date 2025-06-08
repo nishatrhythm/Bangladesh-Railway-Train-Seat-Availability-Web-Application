@@ -33,7 +33,7 @@ h1 {
     color: rgb(0, 103, 71);
     font-weight: 800;
     line-height: 1.5;
-    margin: 20px 0px 30px;
+    margin: 50px 0px 50px;
     animation: fadeInTranslate 0.8s ease-out;
 }
 
@@ -1916,6 +1916,135 @@ footer a:hover {
     }
 }
 
+.legal-modal {
+    position: fixed;
+    z-index: 1002;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    display: none;
+    overflow: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.legal-modal-content {
+    background-color: #ffffff;
+    margin: auto;
+    padding: 0;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 103, 71, 0.2);
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    position: relative;
+    border: 1px solid #006747;
+    animation: modalFadeIn 0.5s ease-out;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.legal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    color: #006747;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1003;
+    transition: color 0.3s, transform 0.3s;
+    padding: 5px;
+    line-height: 1;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.legal-close:hover,
+.legal-close:focus {
+    color: #e74c3c;
+    transform: scale(1.1);
+}
+
+.legal-modal-body {
+    padding: 50px 30px 30px;
+    overflow-y: auto;
+    max-height: calc(90vh - 60px);
+    line-height: 1.6;
+}
+
+.legal-modal-body h2 {
+    color: #006747;
+    font-size: 28px;
+    font-weight: 800;
+    margin: 0 0 20px;
+    text-align: center;
+    border-bottom: 2px solid #006747;
+    padding-bottom: 15px;
+}
+
+.legal-modal-body h3 {
+    color: #006747;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 25px 0 12px;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 5px;
+}
+
+.legal-modal-body p {
+    color: #333;
+    margin: 0 0 15px;
+    text-align: left;
+    font-size: 16px;
+}
+
+.legal-modal-body ul,
+.legal-modal-body ol {
+    margin: 15px 0;
+    padding-left: 25px;
+    text-align: left;
+}
+
+.legal-modal-body li {
+    margin: 8px 0;
+    color: #333;
+    font-size: 16px;
+}
+
+.legal-modal-body strong {
+    color: #006747;
+    font-weight: 600;
+}
+
+.legal-modal-body hr {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 20px 0;
+}
+
+.legal-modal-body a {
+    color: #006747;
+    text-decoration: underline;
+    transition: color 0.3s;
+}
+
+.legal-modal-body a:hover {
+    color: #004d35;
+}
+
+.legal-links {
+    background-color: rgba(0, 103, 71, 0.08);
+    padding: 8px 16px;
+    border-radius: 8px;
+    margin-top: 8px;
+    display: inline-block;
+    border: 1px solid rgba(0, 103, 71, 0.15);
+}
+
 #backToTopBtn {
     position: fixed;
     bottom: 30px;
@@ -2001,6 +2130,7 @@ footer a:hover {
 
     h1 {
         font-size: 24px;
+        margin: 45px 0px 45px;
     }
 
     h2 {
@@ -2374,6 +2504,43 @@ footer a:hover {
         flex-direction: column;
         gap: 8px;
     }
+
+    .legal-modal {
+        padding: 10px;
+    }
+    
+    .legal-modal-content {
+        max-width: 100%;
+        margin: 10px auto;
+        max-height: 95vh;
+    }
+    
+    .legal-modal-body {
+        padding: 40px 20px 20px;
+        max-height: calc(95vh - 50px);
+    }
+    
+    .legal-modal-body h2 {
+        font-size: 24px;
+    }
+    
+    .legal-modal-body h3 {
+        font-size: 16px;
+    }
+
+    .legal-modal-body p {
+        font-size: 14px;
+    }
+
+    .legal-modal-body li {
+        font-size: 14px;
+    }
+    
+    .legal-close {
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -2386,6 +2553,10 @@ footer a:hover {
 
     .container {
         padding: 10px;
+    }
+
+    h1 {
+        margin: 30px 0px 20px;
     }
 
     h2 {
@@ -2708,5 +2879,23 @@ footer a:hover {
     .cancel-btn {
         font-size: 12px;
         padding: 8px 15px;
+    }
+
+    .legal-modal-body {
+        padding: 35px 15px 15px;
+    }
+    
+    .legal-modal-body h2 {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+    
+    .legal-modal-body h3 {
+        margin: 20px 0 10px;
+    }
+    
+    .legal-modal-body ul,
+    .legal-modal-body ol {
+        padding-left: 20px;
     }
 }

@@ -21,7 +21,8 @@
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:url" content="https://trainseat.vercel.app">
-    <meta property="og:type" content="website">    <style>{{ styles_css | safe }}</style>
+    <meta property="og:type" content="website">
+    <style>{{ styles_css | safe }}</style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
     <link rel="icon"
         href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png"
@@ -62,9 +63,9 @@
         </p><br> -->
 
         {% if error %}
-            <div class="error shake">
-                <i class="fas fa-exclamation-circle error-icon"></i> {{ error }}
-            </div>
+        <div class="error shake">
+            <i class="fas fa-exclamation-circle error-icon"></i> {{ error }}
+        </div>
         {% endif %}
 
         <form method="POST" action="{{ url_for('check_seats') }}" id="seatForm">
@@ -143,6 +144,12 @@
             <a href="https://bdrailway.vercel.app" target="_blank">Train Fare</a>
             <span class="dot">•</span>
             <a href="https://forms.gle/NV72PC1z75sq77tg7" target="_blank">Feedback</a>
+            <br><br>
+            <div class="legal-links">
+                <a href="#" onclick="openModal('termsModal')">Terms and Conditions</a>
+                <span class="dot">|</span>
+                <a href="#" onclick="openModal('privacyModal')">Privacy Policy</a>
+            </div>
         </div>
 
         {% if is_banner_enabled %}
@@ -160,6 +167,211 @@
             </div>
         </div>
         {% endif %}
+
+        <!-- Terms and Conditions Modal -->
+        <div id="termsModal" class="legal-modal">
+            <div class="legal-modal-content">
+                <span class="legal-close" onclick="closeModal('termsModal')">&times;</span>
+                <div class="legal-modal-body">
+                    <h2>Terms and Conditions</h2>
+                    <p><strong>Effective Date:</strong> December 09, 2024</p>
+                    <hr>
+
+                    <h3>1. Introduction</h3>
+                    <p>Welcome to the Bangladesh Railway Train Seat Availability Web Application. This is a free,
+                        open-source educational tool designed to help users check real-time train seat availability for
+                        Bangladesh Railway. By using this service, you agree to be bound by these Terms and Conditions.
+                    </p>
+
+                    <h3>2. Service Description</h3>
+                    <p>This application provides:</p>
+                    <ul>
+                        <li><strong>Real-Time Seat Checking:</strong> Live seat availability data for Bangladesh Railway
+                            trains</li>
+                        <li><strong>Coach-wise Breakdown:</strong> Detailed seat information organized by train coach
+                        </li>
+                        <li><strong>Multiple Seat Classes:</strong> Support for all Bangladesh Railway seat types
+                            (S_CHAIR, SNIGDHA, AC_B, etc.)</li>
+                        <li><strong>Journey Planning:</strong> Tools to help plan your rail travel within Bangladesh
+                        </li>
+                        <li><strong>Mobile-Optimized Interface:</strong> Responsive design for use on all devices</li>
+                        <li><strong>No Registration Required:</strong> Free access without creating an account</li>
+                    </ul>
+
+                    <h3>3. Acceptable Use Policy</h3>
+                    <p><strong>You may use this service for:</strong></p>
+                    <ul>
+                        <li>Personal travel planning and research</li>
+                        <li>Educational and learning purposes</li>
+                        <li>Non-commercial information gathering about train schedules</li>
+                        <li>Checking seat availability before booking tickets</li>
+                    </ul>
+
+                    <p><strong>You may NOT use this service for:</strong></p>
+                    <ul>
+                        <li>Automated scraping or bulk data extraction</li>
+                        <li>Commercial resale of seat availability information</li>
+                        <li>Overwhelming the service with excessive requests</li>
+                        <li>Any illegal activities or circumventing Bangladesh Railway policies</li>
+                        <li>Attempting to access or modify the underlying systems</li>
+                    </ul>
+
+                    <h3>4. Third-Party Data Sources</h3>
+                    <p>This application fetches data from external sources including:</p>
+                    <ul>
+                        <li><strong>Shohoz API (railspaapi.shohoz.com):</strong> Primary source for train seat
+                            availability data</li>
+                        <li><strong>Bangladesh Railway Systems:</strong> Official railway data when available</li>
+                    </ul>
+                    <p>We are not affiliated with or endorsed by Bangladesh Railway or Shohoz. This is an independent
+                        educational project.</p>
+
+                    <h3>5. Service Limitations and Disclaimers</h3>
+                    <p>This service is provided "as is" without warranties of any kind. We do not guarantee:</p>
+                    <ul>
+                        <li><strong>Data Accuracy:</strong> Seat availability information may not always be current or
+                            accurate</li>
+                        <li><strong>Service Availability:</strong> The application may be unavailable due to maintenance
+                            or technical issues</li>
+                        <li><strong>Third-Party Dependencies:</strong> External APIs may be temporarily unavailable</li>
+                        <li><strong>Booking Success:</strong> Availability shown here does not guarantee successful
+                            ticket booking</li>
+                    </ul>
+
+                    <h3>6. Open Source Nature</h3>
+                    <p>This is an open-source project available on <a
+                            href="https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application"
+                            target="_blank">GitHub</a>. The code is provided for educational purposes and community
+                        contribution.</p>
+
+                    <h3>7. Limitation of Liability</h3>
+                    <p>To the fullest extent permitted by law, we shall not be liable for any direct, indirect,
+                        incidental, special, or consequential damages arising from your use of this service, including
+                        but not limited to missed travel opportunities or booking failures.</p>
+
+                    <h3>8. Contact Information</h3>
+                    <p>For questions, feedback, or support, please contact us through our <a
+                            href="https://forms.gle/NV72PC1z75sq77tg7" target="_blank">feedback form</a>.</p>
+
+                    <hr>
+                    <p><strong>By using this website, you acknowledge that you have read, understood, and agree to be
+                            bound by these Terms and Conditions.</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Privacy Policy Modal -->
+        <div id="privacyModal" class="legal-modal">
+            <div class="legal-modal-content">
+                <span class="legal-close" onclick="closeModal('privacyModal')">&times;</span>
+                <div class="legal-modal-body">
+                    <h2>Privacy Policy</h2>
+                    <p><strong>Effective Date:</strong> December 09, 2024</p>
+                    <hr>
+
+                    <h3>1. Introduction</h3>
+                    <p>This Privacy Policy explains how the Bangladesh Railway Train Seat Availability Web Application
+                        handles your information. We are committed to protecting your privacy and being transparent
+                        about our data practices.</p>
+
+                    <h3>2. Information We Do NOT Collect</h3>
+                    <p><strong>No Personal Data Collection:</strong></p>
+                    <ul>
+                        <li><strong>No Account Registration:</strong> You can use our service without creating an
+                            account</li>
+                        <li><strong>No Personal Information:</strong> We don't collect names, email addresses, phone
+                            numbers, or contact details</li>
+                        <li><strong>No Payment Data:</strong> We don't process payments or store financial information
+                        </li>
+                        <li><strong>No Location Tracking:</strong> We don't track your GPS location or device location
+                        </li>
+                        <li><strong>No Behavioral Tracking:</strong> We don't track your browsing habits across other
+                            websites</li>
+                        <li><strong>No User Profiles:</strong> We don't create or maintain user profiles</li>
+                    </ul>
+
+                    <h3>3. Information We Temporarily Process</h3>
+                    <p><strong>Search Query Data:</strong></p>
+                    <ul>
+                        <li><strong>Station Names:</strong> Origin and destination stations you search for</li>
+                        <li><strong>Travel Dates:</strong> Journey dates you specify</li>
+                        <li><strong>Form Data:</strong> Temporarily stored in your browser session only</li>
+                    </ul>
+                    <p>This information is only used to fetch seat availability data and is not permanently stored on
+                        our servers.</p>
+
+                    <h3>4. Technical Data</h3>
+                    <p><strong>Minimal Server Logs:</strong></p>
+                    <ul>
+                        <li><strong>Access Logs:</strong> Basic web server logs for debugging and performance monitoring
+                        </li>
+                        <li><strong>Error Logs:</strong> Anonymous error information to improve service reliability</li>
+                        <li><strong>Queue Management:</strong> Temporary request tracking to prevent service overload
+                        </li>
+                    </ul>
+                    <p>These logs do not contain personal identifying information and are automatically purged
+                        regularly.</p>
+
+                    <h3>5. Third-Party Service Integration</h3>
+                    <p><strong>External APIs:</strong></p>
+                    <ul>
+                        <li><strong>Shohoz API (railspaapi.shohoz.com):</strong> Your search queries are sent to this
+                            service to fetch seat availability</li>
+                        <li><strong>Bangladesh Railway APIs:</strong> When available, official railway data may be
+                            accessed</li>
+                        <li><strong>CDN Services:</strong> Static assets (CSS, JavaScript, images) may be loaded from
+                            content delivery networks</li>
+                    </ul>
+                    <p>Your search queries are only shared with these services to provide the seat availability
+                        information you requested.</p>
+
+                    <h3>6. Browser Storage</h3>
+                    <p><strong>Local Browser Data:</strong></p>
+                    <ul>
+                        <li><strong>Session Storage:</strong> Temporary form data and search preferences stored in your
+                            browser</li>
+                        <li><strong>Local Storage:</strong> User interface preferences (like "don't show banner again")
+                        </li>
+                        <li><strong>Essential Cookies:</strong> Minimal cookies required for basic functionality</li>
+                    </ul>
+                    <p>All browser storage is under your control and can be cleared through your browser settings.</p>
+
+                    <h3>7. Data Security</h3>
+                    <p><strong>Protection Measures:</strong></p>
+                    <ul>
+                        <li><strong>HTTPS Encryption:</strong> All data transmission is encrypted using SSL/TLS</li>
+                        <li><strong>No Permanent Storage:</strong> Search queries and results are not permanently stored
+                        </li>
+                        <li><strong>Rate Limiting:</strong> Built-in protections against abuse and automated attacks
+                        </li>
+                        <li><strong>Regular Updates:</strong> Security patches and updates applied regularly</li>
+                    </ul>
+
+                    <h3>8. Open Source Commitment</h3>
+                    <p>This application is completely open source. You can review our code, data handling practices, and
+                        privacy implementation on our <a
+                            href="https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application"
+                            target="_blank">GitHub repository</a>.</p>
+
+                    <h3>9. No Data Sharing</h3>
+                    <p>We do not sell, trade, rent, or otherwise share any information with third parties except as
+                        necessary to provide the seat availability service (i.e., sending search queries to railway
+                        APIs).</p>
+
+                    <h3>10. Changes to This Policy</h3>
+                    <p>We may update this Privacy Policy to reflect changes in our practices or for legal compliance.
+                        Any changes will be indicated by updating the "Effective Date" at the top of this policy.</p>
+
+                    <h3>11. Contact Us</h3>
+                    <p>If you have questions about this Privacy Policy or our data practices, please contact us through
+                        our <a href="https://forms.gle/NV72PC1z75sq77tg7" target="_blank">feedback form</a>.</p>
+
+                    <hr>
+                    <p><strong>By using this website, you acknowledge that you have read, understood, and agree to this
+                            Privacy Policy.</strong></p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
