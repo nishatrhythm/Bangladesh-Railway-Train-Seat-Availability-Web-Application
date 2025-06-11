@@ -118,6 +118,7 @@ function showLoaderAndSubmit(event) {
             loader.appendChild(segment);
         }
         submitButton.prepend(loader);
+        submitButton.innerHTML = loader.outerHTML + ' Checking Seat Info...';
     }
     
     setTimeout(() => form.submit(), 10);
@@ -771,7 +772,10 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', handleScroll);
 })();
 
-function openModal(modalId) {
+function openModal(modalId, event) {
+    if (event) {
+        event.preventDefault();
+    }
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.style.display = 'block';
