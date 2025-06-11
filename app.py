@@ -1,14 +1,49 @@
 from flask import Flask, render_template, request, redirect, url_for, make_response, abort, session, after_this_request, jsonify
 from detailsSeatAvailability import main as detailsSeatAvailability, set_token
 from datetime import datetime, timedelta
-import requests, os, json, uuid, pytz, base64, re
+import requests, os, json, uuid, pytz, base64, re, logging, sys
 from request_queue import RequestQueue
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+logger = logging.getLogger(__name__)
+
 RESULT_CACHE = {}
 STATION_NAME_MAPPING = {"Coxs Bazar": "Cox's Bazar"}
+
+def get_user_device_info():
+    user_agent = request.headers.get('User-Agent', '')
+    
+    if any(mobile in user_agent.lower() for mobile in ['mobile', 'android', 'iphone', 'ipad', 'tablet']):
+        device_type = 'Mobile'
+    else:
+        device_type = 'PC'
+    
+    browser = 'Unknown'
+    user_agent_lower = user_agent.lower()
+    
+    if 'chrome' in user_agent_lower and 'edge' not in user_agent_lower and 'opr' not in user_agent_lower:
+        browser = 'Chrome'
+    elif 'firefox' in user_agent_lower:
+        browser = 'Firefox'
+    elif 'safari' in user_agent_lower and 'chrome' not in user_agent_lower:
+        browser = 'Safari'
+    elif 'edge' in user_agent_lower:
+        browser = 'Edge'
+    elif 'opera' in user_agent_lower or 'opr' in user_agent_lower:
+        browser = 'Opera'
+    elif 'msie' in user_agent_lower or 'trident' in user_agent_lower:
+        browser = 'Internet Explorer'
+    
+    return device_type, browser
 
 with open('config.json', 'r', encoding='utf-8') as config_file:
     CONFIG = json.load(config_file)
@@ -181,6 +216,9 @@ def check_seats():
             return redirect(url_for('home'))
 
         session['form_values'] = form_values
+
+        device_type, browser = get_user_device_info()
+        logger.info(f"[FORM INPUT] Origin: '{form_values['origin']}', Destination: '{form_values['destination']}', Date: '{form_values['date']}', Device: '{device_type}', Browser: '{browser}'")
 
         raw_date = form_values['date']
         try:
@@ -540,4 +578,8 @@ def group_by_prefix(seats):
     return {prefix: {"seats": seats, "count": len(seats)} for prefix, seats in groups.items()}
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5001)))
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5001)), debug=False)
+else:
+    if not app.debug:
+        app.logger.setLevel(logging.INFO)
+        app.logger.addHandler(logging.StreamHandler(sys.stdout))
