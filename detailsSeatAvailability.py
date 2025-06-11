@@ -32,7 +32,7 @@ def fetch_token() -> str:
         raise Exception("Fixed mobile number or password not configured.")
     url = f"{API_BASE_URL}/app/auth/sign-in"
     payload = {"mobile_number": mobile_number, "password": password}
-    max_retries = 3
+    max_retries = 2
     retry_count = 0
     while retry_count < max_retries:
         try:
@@ -108,7 +108,7 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
     url = f"{API_BASE_URL}/app/bookings/seat-layout"
     headers = {"Authorization": f"Bearer {TOKEN}"}
     params = {"trip_id": trip_id, "trip_route_id": trip_route_id}
-    max_retries = 3
+    max_retries = 2
     retry_count = 0
     has_retried_with_new_token = False
 
@@ -189,7 +189,7 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
 def fetch_train_details(config: Dict) -> List[Dict]:
     url = f"{API_BASE_URL}/app/bookings/search-trips-v2"
     headers = {}
-    max_retries = 3
+    max_retries = 2
     retry_count = 0
 
     while retry_count < max_retries:
