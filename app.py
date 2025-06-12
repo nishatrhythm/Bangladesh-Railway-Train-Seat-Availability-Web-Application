@@ -218,7 +218,7 @@ def check_seats():
         session['form_values'] = form_values
 
         device_type, browser = get_user_device_info()
-        logger.info(f"[FORM INPUT] Origin: '{form_values['origin']}', Destination: '{form_values['destination']}', Date: '{form_values['date']}', Device: '{device_type}', Browser: '{browser}'")
+        logger.info(f"Seat Availability Request - Origin: '{form_values['origin']}', Destination: '{form_values['destination']}', Date: '{form_values['date']}', Device: '{device_type}', Browser: '{browser}'")
 
         raw_date = form_values['date']
         try:
@@ -415,7 +415,6 @@ def show_results():
     if not result_id or result_id not in RESULT_CACHE:
         if session.get('queue_request_id'):
             return redirect(url_for('show_results_with_id', request_id=session['queue_request_id']))
-        session['error'] = "Your request session has expired or could not be found. Please search again."
         return redirect(url_for('home'))
 
     result = RESULT_CACHE.pop(result_id)

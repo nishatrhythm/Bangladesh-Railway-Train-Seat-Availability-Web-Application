@@ -64,6 +64,7 @@ A comprehensive web application to **check real-time seat availability** for Ban
 ├── request_queue.py              # Advanced queue system for managing concurrent requests
 ├── stations_en.json              # Complete list of Bangladesh Railway stations
 ├── LICENSE                       # Project license
+├── Procfile                      # Heroku/Render deployment configuration
 ├── README.md                     # Project documentation (this file)
 ├── requirements.txt              # Python dependencies
 ├── images/
@@ -106,6 +107,7 @@ A comprehensive web application to **check real-time seat availability** for Ban
 | Custom Error Handling                 | ✅        | User-friendly error messages |
 | Social Media Integration              | ✅        | Open Graph tags for sharing |
 | Cache-Control Headers                 | ✅        | Ensures fresh data on every request |
+| User Activity Logging                 | ✅        | Comprehensive logging of user interactions and system events |
 
 ---
 
@@ -314,7 +316,8 @@ password = os.getenv("FIXED_PASSWORD")
 - **pytz 2024.2** - Timezone handling
 - **colorama 0.4.6** - Terminal color output
 - **python-dotenv 1.0.1** - Environment variable management
-- **gunicorn 23.0.0** - WSGI HTTP Server
+- **gunicorn 23.0.0** - WSGI server for production deployment
+- **Structured Logging** - INFO level logging with timestamp and user activity tracking
 
 ### Frontend
 - **HTML5** with semantic markup
@@ -367,6 +370,20 @@ Edit `config.json` for customization:
 ```bash
 python app.py
 ```
+
+**Production Deployment:**
+```bash
+# With Gunicorn (recommended for production)
+gunicorn app:app --log-level=info --access-logfile=-
+```
+
+**Logging Output:**
+The application will display structured logs including:
+- Timestamp and log level
+- User submissions with device/browser information
+- API request details and response status
+- Queue management and processing events
+- Error tracking and system health monitoring
 
 ### 6. Access Application
 Visit `http://localhost:5000` in your browser
@@ -429,6 +446,29 @@ Visit `http://localhost:5000` in your browser
     }
 }
 ```
+
+### User Activity Logging
+
+The application implements comprehensive logging to track user interactions and system performance:
+
+**Logging Configuration:**
+```python
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+```
+
+**Logged Events:**
+- **Seat Availability Requests**: `Seat Availability Request - Origin: 'ORIGIN_STATION', Destination: 'DESTINATION_STATION', Date: 'DATE', Device: 'DEVICE_TYPE', Browser: 'BROWSER'`
+- **System Events**: Queue status, API failures, and error handling
+- **Production Logs**: Gunicorn access logs with `--log-level=info --access-logfile=-`
+
+**Device & Browser Detection:**
+- Automatically detects user device type (Mobile/PC)
+- Identifies browser (Chrome, Firefox, Safari, Edge, Opera, IE)
+- Logs user agent information for analytics and debugging
 
 ---
 
