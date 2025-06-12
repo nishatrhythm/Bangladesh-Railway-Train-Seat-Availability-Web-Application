@@ -43,7 +43,7 @@
         </a>
 
         <p class="note result-disclaimer">
-            <span class="note-bold highlight">Note:</span> Seat availability info may change frequently as this website does not dynamically fetch the seat data in real time. To get the latest info, please perform a new search. Also, the issued tickets info may not be fully accurate.
+            <span class="note-bold highlight">Note:</span> Seat availability info may change frequently as this website does not dynamically fetch the seat data in real time. To get the latest info, please perform a new search. Also, the issued tickets and the reserved tickets info may not be fully accurate.
         </p>
 
         {% if result %}
@@ -100,7 +100,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for type_id, type_info in seat_type['ticket_types'].items() if type_id != 'issued_total' %}
+                            {% if seat_type['ticket_types']['issued_combined'] %}
+                            {% for coach, group in seat_type['ticket_types']['issued_combined']['grouped'].items() %}
+                            <tr>
+                                <td>{{ seat_type['ticket_types']['issued_combined']['label'] }}</td>
+                                <td>{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] == 1 else 'tickets' }})</td>
+                                <td>{{ ', '.join(group['seats']) }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            {% for type_id, type_info in seat_type['ticket_types'].items() if type_id in [2, 4] %}
                             {% for coach, group in seat_type['grouped_ticket_types'][type_id].items() %}
                             <tr>
                                 <td>{{ type_info['label'] }}</td>

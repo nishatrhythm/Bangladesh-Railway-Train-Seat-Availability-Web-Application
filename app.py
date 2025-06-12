@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, make_response, abort, session, after_this_request, jsonify
-from detailsSeatAvailability import main as detailsSeatAvailability, set_token
+from detailsSeatAvailability import main as detailsSeatAvailability, set_token, sort_seat_number
 from datetime import datetime, timedelta
 import requests, os, json, uuid, pytz, base64, re, logging, sys
 from request_queue import RequestQueue
@@ -177,9 +177,23 @@ def process_seat_request(origin, destination, formatted_date, form_values):
                         train_error_message = "Please retry with a different account to get seat info for this train."
                 seat_type['grouped_seats'] = group_by_prefix(seat_type['available_seats'])
                 seat_type['grouped_booking_process'] = group_by_prefix(seat_type['booking_process_seats'])
+
+                issued_seats = []
+                for type_id in [1, 3]:
+                    if type_id in seat_type['ticket_types']:
+                        issued_seats.extend(seat_type['ticket_types'][type_id].get('seats', []))
+                issued_seats = sorted(issued_seats, key=sort_seat_number)
+                grouped_issued = group_by_prefix(issued_seats)
                 seat_type['grouped_ticket_types'] = {
                     t: group_by_prefix(info['seats']) for t, info in seat_type.get('ticket_types', {}).items()
                     if 'seats' in info
+                }
+
+                seat_type['ticket_types']['issued_combined'] = {
+                    'label': 'Issued Tickets to Buy',
+                    'seats': issued_seats,
+                    'count': len(issued_seats),
+                    'grouped': grouped_issued
                 }
                 if train_error_message:
                     seat_type["error_message"] = train_error_message
@@ -307,9 +321,23 @@ def check_seats():
                             train_error_message = "Please retry with a different account to get seat info for this train."
                     seat_type['grouped_seats'] = group_by_prefix(seat_type['available_seats'])
                     seat_type['grouped_booking_process'] = group_by_prefix(seat_type['booking_process_seats'])
+
+                    issued_seats = []
+                    for type_id in [1, 3]:
+                        if type_id in seat_type['ticket_types']:
+                            issued_seats.extend(seat_type['ticket_types'][type_id].get('seats', []))
+                    issued_seats = sorted(issued_seats, key=sort_seat_number)
+                    grouped_issued = group_by_prefix(issued_seats)
                     seat_type['grouped_ticket_types'] = {
                         t: group_by_prefix(info['seats']) for t, info in seat_type.get('ticket_types', {}).items()
                         if 'seats' in info
+                    }
+
+                    seat_type['ticket_types']['issued_combined'] = {
+                        'label': 'Issued Tickets to Buy',
+                        'seats': issued_seats,
+                        'count': len(issued_seats),
+                        'grouped': grouped_issued
                     }
                     if train_error_message:
                         seat_type["error_message"] = train_error_message

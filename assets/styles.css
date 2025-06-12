@@ -1152,6 +1152,7 @@ tr:hover {
     border-radius: 8px;
     border: 1px solid rgb(0, 103, 71);
     font-size: 14px;
+    font-style: italic;
     font-weight: 500;
     text-align: justify;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
@@ -1185,7 +1186,6 @@ tr:hover {
 
 .adjustment {
     margin: 0 0 20px 0;
-    font-style: italic;
 }
 
 @keyframes fadeInUp {

@@ -84,7 +84,7 @@ def analyze_seat_layout(data: Dict) -> Dict:
     for t, label in [(1, "Issued Tickets to Buy"),
                      (3, "Issued Tickets to Buy"),
                      (2, "Soon-to-be-Issued Tickets to Buy"),
-                     (4, "Reserved Tickets (not for sale)")]:
+                     (4, "Reserved Tickets Under Authority")]:
         if seats[t]:
             sorted_seats = sorted(seats[t], key=sort_seat_number)
             ticket_types[t] = {
