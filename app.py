@@ -17,7 +17,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 RESULT_CACHE = {}
-STATION_NAME_MAPPING = {"Coxs Bazar": "Cox's Bazar"}
 
 def get_user_device_info():
     user_agent = request.headers.get('User-Agent', '')
@@ -221,9 +220,6 @@ def check_seats():
             'destination': request.form.get('destination', ''),
             'date': request.form.get('date', '')
         }
-
-        form_values['origin'] = STATION_NAME_MAPPING.get(form_values['origin'], form_values['origin'])
-        form_values['destination'] = STATION_NAME_MAPPING.get(form_values['destination'], form_values['destination'])
 
         if not form_values['origin'] or not form_values['destination'] or not form_values['date']:
             session['error'] = "Origin, Destination, and Journey Date are required."
