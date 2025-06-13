@@ -101,14 +101,14 @@ function showLoaderAndSubmit(event) {
     event.preventDefault();
     const form = event.target;
     const submitButton = form.querySelector('.btn-primary');
-    const searchIcon = submitButton.querySelector('.fas.fa-search');
+    const listIcon = submitButton.querySelector('.fas.fa-list');
     
     submitButton.disabled = true;
     submitButton.style.opacity = '0.6';
     submitButton.style.cursor = 'not-allowed';
     
-    if (searchIcon) {
-        searchIcon.remove();
+    if (listIcon) {
+        listIcon.remove();
         const loader = document.createElement('span');
         loader.className = 'button-loader';
         for (let i = 0; i < 8; i++) {
@@ -118,7 +118,7 @@ function showLoaderAndSubmit(event) {
             loader.appendChild(segment);
         }
         submitButton.prepend(loader);
-        submitButton.innerHTML = loader.outerHTML + ' Checking Seat Info...';
+        submitButton.innerHTML = loader.outerHTML + ' Generating Seat Info...';
     }
     
     setTimeout(() => form.submit(), 10);
@@ -306,11 +306,11 @@ function resetSubmitButton() {
         if (loader) {
             loader.remove();
         }
-        const existingIcon = submitButton.querySelector('.fas.fa-search');
+        const existingIcon = submitButton.querySelector('.fas.fa-list');
         if (!existingIcon) {
-            const searchIcon = document.createElement('i');
-            searchIcon.className = 'fas fa-search';
-            submitButton.prepend(searchIcon);
+            const listIcon = document.createElement('i');
+            listIcon.className = 'fas fa-list';
+            submitButton.prepend(listIcon);
         }
     }
 }
