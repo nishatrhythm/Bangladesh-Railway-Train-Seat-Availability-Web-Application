@@ -118,7 +118,7 @@ function showLoaderAndSubmit(event) {
             loader.appendChild(segment);
         }
         submitButton.prepend(loader);
-        submitButton.innerHTML = loader.outerHTML + ' Generating Seat Info...';
+        submitButton.innerHTML = loader.outerHTML + ' Collecting Seat Info...';
     }
     
     setTimeout(() => form.submit(), 10);
