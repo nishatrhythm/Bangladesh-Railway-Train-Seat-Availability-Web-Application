@@ -81,6 +81,7 @@
                         <input type="text" id="origin" name="origin" placeholder="Type or select an origin station"
                             value="{{ form_values.origin if form_values and form_values.origin is not none else '' }}"
                             autocomplete="off">
+                        <i class="fas fa-times clear-icon" id="originClear"></i>
                         <div id="originDropdown" class="custom-dropdown"></div>
                     </div>
                     <span class="error-message" id="origin-error">Origin Station is required</span>
@@ -96,6 +97,7 @@
                             placeholder="Type or select a destination station"
                             value="{{ form_values.destination if form_values and form_values.destination is not none else '' }}"
                             autocomplete="off">
+                        <i class="fas fa-times clear-icon" id="destinationClear"></i>
                         <div id="destinationDropdown" class="custom-dropdown"></div>
                     </div>
                     <span class="error-message" id="destination-error">Destination Station is required</span>

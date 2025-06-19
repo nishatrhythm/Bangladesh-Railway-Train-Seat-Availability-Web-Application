@@ -132,6 +132,11 @@ function swapStations() {
         const tempValue = originInput.value;
         originInput.value = destinationInput.value;
         destinationInput.value = tempValue;
+
+        const originClear = document.getElementById('originClear');
+        const destinationClear = document.getElementById('destinationClear');
+        if (originClear) updateClearButtonVisibility(originInput, originClear);
+        if (destinationClear) updateClearButtonVisibility(destinationInput, destinationClear);
     }
     setTimeout(() => suppressDropdown = false, 300);
 }
@@ -227,6 +232,12 @@ function selectOption(inputId, dropdownId, value) {
 
     input.value = value;
     dropdown.style.display = "none";
+
+    const clearButtonId = inputId === 'origin' ? 'originClear' : 'destinationClear';
+    const clearButton = document.getElementById(clearButtonId);
+    if (clearButton) {
+        updateClearButtonVisibility(input, clearButton);
+    }
 
     const origin = document.getElementById('origin');
     const destination = document.getElementById('destination');
@@ -335,6 +346,9 @@ document.addEventListener('DOMContentLoaded', function () {
             destination.addEventListener("keyup", () => filterDropdown("destination", "destinationDropdown"));
             destination.addEventListener("blur", () => setTimeout(() => hideDropdown("destinationDropdown"), 200));
         }
+
+        setupClearButton('origin', 'originClear');
+        setupClearButton('destination', 'destinationClear');
 
         const swapIcon = document.querySelector(".swap-icon-wrapper");
         if (swapIcon) {
@@ -806,3 +820,36 @@ document.addEventListener('keydown', function(event) {
         });
     }
 });
+
+function setupClearButton(inputId, clearButtonId) {
+    const input = document.getElementById(inputId);
+    const clearButton = document.getElementById(clearButtonId);
+
+    if (!input || !clearButton) return;
+
+    updateClearButtonVisibility(input, clearButton);
+
+    input.addEventListener('input', () => {
+        updateClearButtonVisibility(input, clearButton);
+    });
+
+    clearButton.addEventListener('click', () => {
+        input.value = '';
+        input.focus();
+        updateClearButtonVisibility(input, clearButton);
+
+        const dropdownId = inputId === 'origin' ? 'originDropdown' : 'destinationDropdown';
+        hideDropdown(dropdownId);
+
+        const inputEvent = new Event('input', { bubbles: true });
+        input.dispatchEvent(inputEvent);
+    });
+}
+
+function updateClearButtonVisibility(input, clearButton) {
+    if (input.value.trim() !== '') {
+        clearButton.style.display = 'flex';
+    } else {
+        clearButton.style.display = 'none';
+    }
+}

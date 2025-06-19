@@ -148,6 +148,37 @@ label {
     line-height: 45px;
 }
 
+.input-with-icon .clear-icon {
+    position: absolute;
+    right: 12px;
+    font-size: 20px;
+    color: #999;
+    cursor: pointer;
+    z-index: 10;
+    width: 28px;
+    height: 28px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-drag: none;
+}
+
+.input-with-icon .clear-icon:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #666;
+}
+
+.input-with-icon input:not(:placeholder-shown) + .clear-icon {
+    display: flex;
+}
+
 .input-with-icon input::placeholder {
     color: #999;
     font-size: 16px;
