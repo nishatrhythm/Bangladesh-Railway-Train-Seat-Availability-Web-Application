@@ -2189,7 +2189,7 @@ footer a:hover {
     }
 
     .swap-icon-wrapper.rotate {
-        transform: rotate(270deg);
+        transform: rotate(270deg) scale(1.1);
     }
 
     .train-card {
