@@ -228,7 +228,7 @@ class RequestQueue:
                 start_time = time.time()
                 
                 with self.lock:
-                    if request_id not in self.statuses:
+                    if request_id not in self.statuses or request_id in self.cancelled_requests:
                         continue
                 
                 try:
@@ -238,7 +238,7 @@ class RequestQueue:
                     
                     while retry_count < max_retries:
                         with self.lock:
-                            if request_id not in self.statuses:
+                            if request_id not in self.statuses or request_id in self.cancelled_requests:
                                 break
                         
                         try:
