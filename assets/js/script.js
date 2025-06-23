@@ -394,7 +394,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const appVersion = configData.version || "1.0.0";
 
         const modal = document.getElementById('bannerModal');
-        const closeModal = document.querySelector('.close-modal');
+        const closeModal = document.querySelector('.close-modal-text');
         const dontShowAgainCheckbox = document.getElementById('dontShowAgain');
         const storedData = JSON.parse(localStorage.getItem('bannerState') || '{}');
         const dontShowAgain = storedData.dontShowAgain === true;

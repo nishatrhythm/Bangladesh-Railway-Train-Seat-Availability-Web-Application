@@ -1543,22 +1543,22 @@ footer a:hover {
     justify-content: center;
 }
 
-.close-modal {
-    position: absolute;
-    top: 25px;
-    right: 25px;
-    color: #006747;
-    font-size: 24px;
+.close-modal-text {
+    color: #e74c3c;
+    font-size: 14px;
     cursor: pointer;
     transition: color 0.3s, transform 0.3s;
-    padding: 5px;
+    padding: 5px 10px;
     line-height: 1;
     -webkit-tap-highlight-color: transparent;
+    font-weight: 700;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+    background-color: #f5f5f5;
 }
 
-.close-modal:hover {
-    color: #e74c3c;
-    transform: scale(1.1);
+.modal-footer .custom-checkbox {
+    margin-bottom: 0;
 }
 
 .banner-image {
@@ -1579,9 +1579,9 @@ footer a:hover {
 
 .modal-footer {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    gap: 8px;
+    gap: 20px;
     font-size: 14px;
     color: #006747;
     padding-top: 10px;
@@ -2424,12 +2424,6 @@ footer a:hover {
         max-height: 80vh;
     }
 
-    .close-modal {
-        font-size: 24px;
-        top: 20px;
-        right: 20px;
-    }
-
     .banner-image {
         max-height: calc(80vh - 80px);
         margin-bottom: 10px;
@@ -2793,12 +2787,6 @@ footer a:hover {
         padding: 10px;
         max-width: 95%;
         max-height: 75vh;
-    }
-
-    .close-modal {
-        font-size: 20px;
-        top: 10px;
-        right: 10px;
     }
 
     .banner-image {
