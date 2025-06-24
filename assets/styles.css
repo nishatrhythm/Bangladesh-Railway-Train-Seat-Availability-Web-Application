@@ -1551,6 +1551,7 @@ footer a:hover {
     padding: 5px 10px;
     line-height: 1;
     -webkit-tap-highlight-color: transparent;
+    user-select: none;
     font-weight: 700;
     border-radius: 4px;
     transition: background-color 0.3s, color 0.3s;
