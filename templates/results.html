@@ -51,20 +51,26 @@
         <div class="train-card animated-fade-in">
             <div class="train-header">
                 <h2><i class="fas fa-subway"></i> {{ train }}</h2>
-                <div class="train-separator"></div>
-                <p>
-                    <i class="fas fa-route"></i>
-                    <strong>Route:</strong> {{ details['from_station'] }} → {{ details['to_station'] }}
-                </p>
-                <p class="timing-info">
-                    <span>
-                        <i class="fas fa-clock"></i> <strong>Departure:</strong> {{ details['departure_time'] }}
-                    </span>
-                    <span class="separator">|</span>
-                    <span>
-                        <i class="fas fa-clock"></i> <strong>Arrival:</strong> {{ details['arrival_time'] }}
-                    </span>
-                </p>
+                <div class="journey-timeline">
+                    <div class="journey-point departure">
+                        <div class="journey-label">Departure</div>
+                        <div class="city-name">{{ details['from_station'] }}</div>
+                        <div class="time-info">
+                            {{ details['departure_time'] }}
+                        </div>
+                    </div>
+                    <div class="journey-connector">
+                        <div class="journey-line"></div>
+                        <div class="journey-duration">{{ details['journey_duration'] }}</div>
+                    </div>
+                    <div class="journey-point arrival">
+                        <div class="journey-label">Arrival</div>
+                        <div class="city-name">{{ details['to_station'] }}</div>
+                        <div class="time-info">
+                            {{ details['arrival_time'] }}
+                        </div>
+                    </div>
+                </div>
             </div>
             {% if details['all_seats_422'] %}
             <div class="error-badge">

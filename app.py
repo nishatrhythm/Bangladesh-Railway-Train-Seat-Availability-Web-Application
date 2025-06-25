@@ -162,6 +162,7 @@ def process_seat_request(origin, destination, formatted_date, form_values):
         for train, details in result.items():
             details['from_station'] = config['from_city']
             details['to_station'] = config['to_city']
+            details['journey_duration'] = calculate_journey_duration(details['departure_time'], details['arrival_time'])
             train_has_422_error = False
             train_error_message = None
             for seat_type in details['seat_data']:
@@ -204,6 +205,22 @@ def process_seat_request(origin, destination, formatted_date, form_values):
         return {"success": True, "result": result, "form_values": form_values}
     except Exception as e:
         return {"error": str(e)}
+
+def calculate_journey_duration(departure_time, arrival_time):
+    try:
+        dep_dt = datetime.strptime(departure_time, '%d %b, %I:%M %p')
+        arr_dt = datetime.strptime(arrival_time, '%d %b, %I:%M %p')
+        
+        if arr_dt < dep_dt:
+            arr_dt = arr_dt.replace(year=arr_dt.year + 1) if arr_dt.month == 12 and arr_dt.day == 31 else arr_dt + timedelta(days=1)
+        
+        duration = arr_dt - dep_dt
+        hours = int(duration.total_seconds() // 3600)
+        minutes = int((duration.total_seconds() % 3600) // 60)
+        
+        return f"{hours}h {minutes}m"
+    except:
+        return "N/A"
 
 @app.route('/check_seats', methods=['GET', 'POST'])
 def check_seats():
@@ -303,6 +320,7 @@ def check_seats():
             for train, details in result.items():
                 details['from_station'] = config['from_city']
                 details['to_station'] = config['to_city']
+                details['journey_duration'] = calculate_journey_duration(details['departure_time'], details['arrival_time'])
                 train_has_422_error = False
                 train_error_message = None
                 for seat_type in details['seat_data']:

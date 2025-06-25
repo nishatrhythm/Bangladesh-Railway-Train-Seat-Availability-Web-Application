@@ -845,54 +845,91 @@ button:hover {
     color: #006747;
 }
 
-.train-separator {
-    width: 80%;
-    height: 1px;
-    background-color: #006747;
-    margin: 12px auto;
-    border-radius: 1px;
-    opacity: 0.8;
-}
-
-.timing-info {
+.journey-timeline {
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 20px;
+    justify-content: space-between;
+    background: #f8fffe;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #e0f2e0;
+    box-shadow: 0 2px 8px rgba(0, 103, 71, 0.06);
+    margin-bottom: 20px;
+}
+
+.journey-point {
+    flex: 0 0 auto;
+    text-align: center;
+}
+
+.journey-point.departure {
+    text-align: left;
+}
+
+.journey-point.arrival {
+    text-align: right;
+}
+
+.journey-label {
+    font-size: 12px;
+    color: #666;
+    font-weight: 500;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.city-name {
     font-size: 16px;
-    flex-wrap: wrap;
-    margin: 10px 0;
-    line-height: 1.5;
-    background-color: #fff;
-    padding: 8px 12px;
-    border-radius: 6px;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.timing-info span {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    white-space: nowrap;
-    color: #333;
-}
-
-.timing-info .separator {
-    font-weight: bold;
+    font-weight: 700;
     color: #006747;
-    font-size: 18px;
+    margin-bottom: 6px;
 }
 
-.timing-info .timing-block {
+.time-info {
+    font-size: 14px;
+    color: #5a6c57;
+    font-weight: 400;
+}
+
+.journey-connector {
+    flex: 1;
     display: flex;
     align-items: center;
-    gap: 5px;
-    font-size: 16px;
+    justify-content: center;
+    position: relative;
+    margin: 0 20px;
 }
 
-.timing-info .time-detail {
-    font-weight: normal;
-    color: #555;
+.journey-line {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, #006747, #004d33);
+    position: relative;
+}
+
+.journey-line::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: #006747;
+    border: 2px solid #f8fffe;
+    box-shadow: 0 2px 4px rgba(0, 103, 71, 0.3);
+}
+
+.journey-duration {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: #888;
+    font-weight: 500;
+    white-space: nowrap;
 }
 
 .train-table h2 {
@@ -2215,18 +2252,36 @@ footer a:hover {
         font-size: 14px;
     }
 
-    .timing-info {
-        gap: 10px;
-        padding: 6px 10px;
+    .journey-timeline {
+        padding: 16px;
+    }
+    
+    .journey-label {
+        font-size: 10px;
+    }
+    
+    .city-name {
         font-size: 14px;
     }
-
-    .timing-info .separator {
-        display: none;
+    
+    .time-info {
+        font-size: 12px;
     }
-
-    .train-separator {
-        width: 90%;
+    
+    .journey-connector {
+        margin: 0 15px;
+    }
+    
+    .journey-duration {
+        font-size: 10px;
+        top: 12px;
+        padding: 3px 8px;
+    }
+    
+    .journey-line::after {
+        width: 6px;
+        height: 6px;
+        border-width: 1px;
     }
 
     .status {
@@ -2611,13 +2666,36 @@ footer a:hover {
         font-size: 14px;
     }
 
-    .timing-info {
-        font-size: 14px;
-        gap: 8px;
+    .journey-timeline {
+        padding: 12px;
     }
-
-    .timing-info .timing-block {
-        font-size: 14px;
+    
+    .journey-label {
+        font-size: 9px;
+    }
+    
+    .city-name {
+        font-size: 12px;
+    }
+    
+    .time-info {
+        font-size: 11px;
+    }
+    
+    .journey-connector {
+        margin: 0 10px;
+    }
+    
+    .journey-duration {
+        font-size: 9px;
+        top: 10px;
+        padding: 2px 6px;
+    }
+    
+    .journey-line::after {
+        width: 5px;
+        height: 5px;
+        border-width: 1px;
     }
 
     .no-seats {
