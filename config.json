@@ -1,9 +1,9 @@
 {
-    "version": "1.1.6",
-    "is_maintenance": 1,
+    "version": "1.1.7",
+    "is_maintenance": 0,
     "maintenance_message": "We're currently applying important server-side updates. The service will be temporarily unavailable from 9:00 PM to 11:00 PM (BST). Please check back after this time. We apologise for the inconvenience and appreciate your patience.",
     "is_banner_enabled": 1,
     "image_link": "https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application/refs/heads/main/static/images/report-website-promotion.png",
     "force_banner": 1,
-    "queue_enabled": false
+    "queue_enabled": true
 }

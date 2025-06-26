@@ -187,8 +187,13 @@ def get_seat_layout(trip_id: str, trip_route_id: str) -> Tuple[List[str], List[s
             return [], [], 0, 0, False, {}, {}
 
 def fetch_train_details(config: Dict) -> List[Dict]:
+    global TOKEN
+    if not TOKEN:
+        TOKEN = fetch_token()
+        set_token(TOKEN)
+
     url = f"{API_BASE_URL}/app/bookings/search-trips-v2"
-    headers = {}
+    headers = {"Authorization": f"Bearer {TOKEN}"}
     max_retries = 2
     retry_count = 0
 
