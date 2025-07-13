@@ -776,7 +776,8 @@ button:hover {
     box-shadow: 0 6px 16px rgba(0, 103, 71, 0.2);
 }
 
-.train-card h3 {
+.train-card h3,
+.train-card .collapsible-content h3 {
     background-color: #f1f8f3;
     color: #006747;
     padding: 8px 12px;
@@ -789,12 +790,14 @@ button:hover {
     transition: background-color 0.3s, box-shadow 0.3s;
 }
 
-.train-card h3:hover {
+.train-card h3:hover,
+.train-card .collapsible-content h3:hover {
     background-color: #eaf4eb;
     box-shadow: 0 4px 8px rgba(0, 103, 71, 0.2);
 }
 
-.train-card h3 i {
+.train-card h3 i,
+.train-card .collapsible-content h3 i {
     margin-right: 8px;
     vertical-align: middle;
 }
@@ -1167,6 +1170,72 @@ tr:hover {
     background-color: #eaf1f8;
 }
 
+/* Train Details Collapsible Section */
+.train-details-section {
+    margin-top: 15px;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 15px;
+}
+
+.train-details-section:has(.auto-expanded) {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 10px;
+}
+
+.train-details-toggle {
+    background-color: #f8f9fa;
+    color: #006747;
+    border: 1px solid #d0d7de;
+    padding: 12px 16px;
+    width: 100%;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.train-details-toggle:hover {
+    background-color: #e9ecef;
+    border-color: #b5d1be;
+    transform: translateY(-1px);
+}
+
+.train-details-toggle i {
+    margin-right: 8px;
+    transition: transform 0.3s ease;
+    color: #006747;
+}
+
+.train-details-content {
+    padding: 0;
+    margin-top: 0;
+    animation: fadeInUp 0.4s ease-in-out;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    background-color: transparent;
+    will-change: max-height;
+}
+
+.train-details-content.show {
+    padding: 15px 0 0 0;
+}
+
+.train-details-content.auto-expanded {
+    padding: 0 !important;
+    max-height: none !important;
+    animation: fadeInUp 0.4s ease-in-out;
+}
+
 .error-badge {
     background-color: #fce4e4;
     color: #e74c3c;
@@ -1311,10 +1380,25 @@ tr:hover {
     letter-spacing: 0.01em;
     user-select: none;
     animation: fadeInUp 1.4s ease-in-out;
-    background: rgba(0, 103, 71, 0.08);
     border-radius: 8px;
     padding: 14px 0 12px 0;
-    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.03);
+    position: relative;
+}
+
+.footer-links::before {
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to right, 
+        transparent 0%, 
+        rgba(0, 103, 71, 0.2) 20%, 
+        rgba(0, 103, 71, 0.6) 50%, 
+        rgba(0, 103, 71, 0.2) 80%, 
+        transparent 100%);
+    opacity: 0.8;
 }
 
 .footer-links a {
@@ -1756,6 +1840,7 @@ footer a:hover {
     transition: top 0.4s ease-in-out, opacity 0.3s ease;
     border-left: 4px solid transparent;
     opacity: 0;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .flyout-notification.active {
@@ -2115,12 +2200,10 @@ footer a:hover {
 }
 
 .legal-links {
-    background-color: rgba(0, 103, 71, 0.08);
     padding: 8px 16px;
     border-radius: 8px;
     margin-top: 8px;
     display: inline-block;
-    border: 1px solid rgba(0, 103, 71, 0.15);
 }
 
 #backToTopBtn {
@@ -2233,7 +2316,8 @@ footer a:hover {
         padding: 15px;
     }
 
-    .train-card h3 {
+    .train-card h3,
+    .train-card .collapsible-content h3 {
         font-size: 14px;
         padding: 6px 10px;
     }

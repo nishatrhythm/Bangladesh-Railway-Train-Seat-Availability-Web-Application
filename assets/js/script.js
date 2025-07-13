@@ -285,6 +285,35 @@ function start404Countdown() {
 function initializeCollapsibleSections() {
     const toggles = document.querySelectorAll('.collapsible-toggle');
 
+    // Function to recalculate parent container heights
+    function recalculateParentHeights(element) {
+        let parent = element.closest('.train-details-content');
+        if (parent && parent.style.maxHeight && parent.style.maxHeight !== "none" && !parent.classList.contains('auto-expanded')) {
+            parent.style.maxHeight = parent.scrollHeight + "px";
+        }
+    }
+
+    // Set up ResizeObserver for automatic height adjustment
+    if (window.ResizeObserver) {
+        const resizeObserver = new ResizeObserver(entries => {
+            entries.forEach(entry => {
+                const element = entry.target;
+                if (element.classList.contains('collapsible-content') && 
+                    element.style.maxHeight && 
+                    element.style.maxHeight !== "0px" && 
+                    element.style.maxHeight !== "none" &&
+                    !element.classList.contains('auto-expanded')) {
+                    element.style.maxHeight = element.scrollHeight + "px";
+                }
+            });
+        });
+
+        // Observe all train-details-content elements
+        document.querySelectorAll('.train-details-content').forEach(element => {
+            resizeObserver.observe(element);
+        });
+    }
+
     toggles.forEach(toggle => {
         toggle.addEventListener('click', () => {
             const targetId = toggle.getAttribute('data-target');
@@ -295,10 +324,38 @@ function initializeCollapsibleSections() {
                 content.style.display = "block";
                 content.style.maxHeight = content.scrollHeight + "px";
                 content.classList.add('animated-fade-in');
-                toggle.innerHTML = `<i class="fas fa-chevron-up"></i> Collapse to hide Issued Ticket List`;
+                
+                // Check if this is a train details toggle or issued ticket toggle
+                if (toggle.classList.contains('train-details-toggle')) {
+                    toggle.innerHTML = `<i class="fas fa-chevron-up"></i> HIDE SEAT DETAILS`;
+                    content.classList.add('show');
+                } else {
+                    toggle.innerHTML = `<i class="fas fa-chevron-up"></i> Collapse to hide Issued Ticket List`;
+                    
+                    // Immediate parent height recalculation for smooth expansion
+                    recalculateParentHeights(content);
+                    
+                    // Additional check after animation starts
+                    requestAnimationFrame(() => {
+                        recalculateParentHeights(content);
+                    });
+                }
             } else {
                 content.style.maxHeight = "0px";
-                toggle.innerHTML = `<i class="fas fa-chevron-down"></i> Expand to view Issued Ticket List`;
+                content.classList.remove('show');
+                
+                // Check if this is a train details toggle or issued ticket toggle
+                if (toggle.classList.contains('train-details-toggle')) {
+                    toggle.innerHTML = `<i class="fas fa-chevron-down"></i> VIEW SEAT DETAILS`;
+                } else {
+                    toggle.innerHTML = `<i class="fas fa-chevron-down"></i> Expand to view Issued Ticket List`;
+                    
+                    // Recalculate parent container height after collapsing inner content
+                    setTimeout(() => {
+                        recalculateParentHeights(content);
+                    }, 320);
+                }
+                
                 setTimeout(() => {
                     content.style.display = "none";
                 }, 300);
@@ -728,7 +785,7 @@ function checkConnectionSpeed() {
             const duration = performance.now() - startTime;
             if (duration > 2000) {
                 clearTimeout(slowConnectionTimeout);
-                showFlyout('Slow Internet Connection Detected.', 'warning', 7000);
+                showFlyout('Slow Internet Connection.', 'warning', 7000);
                 slowConnectionTimeout = setTimeout(checkConnectionSpeed, 30000);
             } else {
                 slowConnectionTimeout = setTimeout(checkConnectionSpeed, 15000);
