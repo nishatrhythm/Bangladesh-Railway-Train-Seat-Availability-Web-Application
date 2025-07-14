@@ -285,7 +285,6 @@ function start404Countdown() {
 function initializeCollapsibleSections() {
     const toggles = document.querySelectorAll('.collapsible-toggle');
 
-    // Function to recalculate parent container heights
     function recalculateParentHeights(element) {
         let parent = element.closest('.train-details-content');
         if (parent && parent.style.maxHeight && parent.style.maxHeight !== "none" && !parent.classList.contains('auto-expanded')) {
@@ -293,7 +292,6 @@ function initializeCollapsibleSections() {
         }
     }
 
-    // Set up ResizeObserver for automatic height adjustment
     if (window.ResizeObserver) {
         const resizeObserver = new ResizeObserver(entries => {
             entries.forEach(entry => {
@@ -308,7 +306,6 @@ function initializeCollapsibleSections() {
             });
         });
 
-        // Observe all train-details-content elements
         document.querySelectorAll('.train-details-content').forEach(element => {
             resizeObserver.observe(element);
         });
@@ -321,21 +318,94 @@ function initializeCollapsibleSections() {
             const icon = toggle.querySelector('i');
 
             if (!content.style.maxHeight || content.style.maxHeight === "0px") {
+                const toggleRect = toggle.getBoundingClientRect();
+                const initialScrollTop = window.scrollY;
+                const toggleOffsetFromTop = toggleRect.top + initialScrollTop;
+                
+                if (toggle.classList.contains('train-details-toggle')) {
+                    const allTrainDetailsToggles = document.querySelectorAll('.train-details-toggle');
+                    let hasCollapsedSections = false;
+                    
+                    allTrainDetailsToggles.forEach(otherToggle => {
+                        if (otherToggle !== toggle) {
+                            const otherTargetId = otherToggle.getAttribute('data-target');
+                            const otherContent = document.getElementById(otherTargetId);
+                            if (otherContent && otherContent.style.maxHeight && otherContent.style.maxHeight !== "0px") {
+                                hasCollapsedSections = true;
+                                otherContent.style.maxHeight = "0px";
+                                otherContent.classList.remove('show');
+                                otherToggle.innerHTML = `<i class="fas fa-chevron-down"></i> VIEW SEAT DETAILS`;
+                                
+                                const nestedToggles = otherContent.querySelectorAll('.collapsible-toggle:not(.train-details-toggle)');
+                                nestedToggles.forEach(nestedToggle => {
+                                    const nestedTargetId = nestedToggle.getAttribute('data-target');
+                                    const nestedContent = document.getElementById(nestedTargetId);
+                                    if (nestedContent && nestedContent.style.maxHeight && nestedContent.style.maxHeight !== "0px") {
+                                        nestedContent.style.maxHeight = "0px";
+                                        nestedToggle.innerHTML = `<i class="fas fa-chevron-down"></i> Expand to view Issued Ticket List`;
+                                        setTimeout(() => {
+                                            nestedContent.style.display = "none";
+                                        }, 300);
+                                    }
+                                });
+                                
+                                setTimeout(() => {
+                                    otherContent.style.display = "none";
+                                }, 300);
+                            }
+                        }
+                    });
+                    
+                    if (hasCollapsedSections) {
+                        setTimeout(() => {
+                            const newToggleRect = toggle.getBoundingClientRect();
+                            const currentScrollTop = window.scrollY;
+                            const newToggleOffsetFromTop = newToggleRect.top + currentScrollTop;
+                            
+                            const movement = newToggleOffsetFromTop - toggleOffsetFromTop;
+                            
+                            const trainCard = toggle.closest('.train-card, .card, .result-item, .train-item, .search-result') || toggle.closest('div[class*="train"], div[class*="card"], div[class*="result"]');
+                            
+                            if (trainCard) {
+                                const cardRect = trainCard.getBoundingClientRect();
+                                const cardOffsetFromTop = cardRect.top + window.scrollY;
+                                const viewportHeight = window.innerHeight;
+                                
+                                const isCardNotFullyVisible = cardRect.top < 0 || cardRect.bottom > viewportHeight || Math.abs(movement) > 50;
+                                
+                                if (isCardNotFullyVisible) {
+                                    const targetScrollTop = cardOffsetFromTop - 20;
+                                    
+                                    window.scrollTo({
+                                        top: Math.max(0, targetScrollTop),
+                                        behavior: 'smooth'
+                                    });
+                                }
+                            } else {
+                                if (Math.abs(movement) > 50) {
+                                    const targetScrollTop = newToggleOffsetFromTop - 100;
+                                    window.scrollTo({
+                                        top: Math.max(0, targetScrollTop),
+                                        behavior: 'smooth'
+                                    });
+                                }
+                            }
+                        }, 350);
+                    }
+                }
+                
                 content.style.display = "block";
                 content.style.maxHeight = content.scrollHeight + "px";
                 content.classList.add('animated-fade-in');
                 
-                // Check if this is a train details toggle or issued ticket toggle
                 if (toggle.classList.contains('train-details-toggle')) {
                     toggle.innerHTML = `<i class="fas fa-chevron-up"></i> HIDE SEAT DETAILS`;
                     content.classList.add('show');
                 } else {
                     toggle.innerHTML = `<i class="fas fa-chevron-up"></i> Collapse to hide Issued Ticket List`;
                     
-                    // Immediate parent height recalculation for smooth expansion
                     recalculateParentHeights(content);
                     
-                    // Additional check after animation starts
                     requestAnimationFrame(() => {
                         recalculateParentHeights(content);
                     });
@@ -344,13 +414,24 @@ function initializeCollapsibleSections() {
                 content.style.maxHeight = "0px";
                 content.classList.remove('show');
                 
-                // Check if this is a train details toggle or issued ticket toggle
                 if (toggle.classList.contains('train-details-toggle')) {
                     toggle.innerHTML = `<i class="fas fa-chevron-down"></i> VIEW SEAT DETAILS`;
+                    
+                    const nestedToggles = content.querySelectorAll('.collapsible-toggle:not(.train-details-toggle)');
+                    nestedToggles.forEach(nestedToggle => {
+                        const nestedTargetId = nestedToggle.getAttribute('data-target');
+                        const nestedContent = document.getElementById(nestedTargetId);
+                        if (nestedContent && nestedContent.style.maxHeight && nestedContent.style.maxHeight !== "0px") {
+                            nestedContent.style.maxHeight = "0px";
+                            nestedToggle.innerHTML = `<i class="fas fa-chevron-down"></i> Expand to view Issued Ticket List`;
+                            setTimeout(() => {
+                                nestedContent.style.display = "none";
+                            }, 300);
+                        }
+                    });
                 } else {
                     toggle.innerHTML = `<i class="fas fa-chevron-down"></i> Expand to view Issued Ticket List`;
                     
-                    // Recalculate parent container height after collapsing inner content
                     setTimeout(() => {
                         recalculateParentHeights(content);
                     }, 320);
