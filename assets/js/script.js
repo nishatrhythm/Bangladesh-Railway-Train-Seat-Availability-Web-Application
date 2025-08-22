@@ -620,11 +620,16 @@ function getBSTDate() {
 }
 
 function formatDate(date) {
-    return date.toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-    }).replace(/ /g, "-");
+    const monthAbbr = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+    
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = monthAbbr[date.getMonth()];
+    const year = date.getFullYear();
+    
+    return `${day}-${month}-${year}`;
 }
 
 function parseDate(dateStr) {
