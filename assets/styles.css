@@ -6,7 +6,7 @@ html {
 }
 
 body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif;
     background-color: #f7f9fc;
     margin: 0;
     padding: 0;
@@ -14,6 +14,17 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+}
+
+/* Global font family override to ensure Bengali text always uses correct font */
+* {
+    font-family: inherit;
+}
+
+/* Ensure all text elements can display Bengali characters properly */
+body, h1, h2, h3, h4, h5, h6, p, span, div, label, button, input, textarea, select, option, 
+.dropdown-item, .search-results, .station-item, .autocomplete-suggestion {
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif;
 }
 
 .container {
@@ -29,7 +40,7 @@ body {
 }
 
 h1 {
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif;
     color: rgb(0, 103, 71);
     font-weight: 800;
     line-height: 1.5;
@@ -74,7 +85,7 @@ form {
 }
 
 label {
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif;
     font-weight: 700;
     color: rgb(0, 103, 71);
     text-align: left;
@@ -595,7 +606,7 @@ input[type="text"],
 input[type="number"],
 input[type="date"],
 select {
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif;
     padding-left: 45px;
     padding-right: 12px;
     border: 1px solid #bdc3c7;
@@ -628,7 +639,7 @@ select {
 }
 
 button {
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif;
     background-color: rgb(0, 103, 71);
     color: #ffffff;
     padding: 10px 10px;
@@ -712,6 +723,15 @@ button:hover {
 
 .custom-dropdown div:hover {
     background-color: #f1f8f3;
+}
+
+/* Bilingual dropdown styling */
+.custom-dropdown div {
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif;
+}
+
+html[lang="bn"] .custom-dropdown div {
+    font-family: 'Noto Sans Bengali', sans-serif;
 }
 
 .styled-dropdown {
@@ -1605,7 +1625,7 @@ tr:hover {
 }
 
 footer {
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif;
     margin-top: 30px;
     font-size: 14px;
     font-weight: 500;
@@ -2215,7 +2235,7 @@ footer a:hover {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease, background-color 0.3s ease;
     animation: fadeInUp 1s ease-in-out;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif;
 }
 
 .text-crawler.memorial {
@@ -3293,5 +3313,145 @@ footer a:hover {
     
     .crawler-content.speed{
         animation-duration: 45s;
+    }
+}
+
+/* Language Switcher Styles */
+.main-content {
+    position: relative;
+}
+
+.language-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #006747, #005a3d);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 103, 71, 0.3);
+    z-index: 10;
+    min-width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.language-toggle:hover {
+    background: linear-gradient(135deg, #005a3d, #004d35);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 103, 71, 0.4);
+}
+
+.language-toggle:active {
+    transform: translateY(0);
+}
+
+.language-toggle .lang-text {
+    font-family: 'Noto Sans Bengali', sans-serif;
+}
+
+/* Add smooth transitions for language changes */
+body, h1, h2, h3, h4, h5, h6, p, span, div, label, button, input {
+    transition: font-family 0.3s ease;
+}
+
+/* Bengali font styling */
+html[lang="bn"] body,
+html[lang="bn"] h1,
+html[lang="bn"] h2,
+html[lang="bn"] h3,
+html[lang="bn"] h4,
+html[lang="bn"] h5,
+html[lang="bn"] h6,
+html[lang="bn"] p,
+html[lang="bn"] span:not(.fas):not(.far):not(.fal):not(.fab),
+html[lang="bn"] div:not(.fas):not(.far):not(.fal):not(.fab),
+html[lang="bn"] label,
+html[lang="bn"] button,
+html[lang="bn"] input,
+html[lang="bn"] [data-translate] {
+    font-family: 'Noto Sans Bengali', sans-serif !important;
+}
+html[lang="bn"] h3,
+html[lang="bn"] h4,
+html[lang="bn"] h5,
+html[lang="bn"] h6,
+html[lang="bn"] p,
+html[lang="bn"] span:not(.fas):not(.far):not(.fal):not(.fab),
+html[lang="bn"] div:not(.fas):not(.far):not(.fal):not(.fab),
+html[lang="bn"] label,
+html[lang="bn"] button,
+html[lang="bn"] input,
+html[lang="bn"] [data-translate] {
+    font-family: 'Noto Sans Bengali', sans-serif !important;
+}
+
+/* Preserve Font Awesome icons - ensure they always use FontAwesome */
+.fas, .far, .fal, .fab,
+i.fas, i.far, i.fal, i.fab,
+span.fas, span.far, span.fal, span.fab {
+    font-family: "Font Awesome 6 Free", "Font Awesome 6 Pro", "Font Awesome 6 Brands" !important;
+    font-weight: 900 !important;
+}
+
+/* Additional Bengali font enforcement - covers all possible elements */
+*:not(.fas):not(.far):not(.fal):not(.fab) {
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif;
+}
+
+/* Force Bengali font for form elements and interactive components */
+input:not([type="button"]):not([type="submit"]):not([type="reset"]), 
+textarea, 
+select, 
+option,
+.dropdown-item,
+.search-results,
+.station-item,
+.autocomplete-suggestion {
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif !important;
+}
+
+/* English font styling - explicitly set when not Bengali */
+html[lang="en"] body,
+html[lang="en"] h1,
+html[lang="en"] h2,
+html[lang="en"] h3,
+html[lang="en"] h4,
+html[lang="en"] h5,
+html[lang="en"] h6,
+html[lang="en"] p,
+html[lang="en"] span:not(.fas):not(.far):not(.fal):not(.fab),
+html[lang="en"] div:not(.fas):not(.far):not(.fal):not(.fab),
+html[lang="en"] label,
+html[lang="en"] button,
+html[lang="en"] input {
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif !important;
+}
+
+/* Responsive design for language toggle */
+@media (max-width: 768px) {
+    .language-toggle {
+        top: 15px;
+        right: 15px;
+        padding: 8px 12px;
+        font-size: 13px;
+        min-width: 70px;
+    }
+}
+
+@media (max-width: 480px) {
+    .language-toggle {
+        top: 10px;
+        right: 10px;
+        padding: 6px 10px;
+        font-size: 12px;
+        min-width: 60px;
     }
 }

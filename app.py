@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, make_response, abort, session, after_this_request, jsonify
-from detailsSeatAvailability import main as detailsSeatAvailability, set_token, sort_seat_number
+from detailsSeatAvailability import main as detailsSeatAvailability, set_token, sort_seat_number, translate_ticket_category, translate_seat_type
 from datetime import datetime, timedelta
 import requests, os, json, uuid, pytz, base64, re, logging, sys
 from request_queue import RequestQueue
@@ -62,8 +62,172 @@ if os.path.exists(default_banner_path):
     except Exception as e:
         pass
 
-with open('stations_en.json', 'r', encoding='utf-8') as stations_file:
+with open('stations.json', 'r', encoding='utf-8') as stations_file:
     STATIONS_DATA = json.load(stations_file).get('stations', [])
+
+with open('trains.json', 'r', encoding='utf-8') as trains_file:
+    TRAINS_DATA = json.load(trains_file).get('trains', [])
+
+# Load translations data
+TRANSLATIONS_DATA = {}
+try:
+    with open('translations.json', 'r', encoding='utf-8') as f:
+        TRANSLATIONS_DATA = json.load(f)
+except Exception as e:
+    print(f"Error loading translations: {e}")
+
+def get_user_language():
+    """Get user's preferred language from session/cookies."""
+    lang = session.get('lang')
+    if not lang:
+        lang = request.cookies.get('lang', 'en')
+    return lang if lang in ['en', 'bn'] else 'en'
+
+def translate_error(error_key, lang=None, **kwargs):
+    """Translate error messages based on user's language preference."""
+    try:
+        if lang is None:
+            lang = get_user_language()
+        translation = TRANSLATIONS_DATA.get(lang, {}).get('errors', {}).get(error_key, error_key)
+        
+        # Replace placeholders if kwargs provided
+        if kwargs:
+            for key, value in kwargs.items():
+                translation = translation.replace(f'{{{key}}}', str(value))
+        
+        return translation
+    except Exception:
+        # Fallback to original key if translation fails
+        return error_key
+
+@app.template_filter('translate_error')
+def translate_error_filter(error_data):
+    """Template filter to translate error messages."""
+    try:
+        lang = get_user_language()
+        
+        if isinstance(error_data, dict):
+            # Error is stored as {"key": "error_key", "params": {...}}
+            error_key = error_data.get("key", "")
+            params = error_data.get("params", {})
+            return translate_error(error_key, lang, **params)
+        else:
+            # Error is a plain string - check if it's a key or already translated
+            error_translations = TRANSLATIONS_DATA.get(lang, {}).get('errors', {})
+            
+            # If it's a known error key, translate it
+            if error_data in error_translations:
+                return translate_error(error_data, lang)
+            
+            # Otherwise return as is (already translated or custom message)
+            return error_data
+    except Exception as e:
+        print(f"Translation error: {e}")
+        return str(error_data)
+
+def set_error(error_key, **params):
+    """Set error in session with key and parameters for later translation."""
+    try:
+        if params:
+            session['error'] = {"key": error_key, "params": params}
+        else:
+            session['error'] = error_key
+    except RuntimeError:
+        # Not in request context, skip session setting
+        pass
+    
+    # Return the error data for testing purposes
+    if params:
+        return {"key": error_key, "params": params}
+    else:
+        return error_key
+
+def translate_station_name(station_name, lang=None):
+    """Translate station name based on user's language preference."""
+    try:
+        if lang is None:
+            lang = get_user_language()
+        
+        for station in STATIONS_DATA:
+            if station['en'] == station_name:
+                return station.get(lang, station_name)
+        
+        # If no translation found, return original name
+        return station_name
+    except Exception:
+        # Fallback to original name if translation fails
+        return station_name
+
+def translate_train_name(train_name, lang=None):
+    """Translate train name based on user's language preference."""
+    try:
+        if lang is None:
+            lang = get_user_language()
+        
+        for train in TRAINS_DATA:
+            if train['en'] == train_name:
+                return train.get(lang, train_name)
+        
+        # If no translation found, return original name
+        return train_name
+    except Exception:
+        # Fallback to original name if translation fails
+        return train_name
+
+def translate_time_string(time_string, lang=None):
+    """Translate time string with Bengali month names while keeping am/pm unchanged."""
+    try:
+        if lang is None:
+            lang = get_user_language()
+        
+        if lang != 'bn':
+            return time_string
+        
+        # Bengali month names mapping
+        month_mapping = {
+            'Jan': 'জানুয়ারি',
+            'Feb': 'ফেব্রুয়ারি', 
+            'Mar': 'মার্চ',
+            'Apr': 'এপ্রিল',
+            'May': 'মে',
+            'Jun': 'জুন',
+            'Jul': 'জুলাই',
+            'Aug': 'আগস্ট',
+            'Sep': 'সেপ্টেম্বর',
+            'Oct': 'অক্টোবর',
+            'Nov': 'নভেম্বর',
+            'Dec': 'ডিসেম্বর'
+        }
+        
+        # Convert digits to Bengali
+        bengali_digits = {'0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪', '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯'}
+        
+        # Replace month names
+        translated_time = time_string
+        for eng_month, bn_month in month_mapping.items():
+            translated_time = translated_time.replace(eng_month, bn_month)
+        
+        # Convert digits to Bengali but keep am/pm unchanged
+        result = ''
+        i = 0
+        while i < len(translated_time):
+            char = translated_time[i]
+            
+            # Check if we're at the start of 'am' or 'pm'
+            if char.lower() in ['a', 'p'] and i + 1 < len(translated_time) and translated_time[i + 1].lower() == 'm':
+                # Keep am/pm unchanged
+                result += char
+            elif char in bengali_digits:
+                result += bengali_digits[char]
+            else:
+                result += char
+            i += 1
+                
+        return result
+        
+    except Exception:
+        # Fallback to original time string if translation fails
+        return time_string
 
 def configure_request_queue():
     max_concurrent = CONFIG.get("queue_max_concurrent", 1)
@@ -110,6 +274,15 @@ def home():
     if maintenance_response:
         return maintenance_response
 
+    # Handle language parameter from URL or set default from cookies
+    lang_param = request.args.get('lang')
+    if lang_param and lang_param in ['en', 'bn']:
+        session['lang'] = lang_param
+    elif 'lang' not in session:
+        # If no language in session, try to get from cookies (for first-time visitors)
+        cookie_lang = request.cookies.get('lang', 'en')
+        session['lang'] = cookie_lang if cookie_lang in ['en', 'bn'] else 'en'
+
     error = session.pop('error', None)
     form_values = session.pop('form_values', None)
 
@@ -145,6 +318,31 @@ def home():
         script_js=SCRIPT_JS_CONTENT
     )
 
+@app.route('/translations.json')
+def serve_translations():
+    try:
+        with open('translations.json', 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/set_language', methods=['POST'])
+def set_language():
+    """Set user language preference in session and cookie."""
+    try:
+        data = request.get_json()
+        lang = data.get('lang')
+        if lang and lang in ['en', 'bn']:
+            session['lang'] = lang
+            response = jsonify({"status": "success", "lang": lang})
+            response.set_cookie('lang', lang, max_age=30*24*60*60)  # 30 days
+            return response
+        else:
+            return jsonify({"status": "error", "message": "Invalid language"}), 400
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 def process_seat_request(origin, destination, formatted_date, form_values):
     try:
         config = {
@@ -153,28 +351,37 @@ def process_seat_request(origin, destination, formatted_date, form_values):
             'date_of_journey': formatted_date,
             'seat_class': 'S_CHAIR'
         }
-        result = detailsSeatAvailability(config)
+        user_lang = get_user_language()
+        result = detailsSeatAvailability(config, user_lang)
         
         if not result or "error" in result:
-            return {"error": result.get("error", "No data received. Please try a different criteria.")}
+            return {"error": result.get("error", translate_error("no_data_received"))}
 
         bst_tz = pytz.timezone('Asia/Dhaka')
         for train, details in result.items():
-            details['from_station'] = config['from_city']
-            details['to_station'] = config['to_city']
-            details['journey_duration'] = calculate_journey_duration(details['departure_time'], details['arrival_time'])
+            details['train_name'] = translate_train_name(train, user_lang)
+            details['from_station'] = translate_station_name(config['from_city'], user_lang)
+            details['to_station'] = translate_station_name(config['to_city'], user_lang)
+            # Calculate duration first with original times
+            details['journey_duration'] = calculate_journey_duration(details['departure_time'], details['arrival_time'], user_lang)
+            # Then translate the time display
+            details['departure_time'] = translate_time_string(details['departure_time'], user_lang)
+            details['arrival_time'] = translate_time_string(details['arrival_time'], user_lang)
             train_has_422_error = False
             train_error_message = None
             for seat_type in details['seat_data']:
+                # Add translated seat type
+                seat_type['translated_type'] = translate_seat_type(seat_type['type'], user_lang)
+                
                 if seat_type.get("is_422") and "error_info" in seat_type:
                     train_has_422_error = True
                     error_info = seat_type["error_info"]
                     message = error_info.get("message", "")
                     error_key = error_info.get("errorKey", "")
                     if error_key == "OrderLimitExceeded" and train_error_message is None:
-                        train_error_message = f"Please retry with a different account as you have reached the maximum order limit for this train on the selected day."
+                        train_error_message = translate_error("order_limit_exceeded")
                     elif train_error_message is None:
-                        train_error_message = "Please retry with a different account to get seat info for this train."
+                        train_error_message = translate_error("retry_different_account")
                 seat_type['grouped_seats'] = group_by_prefix(seat_type['available_seats'])
                 seat_type['grouped_booking_process'] = group_by_prefix(seat_type['booking_process_seats'])
 
@@ -190,7 +397,7 @@ def process_seat_request(origin, destination, formatted_date, form_values):
                 }
 
                 seat_type['ticket_types']['issued_combined'] = {
-                    'label': 'Issued Tickets to Buy',
+                    'label': translate_ticket_category("Issued Tickets to Buy", user_lang),
                     'seats': issued_seats,
                     'count': len(issued_seats),
                     'grouped': grouped_issued
@@ -206,8 +413,11 @@ def process_seat_request(origin, destination, formatted_date, form_values):
     except Exception as e:
         return {"error": str(e)}
 
-def calculate_journey_duration(departure_time, arrival_time):
+def calculate_journey_duration(departure_time, arrival_time, lang=None):
     try:
+        if lang is None:
+            lang = get_user_language()
+            
         dep_dt = datetime.strptime(departure_time, '%d %b, %I:%M %p')
         arr_dt = datetime.strptime(arrival_time, '%d %b, %I:%M %p')
         
@@ -218,7 +428,14 @@ def calculate_journey_duration(departure_time, arrival_time):
         hours = int(duration.total_seconds() // 3600)
         minutes = int((duration.total_seconds() % 3600) // 60)
         
-        return f"{hours}h {minutes}m"
+        if lang == 'bn':
+            # Convert to Bengali digits and use Bengali time units
+            bengali_digits = {'0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪', '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯'}
+            hours_bn = ''.join(bengali_digits.get(d, d) for d in str(hours))
+            minutes_bn = ''.join(bengali_digits.get(d, d) for d in str(minutes))
+            return f"{hours_bn}ঘ {minutes_bn}মি"
+        else:
+            return f"{hours}h {minutes}m"
     except:
         return "N/A"
 
@@ -239,7 +456,7 @@ def check_seats():
         }
 
         if not form_values['origin'] or not form_values['destination'] or not form_values['date']:
-            session['error'] = "Origin, Destination, and Journey Date are required."
+            set_error("form_validation_error")
             return redirect(url_for('home'))
 
         session['form_values'] = form_values
@@ -251,7 +468,7 @@ def check_seats():
         try:
             formatted_date = datetime.strptime(raw_date, '%d-%b-%Y').strftime('%d-%b-%Y')
         except ValueError:
-            session['error'] = "Invalid date format submitted. Please choose a date again."
+            set_error("invalid_date_format")
             return redirect(url_for('home'))
 
         if CONFIG.get("queue_enabled", True):
@@ -274,13 +491,14 @@ def check_seats():
                 'seat_class': 'S_CHAIR'
             }
 
-            result = detailsSeatAvailability(config)
+            user_lang = get_user_language()
+            result = detailsSeatAvailability(config, user_lang)
 
             bst_tz = pytz.timezone('Asia/Dhaka')
 
             if "error" in result:
-                if result["error"] == "No trains found for the given criteria.":
-                    session['error'] = "At this moment, no trains are found between your selected origin and destination stations on the selected day. Please retry with a different criteria."
+                if result["error"] == translate_error("no_trains_found") or result["error"] == "No trains found for the given criteria.":
+                    set_error("no_trains_available")
                     return redirect(url_for('home'))
                 elif result["error"] == "422 error occurred for all trains":
                     details = result.get("details", {})
@@ -293,7 +511,7 @@ def check_seats():
                                 if "ticket purchase for this trip will be available" in message or "East Zone" in message or "West Zone" in message:
                                     time_match = re.search(r'(\d+:\d+\s*[APMapm]+)', message)
                                     retry_time = time_match.group(1) if time_match else "8:00 AM or 2:00 PM"
-                                    session['error'] = f"Ticket purchasing for the selected criteria is not yet available, so seat info cannot be fetched at this moment. Please try again after {retry_time}. Alternatively, search for a different day."
+                                    set_error("ticket_purchase_not_available", retry_time=retry_time)
                                     return redirect(url_for('home'))
                                 elif "Your purchase process is on-going" in message:
                                     time_match = re.search(r'(\d+)\s*minute[s]?\s*(\d+)\s*second[s]?', message, re.IGNORECASE)
@@ -301,7 +519,7 @@ def check_seats():
                                     seconds = int(time_match.group(2))
                                     total_seconds = minutes * 60 + seconds
                                     retry_time = (datetime.now(bst_tz) + timedelta(seconds=total_seconds)).strftime('%I:%M:%S %p')
-                                    session['error'] = f"Your purchase process for some tickets is ongoing for this account, so seat info cannot be fetched at this moment. Please try again after {retry_time} or retry with a different account."
+                                    set_error("purchase_process_ongoing", retry_time=retry_time)
                                     return redirect(url_for('home'))
                                 elif "Multiple order attempt detected" in message:
                                     time_match = re.search(r'(\d+)\s*minute[s]?\s*(\d+)\s*second[s]?', message, re.IGNORECASE)
@@ -309,30 +527,38 @@ def check_seats():
                                     seconds = int(time_match.group(2))
                                     total_seconds = minutes * 60 + seconds
                                     retry_time = (datetime.now(bst_tz) + timedelta(seconds=total_seconds)).strftime('%I:%M:%S %p')
-                                    session['error'] = f"You already have an active reservation process in this account, so seat info cannot be fetched at this moment. Please try again after {retry_time} or retry with a different account."
+                                    set_error("active_reservation_process", retry_time=retry_time)
                                     return redirect(url_for('home'))
                                 elif error_key == "OrderLimitExceeded":
-                                    session['error'] = "Please retry with a different account as you have reached the maximum order limit for all trains between your chosen stations on the selected day, so seat info cannot be fetched at this moment. Alternatively, search for a different day."
+                                    set_error("order_limit_all_trains")
                                     return redirect(url_for('home'))
-                    session['error'] = "An error occurred while fetching seat details. Please retry with a different account for the given criteria."
+                    set_error("general_error")
                     return redirect(url_for('home'))
 
             for train, details in result.items():
-                details['from_station'] = config['from_city']
-                details['to_station'] = config['to_city']
-                details['journey_duration'] = calculate_journey_duration(details['departure_time'], details['arrival_time'])
+                details['train_name'] = translate_train_name(train, user_lang)
+                details['from_station'] = translate_station_name(config['from_city'], user_lang)
+                details['to_station'] = translate_station_name(config['to_city'], user_lang)
+                # Calculate duration first with original times
+                details['journey_duration'] = calculate_journey_duration(details['departure_time'], details['arrival_time'], user_lang)
+                # Then translate the time display
+                details['departure_time'] = translate_time_string(details['departure_time'], user_lang)
+                details['arrival_time'] = translate_time_string(details['arrival_time'], user_lang)
                 train_has_422_error = False
                 train_error_message = None
                 for seat_type in details['seat_data']:
+                    # Add translated seat type
+                    seat_type['translated_type'] = translate_seat_type(seat_type['type'], user_lang)
+                    
                     if seat_type["is_422"] and "error_info" in seat_type:
                         train_has_422_error = True
                         error_info = seat_type["error_info"]
                         message = error_info.get("message", "")
                         error_key = error_info.get("errorKey", "")
                         if error_key == "OrderLimitExceeded" and train_error_message is None:
-                            train_error_message = f"Please retry with a different account as you have reached the maximum order limit for this train on the selected day, so seat info cannot be fetched at this moment."
+                            train_error_message = translate_error("order_limit_exceeded_detailed")
                         elif train_error_message is None:
-                            train_error_message = "Please retry with a different account to get seat info for this train."
+                            train_error_message = translate_error("retry_different_account")
                     seat_type['grouped_seats'] = group_by_prefix(seat_type['available_seats'])
                     seat_type['grouped_booking_process'] = group_by_prefix(seat_type['booking_process_seats'])
 
@@ -348,7 +574,7 @@ def check_seats():
                     }
 
                     seat_type['ticket_types']['issued_combined'] = {
-                        'label': 'Issued Tickets to Buy',
+                        'label': translate_ticket_category("Issued Tickets to Buy", user_lang),
                         'seats': issued_seats,
                         'count': len(issued_seats),
                         'grouped': grouped_issued
@@ -366,7 +592,7 @@ def check_seats():
             return redirect(url_for('show_results'))
 
     except Exception as e:
-        session['error'] = f"An unexpected error occurred: {str(e)}"
+        set_error("unexpected_error", error=str(e))
         return redirect(url_for('home'))
 
 @app.route('/queue_wait')
@@ -377,18 +603,18 @@ def queue_wait():
     
     request_id = session.get('queue_request_id')
     if not request_id:
-        session['error'] = "Your request session has expired. Please search again."
+        set_error("session_expired")
         return redirect(url_for('home'))
     
     status = request_queue.get_request_status(request_id)
     if not status:
-        session['error'] = "Your request could not be found. Please search again."
+        set_error("request_not_found")
         return redirect(url_for('home'))
     
     if request.args.get('refresh_check') == 'true':
         request_queue.cancel_request(request_id)
         session.pop('queue_request_id', None)
-        session['error'] = "Page was refreshed. Please start a new search."
+        set_error("page_refreshed")
         return redirect(url_for('home'))
     
     form_values = session.get('form_values', {})
@@ -512,7 +738,8 @@ def show_results():
         seat_class=seat_class,
         styles_css=STYLES_CSS_CONTENT,
         script_js=SCRIPT_JS_CONTENT,
-        banner_image=banner_image
+        banner_image=banner_image,
+        translations=TRANSLATIONS_DATA
     )
 
 @app.route('/show_results/<request_id>')
@@ -524,7 +751,7 @@ def show_results_with_id(request_id):
     queue_result = request_queue.get_request_result(request_id)
     
     if not queue_result:
-        session['error'] = "Your request has expired or could not be found. Please search again."
+        set_error("request_expired")
         return redirect(url_for('home'))
     
     if "error" in queue_result:
@@ -532,7 +759,7 @@ def show_results_with_id(request_id):
         return redirect(url_for('home'))
     
     if not queue_result.get("success"):
-        session['error'] = "An error occurred while processing your request. Please try again."
+        set_error("processing_error")
         return redirect(url_for('home'))
     
     result = queue_result.get("result", {})
@@ -584,7 +811,8 @@ def show_results_with_id(request_id):
         seat_class=seat_class,
         styles_css=STYLES_CSS_CONTENT,
         script_js=SCRIPT_JS_CONTENT,
-        banner_image=banner_image
+        banner_image=banner_image,
+        translations=TRANSLATIONS_DATA
     )
 
 @app.route('/queue_stats')

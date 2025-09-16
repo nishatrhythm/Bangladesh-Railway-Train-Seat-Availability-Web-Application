@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - Not Found | Train Seat Availability</title>
+    <title data-translate="404.site_title">404 - Not Found | Train Seat Availability</title>
     <style>{{ styles_css | safe }}</style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
     <link rel="icon" href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png" type="image/x-icon" sizes="30x30">
@@ -16,30 +16,35 @@
     <noscript>
         <div class="container noscript-warning">
             <h2>
-                <i class="fas fa-exclamation-circle"></i> Please Enable JavaScript
+                <i class="fas fa-exclamation-circle"></i> <span data-translate="noscript.title">Please Enable JavaScript</span>
             </h2>
-            <p>This website requires JavaScript to function properly. Enable it in your browser settings to access full functionality and check train seat availability.</p>
+            <p data-translate="noscript.message">This website requires JavaScript to function properly. Enable it in your browser settings to access full functionality and check train seat availability.</p>
             <div class="instructions">
-                <strong>How to enable:</strong> Go to your browser settings > Privacy/Security > Enable JavaScript. Refresh the page after enabling.
+                <strong data-translate="noscript.instructions">How to enable: Go to your browser settings > Privacy/Security > Enable JavaScript. Refresh the page after enabling.</strong>
             </div>
         </div>
     </noscript>
     <div class="container error-404 main-content">
+        <!-- Language Switcher -->
+        <button class="language-toggle" id="languageToggle" data-lang="en">
+            <span class="lang-text">বাংলা</span>
+        </button>
+        
         <h1>
-            <i class="fas fa-exclamation-triangle"></i> 404 - Page Not Found
+            <i class="fas fa-exclamation-triangle"></i> <span data-translate="404.page_title">404 - Page Not Found</span>
         </h1>
         <div class="error animated-fade-in">
             <i class="fas fa-train train-icon"></i>
-            <p class="error-text">Oops! It seems this train has gone off the tracks. The requested URL was not found on this server.</p>
+            <p class="error-text" data-translate="404.error_text">Oops! It seems this train has gone off the tracks. The requested URL was not found on this server.</p>
         </div>
         <div class="countdown-wrapper animated-fade-in">
-            <p>Redirecting you back to the station in <span id="countdown">10</span> seconds...</p>
+            <p><span data-translate="404.countdown_text">Redirecting you back to the station in</span> <span id="countdown">10</span> <span data-translate="404.countdown_seconds">seconds...</span></p>
             <div class="progress-bar">
                 <div class="progress-fill"></div>
             </div>
         </div>
         <a href="/" class="btn-primary" draggable="false">
-            <i class="fas fa-arrow-left"></i> Return to Home Now
+            <i class="fas fa-arrow-left"></i> <span data-translate="404.return_button">Return to Home Now</span>
         </a>
     </div>
     <script>{{ script_js | safe }}</script>

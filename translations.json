@@ -1,0 +1,586 @@
+{
+  "en": {
+    "site_title": "Home | Train Seat Availability",
+    "page_title": "BR Train Seat Availability",
+    "meta_description": "Check train seat availability for Bangladesh Railway effortlessly. Plan your journey with accurate and up-to-date information.",
+    "meta_keywords": "Bangladesh Railway, train seat availability, travel, transportation, railway schedule, Bangladesh travel",
+    "og_title": "Bangladesh Railway Train Seat Availability",
+    "og_description": "Easily check seat availability for Bangladesh Railway trains and plan your travel effortlessly.",
+    
+    "noscript": {
+      "title": "Please Enable JavaScript",
+      "message": "This website requires JavaScript to function properly. Enable it in your browser settings to access full functionality and check train seat availability.",
+      "instructions": "How to enable: Go to your browser settings > Privacy/Security > Enable JavaScript. Refresh the page after enabling."
+    },
+    
+    "form": {
+      "origin_label": "Origin Station",
+      "origin_placeholder": "Type or select an origin station",
+      "origin_error": "Origin Station is required",
+      
+      "destination_label": "Destination Station", 
+      "destination_placeholder": "Type or select a destination station",
+      "destination_error": "Destination Station is required",
+      
+      "date_label": "Date of Journey",
+      "date_placeholder": "Select a date",
+      "date_error": "Date of Journey is required",
+      
+      "submit_button": "View Seat Info"
+    },
+    
+    "calendar": {
+      "weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    },
+    
+    "footer": {
+      "open_source_text": "This project is open source. Check it out on",
+      "github_link": "GitHub",
+      "period": ".",
+      "seat_matrix": "SEAT MATRIX",
+      "train_report": "TRAIN REPORT", 
+      "feedback": "FEEDBACK",
+      "terms": "Terms and Conditions",
+      "privacy": "Privacy Policy"
+    },
+    
+    "banner": {
+      "dont_show_again": "Don't show this again",
+      "close": "CLOSE"
+    },
+    
+    "404": {
+      "site_title": "404 - Not Found | Train Seat Availability",
+      "page_title": "404 - Page Not Found",
+      "error_text": "Oops! It seems this train has gone off the tracks. The requested URL was not found on this server.",
+      "countdown_text": "Redirecting you back to the station in",
+      "countdown_seconds": "seconds...",
+      "return_button": "Return to Home Now"
+    },
+    
+    "notice": {
+      "site_title": "Notice | Train Seat Availability",
+      "page_title": "Notice"
+    },
+    
+    "results": {
+      "title": "Seat Availability Info",
+      "back_to_search": "Back to Search",
+      "buy_tickets": "Buy Tickets",
+      "note": "Seat availability info may change frequently as this website does not dynamically fetch the seat data in real time. To get the latest info, please perform a new search. Also, the issued tickets and the reserved tickets info may not be fully accurate.",
+      "note_bold": "Note:",
+      "departure": "Departure",
+      "arrival": "Arrival",
+      "view_seat_details": "VIEW SEAT DETAILS",
+      "hide_seat_details": "HIDE SEAT DETAILS",
+      "seat_type": "Seat Type:",
+      "expand_issued_tickets": "Expand to view Issued Ticket List",
+      "collapse_issued_tickets": "Collapse to hide Issued Ticket List",
+      "tickets_issued_for_purchase": "Issued for Purchase",
+      "ticket_category": "Ticket Category",
+      "coach_ticket_count": "Coach (Ticket Count)",
+      "seat_numbers": "Seat Numbers",
+      "ticket": "ticket",
+      "tickets": "tickets",
+      "all_seats_booked": "All seats have been booked for seat type",
+      "no_seats_issued": "No seats were issued for seat type",
+      "available": "Available:",
+      "in_booking": "In Booking:",
+      "status": "Status",
+      "available_status": "Available",
+      "in_booking_status": "In Booking",
+      "no_trains_available": "No trains available for the selected criteria.",
+      "javascript_required_title": "Please Enable JavaScript",
+      "javascript_required_message": "This website requires JavaScript to function properly. Enable it in your browser settings to access full functionality and check train seat availability.",
+      "javascript_required_instructions": "How to enable: Go to your browser settings > Privacy/Security > Enable JavaScript. Refresh the page after enabling."
+    },
+    
+    "coach_translations": {
+      "KA": "ক", "KHA": "খ", "GA": "গ", "GHA": "ঘ", "UMA": "ঙ", "CHA": "চ", "SCHA": "ছ", 
+      "JA": "জ", "JHA": "ঝ", "NEO": "ঞ", "TA": "ট", "THA": "ঠ", "DA": "ড", "DHA": "ঢ", 
+      "TO": "ত", "THO": "থ", "DOA": "দ", "DANT": "ন", "XTR": "এক্সট্রা", "SLR": "লাগেজ কার", "STD": "স্ট্যান্ডিং",
+      "UP": "আপ", "LO": "লো"
+    },
+    
+    "ticket_categories": {
+      "Issued Tickets to Buy": "ক্রয়ের জন্য ইস্যুকৃত টিকিট",
+      "Soon-to-be-Issued Tickets to Buy": "শীঘ্রই ইস্যু হবে এমন টিকিট",
+      "Reserved Tickets Under Authority": "কর্তৃপক্ষের অধীনে সংরক্ষিত টিকিট"
+    },
+    
+    "seat_types": {
+      "AC_B": "এসি বার্থ",
+      "AC_CHAIR": "এসি চেয়ার", 
+      "AC_S": "এসি সিট",
+      "F_BERTH": "এফ_বার্থ",
+      "F_CHAIR": "এফ_চেয়ার",
+      "F_SEAT": "এফ_সিট",
+      "S_CHAIR": "শোভন চেয়ার",
+      "SHOVAN": "শোভন",
+      "SHULOV": "সুলভ", 
+      "SNIGDHA": "স্নিগ্ধা"
+    },
+    
+    "terms": {
+      "title": "Terms and Conditions",
+      "effective_date": "Effective Date: December 09, 2024",
+      "intro_title": "1. Introduction",
+      "intro_text": "Welcome to the Bangladesh Railway Train Seat Availability Web Application. This is a free, open-source educational tool designed to help users check real-time train seat availability for Bangladesh Railway. By using this service, you agree to be bound by these Terms and Conditions.",
+      
+      "service_title": "2. Service Description",
+      "service_text": "This application provides:",
+      "service_items": [
+        "Real-Time Seat Checking: Live seat availability data for Bangladesh Railway trains",
+        "Coach-wise Breakdown: Detailed seat information organized by train coach",
+        "Multiple Seat Classes: Support for all Bangladesh Railway seat types (S_CHAIR, SNIGDHA, AC_B, etc.)",
+        "Journey Planning: Tools to help plan your rail travel within Bangladesh",
+        "Mobile-Optimized Interface: Responsive design for use on all devices",
+        "No Registration Required: Free access without creating an account"
+      ],
+      
+      "use_policy_title": "3. Acceptable Use Policy",
+      "use_policy_allowed_title": "You may use this service for:",
+      "use_policy_allowed": [
+        "Personal travel planning and research",
+        "Educational and learning purposes", 
+        "Non-commercial information gathering about train schedules",
+        "Checking seat availability before booking tickets"
+      ],
+      "use_policy_forbidden_title": "You may NOT use this service for:",
+      "use_policy_forbidden": [
+        "Automated scraping or bulk data extraction",
+        "Commercial resale of seat availability information",
+        "Overwhelming the service with excessive requests",
+        "Any illegal activities or circumventing Bangladesh Railway policies",
+        "Attempting to access or modify the underlying systems"
+      ],
+      
+      "data_sources_title": "4. Third-Party Data Sources",
+      "data_sources_text": "This application fetches data from external sources including:",
+      "data_sources_items": [
+        "Shohoz API (railspaapi.shohoz.com): Primary source for train seat availability data",
+        "Bangladesh Railway Systems: Official railway data when available"
+      ],
+      "data_sources_disclaimer": "We are not affiliated with or endorsed by Bangladesh Railway or Shohoz. This is an independent educational project.",
+      
+      "limitations_title": "5. Service Limitations and Disclaimers",
+      "limitations_text": "This service is provided \"as is\" without warranties of any kind. We do not guarantee:",
+      "limitations_items": [
+        "Data Accuracy: Seat availability information may not always be current or accurate",
+        "Service Availability: The application may be unavailable due to maintenance or technical issues",
+        "Third-Party Dependencies: External APIs may be temporarily unavailable",
+        "Booking Success: Availability shown here does not guarantee successful ticket booking"
+      ],
+      
+      "open_source_title": "6. Open Source Nature",
+      "open_source_text": "This is an open-source project available on GitHub. The code is provided for educational purposes and community contribution.",
+      
+      "liability_title": "7. Limitation of Liability",
+      "liability_text": "To the fullest extent permitted by law, we shall not be liable for any direct, indirect, incidental, special, or consequential damages arising from your use of this service, including but not limited to missed travel opportunities or booking failures.",
+      
+      "contact_title": "8. Contact Information",
+      "contact_text": "For questions, feedback, or support, please contact us through our feedback form.",
+      
+      "agreement_text": "By using this website, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions."
+    },
+    
+    "privacy": {
+      "title": "Privacy Policy",
+      "effective_date": "Effective Date: December 09, 2024",
+      "intro_title": "1. Introduction",
+      "intro_text": "This Privacy Policy explains how the Bangladesh Railway Train Seat Availability Web Application handles your information. We are committed to protecting your privacy and being transparent about our data practices.",
+      
+      "no_collect_title": "2. Information We Do NOT Collect",
+      "no_collect_subtitle": "No Personal Data Collection:",
+      "no_collect_items": [
+        "No Account Registration: You can use our service without creating an account",
+        "No Personal Information: We don't collect names, email addresses, phone numbers, or contact details",
+        "No Payment Data: We don't process payments or store financial information",
+        "No Location Tracking: We don't track your GPS location or device location",
+        "No Behavioral Tracking: We don't track your browsing habits across other websites",
+        "No User Profiles: We don't create or maintain user profiles"
+      ],
+      
+      "temp_process_title": "3. Information We Temporarily Process",
+      "temp_process_subtitle": "Search Query Data:",
+      "temp_process_items": [
+        "Station Names: Origin and destination stations you search for",
+        "Travel Dates: Journey dates you specify",
+        "Form Data: Temporarily stored in your browser session only"
+      ],
+      "temp_process_note": "This information is only used to fetch seat availability data and is not permanently stored on our servers.",
+      
+      "technical_title": "4. Technical Data",
+      "technical_subtitle": "Minimal Server Logs:",
+      "technical_items": [
+        "Access Logs: Basic web server logs for debugging and performance monitoring",
+        "Error Logs: Anonymous error information to improve service reliability",
+        "Queue Management: Temporary request tracking to prevent service overload"
+      ],
+      "technical_note": "These logs do not contain personal identifying information and are automatically purged regularly.",
+      
+      "third_party_title": "5. Third-Party Service Integration",
+      "third_party_subtitle": "External APIs:",
+      "third_party_items": [
+        "Shohoz API (railspaapi.shohoz.com): Your search queries are sent to this service to fetch seat availability",
+        "Bangladesh Railway APIs: When available, official railway data may be accessed",
+        "CDN Services: Static assets (CSS, JavaScript, images) may be loaded from content delivery networks"
+      ],
+      "third_party_note": "Your search queries are only shared with these services to provide the seat availability information you requested.",
+      
+      "browser_storage_title": "6. Browser Storage",
+      "browser_storage_subtitle": "Local Browser Data:",
+      "browser_storage_items": [
+        "Session Storage: Temporary form data and search preferences stored in your browser",
+        "Local Storage: User interface preferences (like \"don't show banner again\")",
+        "Essential Cookies: Minimal cookies required for basic functionality"
+      ],
+      "browser_storage_note": "All browser storage is under your control and can be cleared through your browser settings.",
+      
+      "security_title": "7. Data Security",
+      "security_subtitle": "Protection Measures:",
+      "security_items": [
+        "HTTPS Encryption: All data transmission is encrypted using SSL/TLS",
+        "No Permanent Storage: Search queries and results are not permanently stored",
+        "Rate Limiting: Built-in protections against abuse and automated attacks",
+        "Regular Updates: Security patches and updates applied regularly"
+      ],
+      
+      "open_source_title": "8. Open Source Commitment",
+      "open_source_text": "This application is completely open source. You can review our code, data handling practices, and privacy implementation on our GitHub repository.",
+      
+      "no_sharing_title": "9. No Data Sharing",
+      "no_sharing_text": "We do not sell, trade, rent, or otherwise share any information with third parties except as necessary to provide the seat availability service (i.e., sending search queries to railway APIs).",
+      
+      "changes_title": "10. Changes to This Policy",
+      "changes_text": "We may update this Privacy Policy to reflect changes in our practices or for legal compliance. Any changes will be indicated by updating the \"Effective Date\" at the top of this policy.",
+      
+      "contact_title": "11. Contact Us",
+      "contact_text": "If you have questions about this Privacy Policy or our data practices, please contact us through our feedback form.",
+      
+      "agreement_text": "By using this website, you acknowledge that you have read, understood, and agree to this Privacy Policy."
+    },
+    
+    "errors": {
+      "fixed_credentials_not_configured": "Fixed mobile number or password not configured.",
+      "server_credentials_incorrect": "Server-side Mobile Number or Password is incorrect. Please wait a moment while we resolve this issue.",
+      "railway_website_problem": "We're facing a problem with the Bangladesh Railway website. Please try again in a few minutes.",
+      "connection_failed": "We couldn't reach the Bangladesh Railway website. Please try again in a few minutes.",
+      "fetch_token_failed": "Failed to fetch token: {error}",
+      "connection_error": "We're unable to connect to the Bangladesh Railway website right now. Please try again in a few minutes.",
+      "rate_limit_exceeded": "Rate limit exceeded. Please try again later.",
+      "no_trains_found": "No trains found for the given criteria.",
+      "no_data_received": "No data received. Please try a different criteria.",
+      "order_limit_exceeded": "Please retry with a different account as you have reached the maximum order limit for this train on the selected day.",
+      "order_limit_exceeded_detailed": "Please retry with a different account as you have reached the maximum order limit for this train on the selected day, so seat info cannot be fetched at this moment.",
+      "retry_different_account": "Please retry with a different account to get seat info for this train.",
+      "order_limit_all_trains": "Please retry with a different account as you have reached the maximum order limit for all trains between your chosen stations on the selected day, so seat info cannot be fetched at this moment. Alternatively, search for a different day.",
+      "active_reservation_process": "You already have an active reservation process in this account, so seat info cannot be fetched at this moment. Please try again after {retry_time} or retry with a different account.",
+      "general_error": "An error occurred while fetching seat details. Please retry with a different account for the given criteria.",
+      "no_trains_available": "At this moment, no trains are found between your selected origin and destination stations on the selected day. Please retry with a different criteria.",
+      "form_validation_error": "Origin, Destination, and Journey Date are required.",
+      "invalid_date_format": "Invalid date format submitted. Please choose a date again.",
+      "ticket_purchase_not_available": "Ticket purchasing for the selected criteria is not yet available, so seat info cannot be fetched at this moment. Please try again after {retry_time}. Alternatively, search for a different day.",
+      "purchase_process_ongoing": "Your purchase process for some tickets is ongoing for this account, so seat info cannot be fetched at this moment. Please try again after {retry_time} or retry with a different account.",
+      "unexpected_error": "An unexpected error occurred: {error}",
+      "session_expired": "Your request session has expired. Please search again.",
+      "request_not_found": "Your request could not be found. Please search again.",
+      "page_refreshed": "Page was refreshed. Please start a new search.",
+      "request_expired": "Your request has expired or could not be found. Please search again.",
+      "processing_error": "An error occurred while processing your request. Please try again."
+    }
+  },
+  
+  "bn": {
+    "site_title": "হোম | ট্রেন সিট প্রাপ্যতা",
+    "page_title": "বিআর ট্রেন সিট প্রাপ্যতা",
+    "meta_description": "বাংলাদেশ রেলওয়ের ট্রেন সিটের প্রাপ্যতা সহজেই যাচাই করুন। সঠিক এবং আপডেট তথ্য দিয়ে আপনার যাত্রার পরিকল্পনা করুন।",
+    "meta_keywords": "বাংলাদেশ রেলওয়ে, ট্রেন সিট প্রাপ্যতা, ভ্রমণ, পরিবহন, রেলওয়ে সময়সূচী, বাংলাদেশ ভ্রমণ",
+    "og_title": "বাংলাদেশ রেলওয়ে ট্রেন সিট প্রাপ্যতা",
+    "og_description": "বাংলাদেশ রেলওয়ে ট্রেনের সিট প্রাপ্যতা সহজেই যাচাই করুন এবং অনায়াসে আপনার ভ্রমণের পরিকল্পনা করুন।",
+    
+    "noscript": {
+      "title": "অনুগ্রহ করে জাভাস্ক্রিপ্ট চালু করুন",
+      "message": "এই ওয়েবসাইটটি সঠিকভাবে কাজ করার জন্য জাভাস্ক্রিপ্ট প্রয়োজন। সম্পূর্ণ কার্যকারিতা অ্যাক্সেস করতে এবং ট্রেন সিটের প্রাপ্যতা যাচাই করতে আপনার ব্রাউজার সেটিংসে এটি সক্ষম করুন।",
+      "instructions": "কীভাবে সক্ষম করবেন: আপনার ব্রাউজার সেটিংস > প্রাইভেসি/নিরাপত্তা > জাভাস্ক্রিপ্ট সক্ষম করুন। সক্ষম করার পরে পৃষ্ঠাটি রিফ্রেশ করুন।"
+    },
+    
+    "form": {
+      "origin_label": "যাত্রা শুরুর স্টেশন",
+      "origin_placeholder": "শুরুর স্টেশনের নাম টাইপ করুন বা নির্বাচন করুন",
+      "origin_error": "যাত্রা শুরুর স্টেশন প্রয়োজন",
+      
+      "destination_label": "গন্তব্য স্টেশন", 
+      "destination_placeholder": "গন্তব্য স্টেশনের নাম টাইপ করুন বা নির্বাচন করুন",
+      "destination_error": "গন্তব্য স্টেশন প্রয়োজন",
+      
+      "date_label": "যাত্রার তারিখ",
+      "date_placeholder": "একটি তারিখ নির্বাচন করুন",
+      "date_error": "যাত্রার তারিখ প্রয়োজন",
+      
+      "submit_button": "সিট তথ্য দেখুন"
+    },
+    
+    "calendar": {
+      "weekdays": ["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহ", "শুক্র", "শনি"]
+    },
+    
+    "footer": {
+      "open_source_text": "এই প্রকল্পটি ওপেন সোর্স। এটি দেখুন",
+      "github_link": "গিটহাবে",
+      "period": "।",
+      "seat_matrix": "সিট ম্যাট্রিক্স",
+      "train_report": "ট্রেন রিপোর্ট", 
+      "feedback": "মতামত",
+      "terms": "নিয়ম ও শর্তাবলী",
+      "privacy": "গোপনীয়তা নীতি"
+    },
+    
+    "banner": {
+      "dont_show_again": "এটি আর দেখাবেন না",
+      "close": "বন্ধ করুন"
+    },
+    
+    "404": {
+      "site_title": "৪০৪ - পাওয়া যায়নি | ট্রেন সিট প্রাপ্যতা",
+      "page_title": "৪০৪ - পৃষ্ঠা পাওয়া যায়নি",
+      "error_text": "ওহো! মনে হচ্ছে এই ট্রেনটি ট্র্যাক থেকে সরে গেছে। অনুরোধকৃত URL এই সার্ভারে পাওয়া যায়নি।",
+      "countdown_text": "আপনাকে",
+      "countdown_seconds": "সেকেন্ডে স্টেশনে ফিরিয়ে নিয়ে যাওয়া হচ্ছে...",
+      "return_button": "এখনই হোমে ফিরে যান"
+    },
+    
+    "notice": {
+      "site_title": "বিজ্ঞপ্তি | ট্রেন সিট প্রাপ্যতা",
+      "page_title": "বিজ্ঞপ্তি"
+    },
+    
+    "results": {
+      "site_title": "ফলাফল | ট্রেন সিট প্রাপ্যতা",
+      "title": "সিট প্রাপ্যতার তথ্য",
+      "back_to_search": "অনুসন্ধানে ফিরে যান",
+      "buy_tickets": "টিকিট কিনুন",
+      "note": "সিট প্রাপ্যতার তথ্য ঘন ঘন পরিবর্তিত হতে পারে কারণ এই ওয়েবসাইটটি রিয়েল টাইমে সিট ডেটা আনে না। সর্বশেষ তথ্য পেতে, অনুগ্রহ করে একটি নতুন অনুসন্ধান করুন। এছাড়াও, ইস্যুকৃত টিকিট এবং সংরক্ষিত টিকিটের তথ্য সম্পূর্ণরূপে নির্ভুল নাও হতে পারে।",
+      "note_bold": "লক্ষ্য করুনঃ",
+      "departure": "ছেড়ে যায়",
+      "arrival": "পৌঁছায়",
+      "view_seat_details": "সিটের বিস্তারিত দেখুন",
+      "hide_seat_details": "সিটের বিস্তারিত লুকান",
+      "seat_type": "সিটের ধরন:",
+      "expand_issued_tickets": "ইস্যুকৃত টিকিটের তালিকা দেখতে বিস্তার করুন",
+      "collapse_issued_tickets": "ইস্যুকৃত টিকিটের তালিকা লুকাতে সংকুচিত করুন",
+      "tickets_issued_for_purchase": "ক্রয়ের জন্য ইস্যু করা হয়েছে",
+      "ticket_category": "টিকিটের ধরন",
+      "coach_ticket_count": "কোচ (টিকিট সংখ্যা)",
+      "seat_numbers": "সিট নম্বর",
+      "ticket": "টিকিট",
+      "tickets": "টিকিট",
+      "all_seats_booked": " সিটের ধরনের জন্য সমস্ত টিকিট বুক হয়ে গেছে",
+      "no_seats_issued": " সিটের ধরনের জন্য কোন টিকিট ইস্যু করা হয়নি",
+      "available": "উপলব্ধ:",
+      "in_booking": "বুকিং প্রক্রিয়াধীন:",
+      "status": "অবস্থা",
+      "available_status": "উপলব্ধ",
+      "in_booking_status": "বুকিং প্রক্রিয়াধীন",
+      "no_trains_available": "নির্বাচিত মানদণ্ডের জন্য কোন ট্রেন উপলব্ধ নেই।",
+      "javascript_required_title": "অনুগ্রহ করে জাভাস্ক্রিপ্ট চালু করুন",
+      "javascript_required_message": "এই ওয়েবসাইটটি সঠিকভাবে কাজ করার জন্য জাভাস্ক্রিপ্ট প্রয়োজন। সম্পূর্ণ কার্যকারিতা অ্যাক্সেস করতে এবং ট্রেন সিটের প্রাপ্যতা যাচাই করতে আপনার ব্রাউজার সেটিংসে এটি সক্ষম করুন।",
+      "javascript_required_instructions": "কীভাবে সক্ষম করবেন: আপনার ব্রাউজার সেটিংস > প্রাইভেসি/নিরাপত্তা > জাভাস্ক্রিপ্ট সক্ষম করুন। সক্ষম করার পরে পৃষ্ঠাটি রিফ্রেশ করুন।"
+    },
+    
+    "coach_translations": {
+      "KA": "ক", "KHA": "খ", "GA": "গ", "GHA": "ঘ", "UMA": "ঙ", "CHA": "চ", "SCHA": "ছ", 
+      "JA": "জ", "JHA": "ঝ", "NEO": "ঞ", "TA": "ট", "THA": "ঠ", "DA": "ড", "DHA": "ঢ", 
+      "TO": "ত", "THO": "থ", "DOA": "দ", "DANT": "ন", "XTR": "এক্সট্রা", "SLR": "লাগেজ কার", "STD": "স্ট্যান্ডিং",
+      "UP": "আপ", "LO": "লো"
+    },
+    
+    "ticket_categories": {
+      "Issued Tickets to Buy": "ক্রয়ের জন্য ইস্যুকৃত টিকিট",
+      "Soon-to-be-Issued Tickets to Buy": "শীঘ্রই ইস্যু হবে এমন টিকিট",
+      "Reserved Tickets Under Authority": "কর্তৃপক্ষের অধীনে সংরক্ষিত টিকিট"
+    },
+    
+    "seat_types": {
+      "AC_B": "এসি বার্থ",
+      "AC_CHAIR": "এসি চেয়ার", 
+      "AC_S": "এসি সিট",
+      "F_BERTH": "এফ_বার্থ",
+      "F_CHAIR": "এফ_চেয়ার",
+      "F_SEAT": "এফ_সিট",
+      "S_CHAIR": "শোভন চেয়ার",
+      "SHOVAN": "শোভন",
+      "SHULOV": "সুলভ", 
+      "SNIGDHA": "স্নিগ্ধা"
+    },
+    
+    "terms": {
+      "title": "নিয়ম ও শর্তাবলী",
+      "effective_date": "কার্যকর তারিখ: ডিসেম্বর ০৯, ২০২৪",
+      "intro_title": "১. ভূমিকা",
+      "intro_text": "বাংলাদেশ রেলওয়ে ট্রেন সিট প্রাপ্যতা ওয়েব অ্যাপ্লিকেশনে আপনাকে স্বাগতম। এটি একটি বিনামূল্যের, ওপেন-সোর্স শিক্ষামূলক টুল যা ব্যবহারকারীদের বাংলাদেশ রেলওয়ের রিয়েল-টাইম ট্রেন সিট প্রাপ্যতা যাচাই করতে সাহায্য করার জন্য ডিজাইন করা হয়েছে। এই সেবা ব্যবহার করে, আপনি এই নিয়ম ও শর্তাবলী মেনে চলতে সম্মত হন।",
+      
+      "service_title": "২. সেবার বিবরণ",
+      "service_text": "এই অ্যাপ্লিকেশন প্রদান করে:",
+      "service_items": [
+        "রিয়েল-টাইম সিট চেকিং: বাংলাদেশ রেলওয়ে ট্রেনের লাইভ সিট প্রাপ্যতার তথ্য",
+        "কোচ-ভিত্তিক বিভাজন: ট্রেন কোচ অনুযায়ী সংগঠিত বিস্তারিত সিট তথ্য",
+        "একাধিক সিট ক্লাস: বাংলাদেশ রেলওয়ের সকল সিট ধরনের জন্য সহায়তা (এস_চেয়ার, স্নিগ্ধা, এসি_বি ইত্যাদি)",
+        "যাত্রা পরিকল্পনা: বাংলাদেশের মধ্যে আপনার রেল ভ্রমণ পরিকল্পনা করতে সাহায্যকারী টুলস",
+        "মোবাইল-অপ্টিমাইজড ইন্টারফেস: সকল ডিভাইসে ব্যবহারের জন্য রেসপনসিভ ডিজাইন",
+        "নিবন্ধনের প্রয়োজন নেই: অ্যাকাউন্ট তৈরি না করেই বিনামূল্যে অ্যাক্সেস"
+      ],
+      
+      "use_policy_title": "৩. গ্রহণযোগ্য ব্যবহার নীতি",
+      "use_policy_allowed_title": "আপনি এই সেবাটি ব্যবহার করতে পারেন:",
+      "use_policy_allowed": [
+        "ব্যক্তিগত ভ্রমণ পরিকল্পনা এবং গবেষণার জন্য",
+        "শিক্ষামূলক এবং শেখার উদ্দেশ্যে", 
+        "ট্রেনের সময়সূচী সম্পর্কে অ-বাণিজ্যিক তথ্য সংগ্রহের জন্য",
+        "টিকিট বুকিংয়ের আগে সিট প্রাপ্যতা যাচাইয়ের জন্য"
+      ],
+      "use_policy_forbidden_title": "আপনি এই সেবাটি ব্যবহার করতে পারবেন না:",
+      "use_policy_forbidden": [
+        "স্বয়ংক্রিয় স্ক্র্যাপিং বা বাল্ক ডেটা এক্সট্র্যাকশনের জন্য",
+        "সিট প্রাপ্যতার তথ্যের বাণিজ্যিক পুনঃবিক্রয়ের জন্য",
+        "অতিরিক্ত অনুরোধের মাধ্যমে সেবাকে চাপে রাখার জন্য",
+        "কোনো অবৈধ কার্যকলাপ বা বাংলাদেশ রেলওয়ে নীতি লঙ্ঘনের জন্য",
+        "অন্তর্নিহিত সিস্টেমে অ্যাক্সেস বা পরিবর্তনের চেষ্টার জন্য"
+      ],
+      
+      "data_sources_title": "৪. তৃতীয় পক্ষের ডেটা উৎস",
+      "data_sources_text": "এই অ্যাপ্লিকেশনটি বাহ্যিক উৎস থেকে ডেটা সংগ্রহ করে যার মধ্যে রয়েছে:",
+      "data_sources_items": [
+        "সহজ এপিআই (railspaapi.shohoz.com): ট্রেন সিট প্রাপ্যতার তথ্যের প্রাথমিক উৎস",
+        "বাংলাদেশ রেলওয়ে সিস্টেম: উপলব্ধ থাকলে অফিসিয়াল রেলওয়ে ডেটা"
+      ],
+      "data_sources_disclaimer": "আমরা বাংলাদেশ রেলওয়ে বা শহজের সাথে সংযুক্ত নই বা তাদের দ্বারা অনুমোদিত নই। এটি একটি স্বতন্ত্র শিক্ষামূলক প্রকল্প।",
+      
+      "limitations_title": "৫. সেবার সীমাবদ্ধতা এবং দাবিত্যাগ",
+      "limitations_text": "এই সেবাটি \"যেমন আছে\" ভিত্তিতে কোনো ধরনের ওয়ারেন্টি ছাড়াই প্রদান করা হয়। আমরা গ্যারান্টি দিই না:",
+      "limitations_items": [
+        "ডেটার নির্ভুলতা: সিট প্রাপ্যতার তথ্য সর্বদা বর্তমান বা নির্ভুল নাও হতে পারে",
+        "সেবার প্রাপ্যতা: রক্ষণাবেক্ষণ বা প্রযুক্তিগত সমস্যার কারণে অ্যাপ্লিকেশনটি অনুপলব্ধ হতে পারে",
+        "তৃতীয় পক্ষের নির্ভরতা: বাহ্যিক এপিআই সাময়িকভাবে অনুপলব্ধ হতে পারে",
+        "বুকিং সফলতা: এখানে দেখানো প্রাপ্যতা সফল টিকিট বুকিংয়ের গ্যারান্টি দেয় না"
+      ],
+      
+      "open_source_title": "৬. ওপেন সোর্স প্রকৃতি",
+      "open_source_text": "এটি গিটহাবে উপলব্ধ একটি ওপেন-সোর্স প্রকল্প। কোডটি শিক্ষামূলক উদ্দেশ্যে এবং কমিউনিটি অবদানের জন্য প্রদান করা হয়।",
+      
+      "liability_title": "৭. দায়বদ্ধতার সীমাবদ্ধতা",
+      "liability_text": "আইন দ্বারা অনুমোদিত সর্বোচ্চ পরিমাণে, আমরা এই সেবা ব্যবহারের ফলে উদ্ভূত কোনো প্রত্যক্ষ, পরোক্ষ, ঘটনামূলক, বিশেষ, বা পরিণামী ক্ষতির জন্য দায়বদ্ধ থাকব না, যার মধ্যে মিসড ট্রাভেল সুযোগ বা বুকিং ব্যর্থতাও রয়েছে।",
+      
+      "contact_title": "৮. যোগাযোগের তথ্য",
+      "contact_text": "প্রশ্ন, মতামত, বা সহায়তার জন্য, অনুগ্রহ করে আমাদের মতামত ফর্মের মাধ্যমে যোগাযোগ করুন।",
+      
+      "agreement_text": "এই ওয়েবসাইট ব্যবহার করে, আপনি স্বীকার করছেন যে আপনি এই নিয়ম ও শর্তাবলী পড়েছেন, বুঝেছেন এবং মেনে চলতে সম্মত হয়েছেন।"
+    },
+    
+    "privacy": {
+      "title": "গোপনীয়তা নীতি",
+      "effective_date": "কার্যকর তারিখ: ডিসেম্বর ০৯, ২০২৪",
+      "intro_title": "১. ভূমিকা",
+      "intro_text": "এই গোপনীয়তা নীতি ব্যাখ্যা করে যে বাংলাদেশ রেলওয়ে ট্রেন সিট প্রাপ্যতা ওয়েব অ্যাপ্লিকেশন আপনার তথ্য কীভাবে পরিচালনা করে। আমরা আপনার গোপনীয়তা রক্ষা করতে এবং আমাদের ডেটা অনুশীলন সম্পর্কে স্বচ্ছ থাকতে প্রতিশ্রুতিবদ্ধ।",
+      
+      "no_collect_title": "২. আমরা যে তথ্য সংগ্রহ করি না",
+      "no_collect_subtitle": "কোনো ব্যক্তিগত ডেটা সংগ্রহ নেই:",
+      "no_collect_items": [
+        "অ্যাকাউন্ট নিবন্ধন নেই: আপনি অ্যাকাউন্ট তৈরি না করেই আমাদের সেবা ব্যবহার করতে পারেন",
+        "ব্যক্তিগত তথ্য নেই: আমরা নাম, ইমেইল ঠিকানা, ফোন নম্বর, বা যোগাযোগের বিবরণ সংগ্রহ করি না",
+        "পেমেন্ট ডেটা নেই: আমরা পেমেন্ট প্রক্রিয়া করি না বা আর্থিক তথ্য সংরক্ষণ করি না",
+        "অবস্থান ট্র্যাকিং নেই: আমরা আপনার জিপিএস অবস্থান বা ডিভাইসের অবস্থান ট্র্যাক করি না",
+        "আচরণগত ট্র্যাকিং নেই: আমরা অন্যান্য ওয়েবসাইটে আপনার ব্রাউজিং অভ্যাস ট্র্যাক করি না",
+        "ব্যবহারকারী প্রোফাইল নেই: আমরা ব্যবহারকারী প্রোফাইল তৈরি বা রক্ষণাবেক্ষণ করি না"
+      ],
+      
+      "temp_process_title": "৩. আমরা যে তথ্য সাময়িকভাবে প্রক্রিয়া করি",
+      "temp_process_subtitle": "অনুসন্ধান ক্যোয়ারি ডেটা:",
+      "temp_process_items": [
+        "স্টেশনের নাম: আপনি যে শুরু এবং গন্তব্য স্টেশন অনুসন্ধান করেন",
+        "ভ্রমণের তারিখ: আপনি যে যাত্রার তারিখ নির্দিষ্ট করেন",
+        "ফর্ম ডেটা: শুধুমাত্র আপনার ব্রাউজার সেশনে সাময়িকভাবে সংরক্ষিত"
+      ],
+      "temp_process_note": "এই তথ্য শুধুমাত্র সিট প্রাপ্যতার ডেটা আনতে ব্যবহৃত হয় এবং আমাদের সার্ভারে স্থায়ীভাবে সংরক্ষিত হয় না।",
+      
+      "technical_title": "৪. প্রযুক্তিগত ডেটা",
+      "technical_subtitle": "ন্যূনতম সার্ভার লগ:",
+      "technical_items": [
+        "অ্যাক্সেস লগ: ডিবাগিং এবং পারফরমেন্স মনিটরিংয়ের জন্য মৌলিক ওয়েব সার্ভার লগ",
+        "ত্রুটি লগ: সেবার নির্ভরযোগ্যতা উন্নত করতে বেনামী ত্রুটির তথ্য",
+        "সারি ব্যবস্থাপনা: সেবার অতিরিক্ত লোড প্রতিরোধের জন্য সাময়িক অনুরোধ ট্র্যাকিং"
+      ],
+      "technical_note": "এই লগগুলিতে ব্যক্তিগত পরিচয়কারী তথ্য থাকে না এবং নিয়মিতভাবে স্বয়ংক্রিয়ভাবে মুছে ফেলা হয়।",
+      
+      "third_party_title": "৫. তৃতীয় পক্ষের সেবা একীকরণ",
+      "third_party_subtitle": "বাহ্যিক এপিআই:",
+      "third_party_items": [
+        "সহজ এপিআই (railspaapi.shohoz.com): সিট প্রাপ্যতা আনতে আপনার অনুসন্ধান ক্যোয়ারি এই সেবায় পাঠানো হয়",
+        "বাংলাদেশ রেলওয়ে এপিআই: উপলব্ধ থাকলে, অফিসিয়াল রেলওয়ে ডেটা অ্যাক্সেস করা হতে পারে",
+        "সিডিএন সেবা: স্ট্যাটিক অ্যাসেট (সিএসএস, জাভাস্ক্রিপ্ট, ছবি) কন্টেন্ট ডেলিভারি নেটওয়ার্ক থেকে লোড হতে পারে"
+      ],
+      "third_party_note": "আপনার অনুসন্ধান ক্যোয়ারি শুধুমাত্র আপনার অনুরোধকৃত সিট প্রাপ্যতার তথ্য প্রদানের জন্য এই সেবাগুলির সাথে শেয়ার করা হয়।",
+      
+      "browser_storage_title": "৬. ব্রাউজার স্টোরেজ",
+      "browser_storage_subtitle": "স্থানীয় ব্রাউজার ডেটা:",
+      "browser_storage_items": [
+        "সেশন স্টোরেজ: আপনার ব্রাউজারে সংরক্ষিত সাময়িক ফর্ম ডেটা এবং অনুসন্ধান পছন্দ",
+        "লোকাল স্টোরেজ: ব্যবহারকারী ইন্টারফেস পছন্দ (যেমন \"এটি আর দেখাবেন না\")",
+        "প্রয়োজনীয় কুকি: মৌলিক কার্যকারিতার জন্য প্রয়োজনীয় ন্যূনতম কুকি"
+      ],
+      "browser_storage_note": "সমস্ত ব্রাউজার স্টোরেজ আপনার নিয়ন্ত্রণে রয়েছে এবং আপনার ব্রাউজার সেটিংসের মাধ্যমে মুছে ফেলা যেতে পারে।",
+      
+      "security_title": "৭. ডেটা নিরাপত্তা",
+      "security_subtitle": "সুরক্ষা ব্যবস্থা:",
+      "security_items": [
+        "HTTPS এনক্রিপশন: সমস্ত ডেটা ট্রান্সমিশন SSL/TLS ব্যবহার করে এনক্রিপ্ট করা হয়",
+        "স্থায়ী স্টোরেজ নেই: অনুসন্ধান ক্যোয়ারি এবং ফলাফল স্থায়ীভাবে সংরক্ষিত হয় না",
+        "রেট লিমিটিং: অপব্যবহার এবং স্বয়ংক্রিয় আক্রমণের বিরুদ্ধে অন্তর্নির্মিত সুরক্ষা",
+        "নিয়মিত আপডেট: নিয়মিতভাবে নিরাপত্তা প্যাচ এবং আপডেট প্রয়োগ করা হয়"
+      ],
+      
+      "open_source_title": "৮. ওপেন সোর্স প্রতিশ্রুতি",
+      "open_source_text": "এই অ্যাপ্লিকেশনটি সম্পূর্ণভাবে ওপেন সোর্স। আপনি আমাদের গিটহাব রিপোজিটরিতে আমাদের কোড, ডেটা হ্যান্ডলিং অনুশীলন এবং গোপনীয়তা বাস্তবায়ন পর্যালোচনা করতে পারেন।",
+      
+      "no_sharing_title": "৯. কোনো ডেটা শেয়ারিং নেই",
+      "no_sharing_text": "আমরা সিট প্রাপ্যতা সেবা প্রদানের জন্য প্রয়োজনীয় (অর্থাৎ, রেলওয়ে এপিআইগুলিতে অনুসন্ধান ক্যোয়ারি পাঠানো) ব্যতীত তৃতীয় পক্ষের সাথে কোনো তথ্য বিক্রি, ব্যবসা, ভাড়া বা অন্যথায় ভাগাভাগি করি না।",
+      
+      "changes_title": "১০. এই নীতিতে পরিবর্তন",
+      "changes_text": "আমরা আমাদের অনুশীলনে পরিবর্তন বা আইনী সম্মতির জন্য এই গোপনীয়তা নীতি আপডেট করতে পারি। যেকোনো পরিবর্তন এই নীতির শীর্ষে \"কার্যকর তারিখ\" আপডেট করে নির্দেশ করা হবে।",
+      
+      "contact_title": "১১. আমাদের সাথে যোগাযোগ",
+      "contact_text": "এই গোপনীয়তা নীতি বা আমাদের ডেটা অনুশীলন সম্পর্কে আপনার প্রশ্ন থাকলে, অনুগ্রহ করে আমাদের মতামত ফর্মের মাধ্যমে যোগাযোগ করুন।",
+      
+      "agreement_text": "এই ওয়েবসাইট ব্যবহার করে, আপনি স্বীকার করছেন যে আপনি এই গোপনীয়তা নীতি পড়েছেন, বুঝেছেন এবং সম্মত হয়েছেন।"
+    },
+    
+    "errors": {
+      "fixed_credentials_not_configured": "নির্দিষ্ট মোবাইল নম্বর বা পাসওয়ার্ড কনফিগার করা নেই।",
+      "server_credentials_incorrect": "সার্ভার-সাইড মোবাইল নম্বর বা পাসওয়ার্ড ভুল। আমরা এই সমস্যা সমাধান করার সময় দয়া করে একটু অপেক্ষা করুন।",
+      "railway_website_problem": "আমরা বাংলাদেশ রেলওয়ে ওয়েবসাইটের সাথে সমস্যার সম্মুখীন হচ্ছি। কয়েক মিনিট পর আবার চেষ্টা করুন।",
+      "connection_failed": "আমরা বাংলাদেশ রেলওয়ে ওয়েবসাইটে পৌঁছাতে পারিনি। কয়েক মিনিট পর আবার চেষ্টা করুন।",
+      "fetch_token_failed": "টোকেন আনতে ব্যর্থ: {error}",
+      "connection_error": "আমরা এখন বাংলাদেশ রেলওয়ে ওয়েবসাইটের সাথে সংযোগ করতে পারছি না। কয়েক মিনিট পর আবার চেষ্টা করুন।",
+      "rate_limit_exceeded": "রেট সীমা অতিক্রম করেছে। পরে আবার চেষ্টা করুন।",
+      "no_trains_found": "প্রদত্ত মানদণ্ডের জন্য কোন ট্রেন পাওয়া যায়নি।",
+      "no_data_received": "কোন ডেটা পাওয়া যায়নি। একটি ভিন্ন মানদণ্ড চেষ্টা করুন।",
+      "order_limit_exceeded": "আপনি নির্বাচিত দিনে এই ট্রেনের জন্য সর্বোচ্চ অর্ডার সীমায় পৌঁছেছেন, তাই একটি ভিন্ন অ্যাকাউন্ট দিয়ে পুনরায় চেষ্টা করুন।",
+      "order_limit_exceeded_detailed": "আপনি নির্বাচিত দিনে এই ট্রেনের জন্য সর্বোচ্চ অর্ডার সীমায় পৌঁছেছেন, তাই এই মুহূর্তে আসনের তথ্য আনা যাচ্ছে না। একটি ভিন্ন অ্যাকাউন্ট দিয়ে পুনরায় চেষ্টা করুন।",
+      "retry_different_account": "এই ট্রেনের জন্য আসনের তথ্য পেতে একটি ভিন্ন অ্যাকাউন্ট দিয়ে পুনরায় চেষ্টা করুন।",
+      "order_limit_all_trains": "আপনি নির্বাচিত দিনে আপনার নির্বাচিত স্টেশনগুলির মধ্যে সমস্ত ট্রেনের জন্য সর্বোচ্চ অর্ডার সীমায় পৌঁছেছেন, তাই এই মুহূর্তে আসনের তথ্য আনা যাচ্ছে না। বিকল্পভাবে, একটি ভিন্ন দিন অনুসন্ধান করুন।",
+      "active_reservation_process": "এই অ্যাকাউন্টে আপনার ইতিমধ্যে একটি সক্রিয় রিজার্ভেশন প্রক্রিয়া রয়েছে, তাই এই মুহূর্তে আসনের তথ্য আনা যাচ্ছে না। দয়া করে {retry_time} এর পরে আবার চেষ্টা করুন বা একটি ভিন্ন অ্যাকাউন্ট দিয়ে পুনরায় চেষ্টা করুন।",
+      "general_error": "আসনের বিবরণ আনার সময় একটি ত্রুটি ঘটেছে। প্রদত্ত মানদণ্ডের জন্য একটি ভিন্ন অ্যাকাউন্ট দিয়ে পুনরায় চেষ্টা করুন।",
+      "no_trains_available": "এই মুহূর্তে আপনার নির্বাচিত উৎপত্তি এবং গন্তব্য স্টেশনের মধ্যে নির্বাচিত দিনে কোন ট্রেন পাওয়া যাচ্ছে না। অনুগ্রহ করে একটি ভিন্ন মানদণ্ড দিয়ে পুনরায় চেষ্টা করুন।",
+      "form_validation_error": "উৎপত্তি, গন্তব্য, এবং যাত্রার তারিখ প্রয়োজন।",
+      "invalid_date_format": "অবৈধ তারিখ ফর্ম্যাট জমা দেওয়া হয়েছে। অনুগ্রহ করে আবার একটি তারিখ নির্বাচন করুন।",
+      "ticket_purchase_not_available": "নির্বাচিত মানদণ্ডের জন্য টিকিট ক্রয় এখনও উপলব্ধ নয়, তাই এই মুহূর্তে আসনের তথ্য আনা যাচ্ছে না। অনুগ্রহ করে {retry_time} এর পরে আবার চেষ্টা করুন। বিকল্পভাবে, একটি ভিন্ন দিনের জন্য অনুসন্ধান করুন।",
+      "purchase_process_ongoing": "এই অ্যাকাউন্টে কিছু টিকিটের জন্য আপনার ক্রয় প্রক্রিয়া চলমান আছে, তাই এই মুহূর্তে আসনের তথ্য আনা যাচ্ছে না। অনুগ্রহ করে {retry_time} এর পরে আবার চেষ্টা করুন বা একটি ভিন্ন অ্যাকাউন্ট দিয়ে পুনরায় চেষ্টা করুন।",
+      "unexpected_error": "একটি অপ্রত্যাশিত ত্রুটি ঘটেছে: {error}",
+      "session_expired": "আপনার অনুরোধ সেশনের মেয়াদ শেষ হয়ে গেছে। অনুগ্রহ করে আবার অনুসন্ধান করুন।",
+      "request_not_found": "আপনার অনুরোধ খুঁজে পাওয়া যায়নি। অনুগ্রহ করে আবার অনুসন্ধান করুন।",
+      "page_refreshed": "পৃষ্ঠা রিফ্রেশ করা হয়েছে। অনুগ্রহ করে একটি নতুন অনুসন্ধান শুরু করুন।",
+      "request_expired": "আপনার অনুরোধের মেয়াদ শেষ হয়ে গেছে বা খুঁজে পাওয়া যায়নি। অনুগ্রহ করে আবার অনুসন্ধান করুন।",
+      "processing_error": "আপনার অনুরোধ প্রক্রিয়াকরণের সময় একটি ত্রুটি ঘটেছে। অনুগ্রহ করে আবার চেষ্টা করুন।"
+    }
+  }
+}

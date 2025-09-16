@@ -1,0 +1,516 @@
+{
+    "trains": [
+        {
+            "en": "AGHNIBINA EXPRESS (735)",
+            "bn": "অগ্নিবীণা এক্সপ্রেস (৭৩৫)"
+        },
+        {
+            "en": "AGHNIBINA EXPRESS (736)",
+            "bn": "অগ্নিবীণা এক্সপ্রেস (৭৩৬)"
+        },
+        {
+            "en": "BANALATA EXPRESS (791)",
+            "bn": "বনলতা এক্সপ্রেস (৭৯১)"
+        },
+        {
+            "en": "BANALATA EXPRESS (792)",
+            "bn": "বনলতা এক্সপ্রেস (৭৯২)"
+        },
+        {
+            "en": "BANGLABANDHA EXPRESS (803)",
+            "bn": "বাংলাবান্ধা এক্সপ্রেস (৮০৩)"
+        },
+        {
+            "en": "BANGLABANDHA EXPRESS (804)",
+            "bn": "বাংলাবান্ধা এক্সপ্রেস (৮০৪)"
+        },
+        {
+            "en": "BARENDRA EXPRESS (731)",
+            "bn": "বরেন্দ্র এক্সপ্রেস (৭৩১)"
+        },
+        {
+            "en": "BARENDRA EXPRESS (732)",
+            "bn": "বরেন্দ্র এক্সপ্রেস (৭৩২)"
+        },
+        {
+            "en": "BENAPOLE EXPRESS (795)",
+            "bn": "বেনাপোল এক্সপ্রেস (৭৯৫)"
+        },
+        {
+            "en": "BENAPOLE EXPRESS (796)",
+            "bn": "বেনাপোল এক্সপ্রেস (৭৯৬)"
+        },
+        {
+            "en": "BIJOY EXPRESS (785)",
+            "bn": "বিজয় এক্সপ্রেস (৭৮৫)"
+        },
+        {
+            "en": "BIJOY EXPRESS (786)",
+            "bn": "বিজয় এক্সপ্রেস (৭৮৬)"
+        },
+        {
+            "en": "BHRAMMAPUTRA EXPRESS (743)",
+            "bn": "ব্রহ্মপুত্র এক্সপ্রেস (৭৪৩)"
+        },
+        {
+            "en": "BHRAMMAPUTRA EXPRESS (744)",
+            "bn": "ব্রহ্মপুত্র এক্সপ্রেস (৭৪৪)"
+        },
+        {
+            "en": "BURIMARI EXPRESS (809)",
+            "bn": "বুড়িমারী এক্সপ্রেস (৮০৯)"
+        },
+        {
+            "en": "BURIMARI EXPRESS (810)",
+            "bn": "বুড়িমারী এক্সপ্রেস (৮১০)"
+        },
+        {
+            "en": "CHAPAINAWABGANJ SHUTTLE (109)",
+            "bn": "চাঁপাইনবাবগঞ্জ শাটল (১০৯)"
+        },
+        {
+            "en": "CHAPAINAWABGANJ SHUTTLE (110)",
+            "bn": "চাঁপাইনবাবগঞ্জ শাটল (১১০)"
+        },
+        {
+            "en": "CHATTALA EXPRESS (801)",
+            "bn": "চট্টলা এক্সপ্রেস (৮০১)"
+        },
+        {
+            "en": "CHATTALA EXPRESS (802)",
+            "bn": "চট্টলা এক্সপ্রেস (৮০২)"
+        },
+        {
+            "en": "CHILAHATI EXPRESS (805)",
+            "bn": "চিলাহাটি এক্সপ্রেস (৮০৫)"
+        },
+        {
+            "en": "CHILAHATI EXPRESS (806)",
+            "bn": "চিলাহাটি এক্সপ্রেস (৮০৬)"
+        },
+        {
+            "en": "CHITRA EXPRESS (763)",
+            "bn": "চিত্রা এক্সপ্রেস (৭৬৩)"
+        },
+        {
+            "en": "CHITRA EXPRESS (764)",
+            "bn": "চিত্রা এক্সপ্রেস (৭৬৪)"
+        },
+        {
+            "en": "COXS BAZAR EXPRESS (813)",
+            "bn": "কক্সবাজার এক্সপ্রেস (৮১৩)"
+        },
+        {
+            "en": "COXS BAZAR EXPRESS (814)",
+            "bn": "কক্সবাজার এক্সপ্রেস (৮১৪)"
+        },
+        {
+            "en": "DHUMKETU EXPRESS (769)",
+            "bn": "ধূমকেতু এক্সপ্রেস (৭৬৯)"
+        },
+        {
+            "en": "DHUMKETU EXPRESS (770)",
+            "bn": "ধূমকেতু এক্সপ্রেস (৭৭০)"
+        },
+        {
+            "en": "DHALARCHAR EXPRESS (779)",
+            "bn": "ঢালারচর এক্সপ্রেস (৭৭৯)"
+        },
+        {
+            "en": "DHALARCHAR EXPRESS (780)",
+            "bn": "ঢালারচর এক্সপ্রেস (৭৮০)"
+        },
+        {
+            "en": "DOLONCHAPA EXPRESS (767)",
+            "bn": "দোলনচাঁপা এক্সপ্রেস (৭৬৭)"
+        },
+        {
+            "en": "DOLONCHAPA EXPRESS (768)",
+            "bn": "দোলনচাঁপা এক্সপ্রেস (৭৬৮)"
+        },
+        {
+            "en": "DRUTOJAN EXPRESS (757)",
+            "bn": "দ্রুতযান এক্সপ্রেস (৭৫৭)"
+        },
+        {
+            "en": "DRUTOJAN EXPRESS (758)",
+            "bn": "দ্রুতযান এক্সপ্রেস (৭৫৮)"
+        },
+        {
+            "en": "EGAROSINDHUR GODHULI (749)",
+            "bn": "এগারো সিন্ধুর গোধুলী (৭৪৯)"
+        },
+        {
+            "en": "EGAROSINDHUR GODHULI (750)",
+            "bn": "এগারো সিন্ধুর গোধুলী (৭৫০)"
+        },
+        {
+            "en": "EGAROSINDHUR PROVATI (737)",
+            "bn": "এগারো সিন্ধুর প্রভাতী (৭৩৭)"
+        },
+        {
+            "en": "EGAROSINDHUR PROVATI (738)",
+            "bn": "এগারো সিন্ধুর প্রভাতী (৭৩৮)"
+        },
+        {
+            "en": "EKOTA EXPRESS (705)",
+            "bn": "একতা এক্সপ্রেস (৭০৫)"
+        },
+        {
+            "en": "EKOTA EXPRESS (706)",
+            "bn": "একতা এক্সপ্রেস (৭০৬)"
+        },
+        {
+            "en": "HAWR EXPRESS (777)",
+            "bn": "হাওর এক্সপ্রেস (৭৭৭)"
+        },
+        {
+            "en": "HAWR EXPRESS (778)",
+            "bn": "হাওর এক্সপ্রেস (৭৭৮)"
+        },
+        {
+            "en": "JAHANABAD EXPRESS (825)",
+            "bn": "জাহানাবাদ এক্সপ্রেস (৮২৫)"
+        },
+        {
+            "en": "JAHANABAD EXPRESS (826)",
+            "bn": "জাহানাবাদ এক্সপ্রেস (৮২৬)"
+        },
+        {
+            "en": "JAMALPUR EXPRESS (799)",
+            "bn": "জামালপুর এক্সপ্রেস (৭৯৯)"
+        },
+        {
+            "en": "JAMALPUR EXPRESS (800)",
+            "bn": "জামালপুর এক্সপ্রেস (৮০০)"
+        },
+        {
+            "en": "JAMUNA EXPRESS (745)",
+            "bn": "যমুনা এক্সপ্রেস (৭৪৫)"
+        },
+        {
+            "en": "JAMUNA EXPRESS (746)",
+            "bn": "যমুনা এক্সপ্রেস (৭৪৬)"
+        },
+        {
+            "en": "JAYENTIKA EXPRESS (717)",
+            "bn": "জয়ন্তিকা এক্সপ্রেস (৭১৭)"
+        },
+        {
+            "en": "JAYENTIKA EXPRESS (718)",
+            "bn": "জয়ন্তিকা এক্সপ্রেস (৭১৮)"
+        },
+        {
+            "en": "KALNI EXPRESS (773)",
+            "bn": "কালনী এক্সপ্রেস (৭৭৩)"
+        },
+        {
+            "en": "KALNI EXPRESS (774)",
+            "bn": "কালনী এক্সপ্রেস (৭৭৪)"
+        },
+        {
+            "en": "KANCHON INTERCITY COMMUTER (41)",
+            "bn": "কাঞ্চন ইন্টারসিটি কমিউটার (৪১)"
+        },
+        {
+            "en": "KANCHON INTERCITY COMMUTER (42)",
+            "bn": "কাঞ্চন ইন্টারসিটি কমিউটার (৪২)"
+        },
+        {
+            "en": "KAPOTAKSHA EXPRESS (715)",
+            "bn": "কপোতাক্ষ এক্সপ্রেস (৭১৫)"
+        },
+        {
+            "en": "KAPOTAKSHA EXPRESS (716)",
+            "bn": "কপোতাক্ষ এক্সপ্রেস (৭১৬)"
+        },
+        {
+            "en": "KISHORGANJ EXPRESS (781)",
+            "bn": "কিশোরগঞ্জ এক্সপ্রেস (৭৮১)"
+        },
+        {
+            "en": "KISHORGANJ EXPRESS (782)",
+            "bn": "কিশোরগঞ্জ এক্সপ্রেস (৭৮২)"
+        },
+        {
+            "en": "KOROTOA EXPRESS (713)",
+            "bn": "করতোয়া এক্সপ্রেস (৭১৩)"
+        },
+        {
+            "en": "KOROTOA EXPRESS (714)",
+            "bn": "করতোয়া এক্সপ্রেস (৭১৪)"
+        },
+        {
+            "en": "KURIGRAM EXPRESS (797)",
+            "bn": "কুড়িগ্রাম এক্সপ্রেস (৭৯৭)"
+        },
+        {
+            "en": "KURIGRAM EXPRESS (798)",
+            "bn": "কুড়িগ্রাম এক্সপ্রেস (৭৯৮)"
+        },
+        {
+            "en": "LALMONI EXPRESS (751)",
+            "bn": "লালমনি এক্সপ্রেস (৭৫১)"
+        },
+        {
+            "en": "LALMONI EXPRESS (752)",
+            "bn": "লালমনি এক্সপ্রেস (৭৫২)"
+        },
+        {
+            "en": "MADHUMATI EXPRESS (755)",
+            "bn": "মধুমতি এক্সপ্রেস (৭৫৫)"
+        },
+        {
+            "en": "MADHUMATI EXPRESS (756)",
+            "bn": "মধুমতি এক্সপ্রেস (৭৫৬)"
+        },
+        {
+            "en": "MAHANAGAR GODHULI (703)",
+            "bn": "মহানগর গোধুলী (৭০৩)"
+        },
+        {
+            "en": "MAHANAGAR PROVATI (704)",
+            "bn": "মহানগর প্রভাতি (৭০৪)"
+        },
+        {
+            "en": "MEGHNA EXPRESS (729)",
+            "bn": "মহানগর এক্সপ্রেস (৭২১)"
+        },
+        {
+            "en": "MEGHNA EXPRESS (730)",
+            "bn": "মহানগর এক্সপ্রেস (৭২২)"
+        },
+        {
+            "en": "MOHANAGAR EXPRESS (721)",
+            "bn": "মেঘনা এক্সপ্রেস (৭২৯)"
+        },
+        {
+            "en": "MOHANAGAR EXPRESS (722)",
+            "bn": "মেঘনা এক্সপ্রেস (৭৩০)"
+        },
+        {
+            "en": "MOHONGANJ EXPRESS (789)",
+            "bn": "মোহনগঞ্জ এক্সপ্রেস (৭৮৯)"
+        },
+        {
+            "en": "MOHONGANJ EXPRESS (790)",
+            "bn": "মোহনগঞ্জ এক্সপ্রেস (৭৯০)"
+        },
+        {
+            "en": "NILSAGAR EXPRESS (765)",
+            "bn": "নীলসাগর এক্সপ্রেস (৭৬৫)"
+        },
+        {
+            "en": "NILSAGAR EXPRESS (766)",
+            "bn": "নীলসাগর এক্সপ্রেস (৭৬৬)"
+        },
+        {
+            "en": "PADMA EXPRESS (759)",
+            "bn": "পদ্মা এক্সপ্রেস (৭৫৯)"
+        },
+        {
+            "en": "PADMA EXPRESS (760)",
+            "bn": "পদ্মা এক্সপ্রেস (৭৬০)"
+        },
+        {
+            "en": "PAHARIKA EXPRESS (719)",
+            "bn": "পাহাড়িকা এক্সপ্রেস (৭১৯)"
+        },
+        {
+            "en": "PAHARIKA EXPRESS (720)",
+            "bn": "পাহাড়িকা এক্সপ্রেস (৭২০)"
+        },
+        {
+            "en": "PANCHAGARH EXPRESS (793)",
+            "bn": "পঞ্চগড় এক্সপ্রেস (৭৯৩)"
+        },
+        {
+            "en": "PANCHAGARH EXPRESS (794)",
+            "bn": "পঞ্চগড় এক্সপ্রেস (৭৯৪)"
+        },
+        {
+            "en": "PARABAT EXPRESS (709)",
+            "bn": "পারাবত এক্সপ্রেস (৭০৯)"
+        },
+        {
+            "en": "PARABAT EXPRESS (710)",
+            "bn": "পারাবত এক্সপ্রেস (৭১০)"
+        },
+        {
+            "en": "PARJOTAK EXPRESS (815)",
+            "bn": "পর্যটক এক্সপ্রেস (৮১৫)"
+        },
+        {
+            "en": "PARJOTAK EXPRESS (816)",
+            "bn": "পর্যটক এক্সপ্রেস (৮১৬)"
+        },
+        {
+            "en": "PROBAL EXPRESS (822)",
+            "bn": "প্রবাল এক্সপ্রেস (৮২২)"
+        },
+        {
+            "en": "PROBAL EXPRESS (823)",
+            "bn": "প্রবাল এক্সপ্রেস (৮২৩)"
+        },
+        {
+            "en": "RAJSHAHI COMMUTER (57)",
+            "bn": "রাজশাহী কমিউটার (৫৭)"
+        },
+        {
+            "en": "RAJSHAHI COMMUTER (58)",
+            "bn": "রাজশাহী কমিউটার (৫৮)"
+        },
+        {
+            "en": "RAJSHAHI COMMUTER (77)",
+            "bn": "রাজশাহী কমিউটার (৭৭)"
+        },
+        {
+            "en": "RAJSHAHI COMMUTER (78)",
+            "bn": "রাজশাহী কমিউটার (৭৮)"
+        },
+        {
+            "en": "RANGPUR EXPRESS (771)",
+            "bn": "রংপুর এক্সপ্রেস (৭৭১)"
+        },
+        {
+            "en": "RANGPUR EXPRESS (772)",
+            "bn": "রংপুর এক্সপ্রেস (৭৭২)"
+        },
+        {
+            "en": "RUPOSHI BANGLA EXPRESS (827)",
+            "bn": "রূপসী বাংলা এক্সপ্রেস (৮২৭)"
+        },
+        {
+            "en": "RUPOSHI BANGLA EXPRESS (828)",
+            "bn": "রূপসী বাংলা এক্সপ্রেস (৮২৮)"
+        },
+        {
+            "en": "RUPSHA EXPRESS (727)",
+            "bn": "রূপসা এক্সপ্রেস (৭২৭)"
+        },
+        {
+            "en": "RUPSHA EXPRESS (728)",
+            "bn": "রূপসা এক্সপ্রেস (৭২৮)"
+        },
+        {
+            "en": "SAGARDARI EXPRESS (761)",
+            "bn": "সাগরদাঁড়ি এক্সপ্রেস (৭৬১)"
+        },
+        {
+            "en": "SAGARDARI EXPRESS (762)",
+            "bn": "সাগরদাঁড়ি এক্সপ্রেস (৭৬২)"
+        },
+        {
+            "en": "SHAIKAT EXPRESS (821)",
+            "bn": "সৈকত এক্সপ্রেস (৮২১)"
+        },
+        {
+            "en": "SHAIKAT EXPRESS (824)",
+            "bn": "সৈকত এক্সপ্রেস (৮২৪)"
+        },
+        {
+            "en": "SILKCITY EXPRESS (753)",
+            "bn": "সিল্কসিটি এক্সপ্রেস (৭৫৩)"
+        },
+        {
+            "en": "SILKCITY EXPRESS (754)",
+            "bn": "সিল্কসিটি এক্সপ্রেস (৭৫৪)"
+        },
+        {
+            "en": "SIMANTA EXPRESS (747)",
+            "bn": "সীমান্ত এক্সপ্রেস (৭৪৭)"
+        },
+        {
+            "en": "SIMANTA EXPRESS (748)",
+            "bn": "সীমান্ত এক্সপ্রেস (৭৪৮)"
+        },
+        {
+            "en": "SIRAJGANJ EXPRESS (775)",
+            "bn": "সিরাজগঞ্জ এক্সপ্রেস (৭৭৫)"
+        },
+        {
+            "en": "SIRAJGANJ EXPRESS (776)",
+            "bn": "সিরাজগঞ্জ এক্সপ্রেস (৭৭৬)"
+        },
+        {
+            "en": "SONAR BANGLA EXPRESS (787)",
+            "bn": "সোনার বাংলা এক্সপ্রেস (৭৮৭)"
+        },
+        {
+            "en": "SONAR BANGLA EXPRESS (788)",
+            "bn": "সোনার বাংলা এক্সপ্রেস (৭৮৮)"
+        },
+        {
+            "en": "SUBORNO EXPRESS (701)",
+            "bn": "সুবর্ণ এক্সপ্রেস (৭০১)"
+        },
+        {
+            "en": "SUBORNO EXPRESS (702)",
+            "bn": "সুবর্ণ এক্সপ্রেস (৭০২)"
+        },
+        {
+            "en": "SUNDARBAN EXPRESS (725)",
+            "bn": "সুন্দরবন এক্সপ্রেস (৭২৫)"
+        },
+        {
+            "en": "SUNDARBAN EXPRESS (726)",
+            "bn": "সুন্দরবন এক্সপ্রেস (৭২৬)"
+        },
+        {
+            "en": "TISTA EXPRESS (707)",
+            "bn": "তিস্তা এক্সপ্রেস (৭০৭)"
+        },
+        {
+            "en": "TISTA EXPRESS (708)",
+            "bn": "তিস্তা এক্সপ্রেস (৭০৮)"
+        },
+        {
+            "en": "TITUMIR EXPRESS (733)",
+            "bn": "তিতুমীর এক্সপ্রেস (৭৩৩)"
+        },
+        {
+            "en": "TITUMIR EXPRESS (734)",
+            "bn": "তিতুমীর এক্সপ্রেস (৭৩৪)"
+        },
+        {
+            "en": "TUNGIPARA EXPRESS (783)",
+            "bn": "টুঙ্গিপাড়া এক্সপ্রেস (৭৮৩)"
+        },
+        {
+            "en": "TUNGIPARA EXPRESS (784)",
+            "bn": "টুঙ্গিপাড়া এক্সপ্রেস (৭৮৪)"
+        },
+        {
+            "en": "TURNA (741)",
+            "bn": "তুর্ণা (৭৪১)"
+        },
+        {
+            "en": "TURNA (742)",
+            "bn": "তুর্ণা (৭৪২)"
+        },
+        {
+            "en": "UDAYAN EXPRESS (723)",
+            "bn": "উদয়ন এক্সপ্রেস (৭২৩)"
+        },
+        {
+            "en": "UDAYAN EXPRESS (724)",
+            "bn": "উদয়ন এক্সপ্রেস (৭২৪)"
+        },
+        {
+            "en": "UPABAN EXPRESS (739)",
+            "bn": "উপবন এক্সপ্রেস (৭৩৯)"
+        },
+        {
+            "en": "UPABAN EXPRESS (740)",
+            "bn": "উপবন এক্সপ্রেস (৭৪০)"
+        },
+        {
+            "en": "UPAKUL EXPRESS (711)",
+            "bn": "উপকূল এক্সপ্রেস (৭১১)"
+        },
+        {
+            "en": "UPAKUL EXPRESS (712)",
+            "bn": "উপকূল এক্সপ্রেস (৭১২)"
+        }
+    ]
+}

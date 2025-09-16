@@ -4,18 +4,18 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home | Train Seat Availability</title>
+    <title data-translate="site_title">Home | Train Seat Availability</title>
     <!-- SEO Meta Tags -->
     <meta name="description"
-        content="Check train seat availability for Bangladesh Railway effortlessly. Plan your journey with accurate and up-to-date information;">
+        content="Check train seat availability for Bangladesh Railway effortlessly. Plan your journey with accurate and up-to-date information;" data-translate-content="meta_description">
     <meta name="keywords"
-        content="Bangladesh Railway, train seat availability, travel, transportation, railway schedule, Bangladesh travel">
+        content="Bangladesh Railway, train seat availability, travel, transportation, railway schedule, Bangladesh travel" data-translate-content="meta_keywords">
     <meta name="author" content="Nishat Mahmud">
     <meta name="publish_date" content="2024-12-09" scheme="YYYY-MM-DD">
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Bangladesh Railway Train Seat Availability">
+    <meta property="og:title" content="Bangladesh Railway Train Seat Availability" data-translate-content="og_title">
     <meta property="og:description"
-        content="Easily check seat availability for Bangladesh Railway trains and plan your travel effortlessly.">
+        content="Easily check seat availability for Bangladesh Railway trains and plan your travel effortlessly." data-translate-content="og_description">
     <meta property="og:image"
         content="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application/main/images/link_share_image.png">
     <meta property="og:image:width" content="1200">
@@ -24,6 +24,7 @@
     <meta property="og:type" content="website">
     <style>{{ styles_css | safe }}</style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon"
         href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png"
         type="image/x-icon" sizes="30x30">
@@ -45,18 +46,23 @@
     </div>
     <noscript>
         <div class="container noscript-warning">
-            <h2><i class="fas fa-exclamation-circle"></i> Please Enable JavaScript</h2>
-            <p>This website requires JavaScript to function properly. Enable it in your browser settings to access full
+            <h2><i class="fas fa-exclamation-circle"></i> <span data-translate="noscript.title">Please Enable JavaScript</span></h2>
+            <p data-translate="noscript.message">This website requires JavaScript to function properly. Enable it in your browser settings to access full
                 functionality and check train seat availability.</p>
             <div class="instructions">
-                <strong>How to enable:</strong> Go to your browser settings > Privacy/Security > Enable JavaScript.
-                Refresh the page after enabling.
+                <strong data-translate="noscript.instructions">How to enable: Go to your browser settings > Privacy/Security > Enable JavaScript.
+                Refresh the page after enabling.</strong>
             </div>
         </div>
     </noscript>
 
     <div class="container main-content">
-        <h1><i class="fas fa-subway"></i> BR Train Seat Availability</h1><br>
+        <!-- Language Switcher -->
+        <button class="language-toggle" id="languageToggle" data-lang="en">
+            <span class="lang-text">বাংলা</span>
+        </button>
+        
+        <h1><i class="fas fa-subway"></i> <span data-translate="page_title">BR Train Seat Availability</span></h1><br>
 
         <!-- General Text Crawler Section -->
         <!-- <div class="text-crawler light">
@@ -77,52 +83,55 @@
         </p><br> -->
 
         {% if error %}
-        <div class="error shake">
-            <i class="fas fa-exclamation-circle error-icon"></i> {{ error }}
+        <div class="error shake" data-error-key="{% if error is mapping %}{{ error.key }}{% else %}{{ error }}{% endif %}">
+            <i class="fas fa-exclamation-circle error-icon"></i> {{ error | translate_error }}
         </div>
         {% endif %}
 
         <form method="POST" action="{{ url_for('check_seats') }}" id="seatForm">
             <div class="form-row">
                 <div class="form-group">
-                    <label for="origin">Origin Station</label>
+                    <label for="origin" data-translate="form.origin_label">Origin Station</label>
                     <div class="input-with-icon">
                         <i class="fas fa-train input-icon"></i>
-                        <input type="text" id="origin" name="origin" placeholder="Type or select an origin station"
+                        <input type="text" id="origin" name="origin_display" data-translate-placeholder="form.origin_placeholder" placeholder="Type or select an origin station"
                             value="{{ form_values.origin if form_values and form_values.origin is not none else '' }}"
                             autocomplete="off">
+                        <input type="hidden" id="origin_submit" name="origin" value="{{ form_values.origin if form_values and form_values.origin is not none else '' }}" />
                         <i class="fas fa-times clear-icon" id="originClear"></i>
                         <div id="originDropdown" class="custom-dropdown"></div>
                     </div>
-                    <span class="error-message" id="origin-error">Origin Station is required</span>
+                    <span class="error-message" id="origin-error" data-translate="form.origin_error">Origin Station is required</span>
                 </div>
                 <div class="swap-icon-wrapper">
                     <i class="fas fa-exchange-alt swap-icon"></i>
                 </div>
                 <div class="form-group">
-                    <label for="destination">Destination Station</label>
+                    <label for="destination" data-translate="form.destination_label">Destination Station</label>
                     <div class="input-with-icon">
                         <i class="fas fa-train input-icon"></i>
-                        <input type="text" id="destination" name="destination"
+                        <input type="text" id="destination" name="destination_display" data-translate-placeholder="form.destination_placeholder"
                             placeholder="Type or select a destination station"
                             value="{{ form_values.destination if form_values and form_values.destination is not none else '' }}"
                             autocomplete="off">
+                        <input type="hidden" id="destination_submit" name="destination" value="{{ form_values.destination if form_values and form_values.destination is not none else '' }}" />
                         <i class="fas fa-times clear-icon" id="destinationClear"></i>
                         <div id="destinationDropdown" class="custom-dropdown"></div>
                     </div>
-                    <span class="error-message" id="destination-error">Destination Station is required</span>
+                    <span class="error-message" id="destination-error" data-translate="form.destination_error">Destination Station is required</span>
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="date">Date of Journey</label>
+                    <label for="date" data-translate="form.date_label">Date of Journey</label>
                     <div class="input-with-icon">
                         <i class="fas fa-calendar-alt input-icon"></i>
-                        <input type="text" id="date" name="date" readonly placeholder="Select a date"
+                        <input type="text" id="date" name="date_display" readonly data-translate-placeholder="form.date_placeholder" placeholder="Select a date"
                             value="{{ form_values.date if form_values and form_values.date is not none else '' }}"
                             data-min-date="{{ min_date }}" data-max-date="{{ max_date }}"
                             data-bst-midnight-utc="{{ bst_midnight_utc }}" />
+                        <input type="hidden" id="date_submit" name="date" value="{{ form_values.date if form_values and form_values.date is not none else '' }}" />
                         <div class="calendar-dialog" id="materialCalendar" style="display: none;">
                             <div class="calendar-header">
                                 <button type="button" class="calendar-nav prev" id="prevMonthBtn">❮</button>
@@ -130,41 +139,41 @@
                                 <button type="button" class="calendar-nav next" id="nextMonthBtn">❯</button>
                             </div>
                             <div class="calendar-grid">
-                                <div class="calendar-weekdays">
-                                    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                                <div class="calendar-weekdays" id="calendarWeekdays">
+                                    <span data-translate="calendar.weekdays.0">Sun</span><span data-translate="calendar.weekdays.1">Mon</span><span data-translate="calendar.weekdays.2">Tue</span><span data-translate="calendar.weekdays.3">Wed</span><span data-translate="calendar.weekdays.4">Thu</span><span data-translate="calendar.weekdays.5">Fri</span><span data-translate="calendar.weekdays.6">Sat</span>
                                 </div>
                                 <div class="calendar-days" id="calendarDays"></div>
                             </div>
                         </div>
                     </div>
-                    <span class="error-message" id="date-error">Date of Journey is required</span>
+                    <span class="error-message" id="date-error" data-translate="form.date_error">Date of Journey is required</span>
                 </div>
 
                 <div class="form-group submit-btn">
                     <button type="submit" class="btn-primary" draggable="false">
-                        <i class="fas fa-list"></i> View Seat Info
+                        <i class="fas fa-list"></i> <span data-translate="form.submit_button">View Seat Info</span>
                     </button>
                 </div>
             </div>
         </form>
 
         <footer class="new-footer">
-            <p>This project is open source. Check it out on <a
+            <p><span data-translate="footer.open_source_text">This project is open source. Check it out on</span> <a
                     href="https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application"
-                    target="_blank">GitHub</a>.</p>
+                    target="_blank" data-translate="footer.github_link">GitHub</a><span data-translate="footer.period">.</span></p>
         </footer>
 
         <div class="footer-links">
-            <a href="https://seat.onrender.com" target="_blank">SEAT MATRIX</a>
+            <a href="https://seat.onrender.com" target="_blank" data-translate="footer.seat_matrix">SEAT MATRIX</a>
             <span class="dot">•</span>
-            <a href="https://trainreport.onrender.com" target="_blank">TRAIN REPORT</a>
+            <a href="https://trainreport.onrender.com" target="_blank" data-translate="footer.train_report">TRAIN REPORT</a>
             <span class="dot">•</span>
-            <a href="https://forms.gle/NV72PC1z75sq77tg7" target="_blank">FEEDBACK</a>
+            <a href="https://forms.gle/NV72PC1z75sq77tg7" target="_blank" data-translate="footer.feedback">FEEDBACK</a>
             <span class="dot"></span>
             <div class="legal-links">
-                <a href="#" onclick="openModal('termsModal', event)">Terms and Conditions</a>
+                <a href="#" onclick="openModal('termsModal', event)" data-translate="footer.terms">Terms and Conditions</a>
                 <span class="dot">•</span>
-                <a href="#" onclick="openModal('privacyModal', event)">Privacy Policy</a>
+                <a href="#" onclick="openModal('privacyModal', event)" data-translate="footer.privacy">Privacy Policy</a>
             </div>
         </div>
 
@@ -176,9 +185,9 @@
                     <label class="custom-checkbox">
                         <input type="checkbox" id="dontShowAgain">
                         <span class="checkmark"></span>
-                        Don't show this again
+                        <span data-translate="banner.dont_show_again">Don't show this again</span>
                     </label>
-                    <span class="close-modal-text">CLOSE</span>
+                    <span class="close-modal-text" data-translate="banner.close">CLOSE</span>
                 </div>
             </div>
         </div>

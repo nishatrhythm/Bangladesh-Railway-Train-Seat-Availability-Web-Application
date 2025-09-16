@@ -4,12 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Result | Train Seat Availability</title>
+    <title data-translate="results.site_title">Result | Train Seat Availability</title>
     <link rel="icon"
         href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png"
         type="image/x-icon" sizes="30x30">
     <style>{{ styles_css | safe }}</style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Translations Data -->
+    <script id="translations-data" type="application/json">
+        {{ translations | tojson | safe }}
+    </script>
 </head>
 
 <body>
@@ -20,40 +26,40 @@
     <noscript>
         <div class="container noscript-warning">
             <h2>
-                <i class="fas fa-exclamation-circle"></i> Please Enable JavaScript
+                <i class="fas fa-exclamation-circle"></i> <span data-translate="results.javascript_required_title">Please Enable JavaScript</span>
             </h2>
-            <p>This website requires JavaScript to function properly. Enable it in your browser settings to access full functionality and check train seat availability.</p>
+            <p data-translate="results.javascript_required_message">This website requires JavaScript to function properly. Enable it in your browser settings to access full functionality and check train seat availability.</p>
             <div class="instructions">
-                <strong>How to enable:</strong> Go to your browser settings > Privacy/Security > Enable JavaScript. Refresh the page after enabling.
+                <strong data-translate="results.javascript_required_instructions">How to enable: Go to your browser settings > Privacy/Security > Enable JavaScript. Refresh the page after enabling.</strong>
             </div>
         </div>
     </noscript>
     <div class="container">
         <h1>
-            <i class="fas fa-train"></i>Seat Availability Info
+            <i class="fas fa-train"></i><span data-translate="results.title">Seat Availability Info</span>
         </h1>
 
         <a href="/" class="btn-primary" draggable="false">
-            <i class="fas fa-arrow-left"></i> Back to Search
+            <i class="fas fa-arrow-left"></i> <span data-translate="results.back_to_search">Back to Search</span>
         </a>
 
         <a href="https://eticket.railway.gov.bd/booking/train/search?fromcity={{ origin }}&tocity={{ destination }}&doj={{ date }}&class={{ seat_class }}"
             target="_blank" class="btn-buy" draggable="false">
-            <i class="fas fa-external-link-alt"></i> Buy Tickets
+            <i class="fas fa-external-link-alt"></i> <span data-translate="results.buy_tickets">Buy Tickets</span>
         </a>
 
         <p class="note result-disclaimer">
-            <span class="note-bold highlight">Note:</span> Seat availability info may change frequently as this website does not dynamically fetch the seat data in real time. To get the latest info, please perform a new search. Also, the issued tickets and the reserved tickets info may not be fully accurate.
+            <span class="note-bold highlight" data-translate="results.note_bold">Note:</span>&nbsp;<span data-translate="results.note">Seat availability info may change frequently as this website does not dynamically fetch the seat data in real time. To get the latest info, please perform a new search. Also, the issued tickets and the reserved tickets info may not be fully accurate.</span>
         </p>
 
         {% if result %}
         {% for train, details in result.items() %}
         <div class="train-card animated-fade-in">
             <div class="train-header">
-                <h2><i class="fas fa-subway"></i> {{ train }}</h2>
+                <h2><i class="fas fa-subway"></i> {{ details['train_name'] }}</h2>
                 <div class="journey-timeline">
                     <div class="journey-point departure">
-                        <div class="journey-label">Departure</div>
+                        <div class="journey-label" data-translate="results.departure">Departure</div>
                         <div class="city-name">{{ details['from_station'] }}</div>
                         <div class="time-info">
                             {{ details['departure_time'] }}
@@ -64,7 +70,7 @@
                         <div class="journey-duration">{{ details['journey_duration'] }}</div>
                     </div>
                     <div class="journey-point arrival">
-                        <div class="journey-label">Arrival</div>
+                        <div class="journey-label" data-translate="results.arrival">Arrival</div>
                         <div class="city-name">{{ details['to_station'] }}</div>
                         <div class="time-info">
                             {{ details['arrival_time'] }}
@@ -76,7 +82,7 @@
             <div class="train-details-section">
                 {% if result|length > 1 %}
                 <button class="collapsible-toggle train-details-toggle" data-target="train-details-{{ loop.index }}">
-                    <i class="fas fa-chevron-down"></i> VIEW SEAT DETAILS
+                    <i class="fas fa-chevron-down"></i> <span data-translate="results.view_seat_details">VIEW SEAT DETAILS</span>
                 </button>
                 <div class="collapsible-content train-details-content" id="train-details-{{ loop.index }}" style="display: none;">
                 {% else %}
@@ -91,28 +97,28 @@
                     {% set has_no_seats = details['seat_data']|selectattr('is_422')|list|length > 0 or details['seat_data']|selectattr('available_count', 'equalto', 0)|selectattr('booking_process_count', 'equalto', 0)|list|length > 0 %}
                     {% for seat_type in details['seat_data'] %}
             {% if not seat_type['is_422'] %}
-            <h3><i class="fas fa-chair"></i> Seat Type: {{ seat_type['type'] }}</h3>
+            <h3><i class="fas fa-chair"></i> <span data-translate="results.seat_type">Seat Type:</span>&nbsp;{{ seat_type['translated_type'] }}</h3>
             {% set issued_count = seat_type['ticket_types'].issued_total.count if seat_type['ticket_types'].issued_total else 0 %}
             {% if seat_type['ticket_types'] and issued_count > 0 %}
             <div class="collapsible-section">
                 <button class="collapsible-toggle" data-target="ticket-types-{{ train }}-{{ seat_type['type'] | replace(' ', '-') }}">
-                    <i class="fas fa-chevron-down"></i> Expand to view Issued Ticket List
+                    <i class="fas fa-chevron-down"></i> <span data-translate="results.expand_issued_tickets">Expand to view Issued Ticket List</span>
                 </button>
                 <div class="collapsible-content" id="ticket-types-{{ train }}-{{ seat_type['type'] | replace(' ', '-') }}" style="display: none;">
                     <div class="badge-wrapper">
                         {% if seat_type['ticket_types'].issued_total %}
                         {% set count = seat_type['ticket_types'].issued_total.count %}
                         <h3>
-                            <i class="fas fa-ticket-alt"></i> {{ count }} Ticket{{ '' if count == 1 else 's' }} Issued for Purchase
+                            <i class="fas fa-ticket-alt"></i> <span data-ticket-count="{{ count }}">{{ count }} {{ 'Ticket' if count == 1 else 'Tickets' }}</span> <span data-translate="results.tickets_issued_for_purchase">Issued for Purchase</span>
                         </h3>
                         {% endif %}
                     </div>
                     <table>
                         <thead>
                             <tr>
-                                <th>Ticket Category</th>
-                                <th>Coach (Ticket Count)</th>
-                                <th>Seat Numbers</th>
+                                <th data-translate="results.ticket_category">Ticket Category</th>
+                                <th data-translate="results.coach_ticket_count">Coach (Ticket Count)</th>
+                                <th data-translate="results.seat_numbers">Seat Numbers</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -120,7 +126,7 @@
                             {% for coach, group in seat_type['ticket_types']['issued_combined']['grouped'].items() %}
                             <tr>
                                 <td>{{ seat_type['ticket_types']['issued_combined']['label'] }}</td>
-                                <td>{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] == 1 else 'tickets' }})</td>
+                                <td><span data-coach-count="{{ group['count'] }}" data-coach-name="{{ coach }}">{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] == 1 else 'tickets' }})</span></td>
                                 <td>{{ ', '.join(group['seats']) }}</td>
                             </tr>
                             {% endfor %}
@@ -129,7 +135,7 @@
                             {% for coach, group in seat_type['grouped_ticket_types'][type_id].items() %}
                             <tr>
                                 <td>{{ type_info['label'] }}</td>
-                                <td>{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] == 1 else 'tickets' }})</td>
+                                <td><span data-coach-count="{{ group['count'] }}" data-coach-name="{{ coach }}">{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] == 1 else 'tickets' }})</span></td>
                                 <td>{{ ', '.join(group['seats']) }}</td>
                             </tr>
                             {% endfor %}
@@ -144,31 +150,29 @@
             {% set issued_count = seat_type['ticket_types'].issued_total.count if seat_type['ticket_types'].issued_total else 0 %}
             {% if issued_count > 0 %}
             <div class="no-seats">
-                <i class="fas fa-exclamation-circle"></i> All seats have been booked for seat type {{ seat_type['type'] }}
+                <i class="fas fa-exclamation-circle"></i> <span class="seat-type-prefix" style="display: inline;">{{ seat_type['translated_type'] }}</span><span data-translate="results.all_seats_booked"> সিটের ধরনের জন্য সমস্ত সিট বুক হয়ে গেছে</span><span class="seat-type-append" style="display: none;"> {{ seat_type['translated_type'] }}</span>
             </div>
             {% else %}
             <div class="no-seats">
-                <i class="fas fa-exclamation-circle"></i> No seats were issued for seat type {{ seat_type['type'] }}
+                <i class="fas fa-exclamation-circle"></i> <span class="seat-type-prefix" style="display: inline;">{{ seat_type['translated_type'] }}</span><span data-translate="results.no_seats_issued"> সিটের ধরনের জন্য কোন সিট ইস্যু করা হয়নি</span><span class="seat-type-append" style="display: none;"> {{ seat_type['translated_type'] }}</span>
             </div>
             {% endif %}
         {% else %}
             <p>
                 <span class="status status-available">
-                    <i class="fas fa-check-circle"></i> Available: {{ seat_type['available_count'] }}
-                    {{ 'ticket' if seat_type['available_count'] == 1 else 'tickets' }}
+                    <i class="fas fa-check-circle"></i> <span data-translate="results.available">Available:</span>&nbsp;<span data-count-translation="{{ seat_type['available_count'] }}">{{ seat_type['available_count'] }} {{ 'ticket' if seat_type['available_count'] == 1 else 'tickets' }}</span>
                 </span>
                 <span class="status status-in-process">
-                    <i class="fas fa-spinner"></i> In Booking: {{ seat_type['booking_process_count'] }}
-                    {{ 'ticket' if seat_type['booking_process_count'] == 1 else 'tickets' }}
+                    <i class="fas fa-spinner"></i> <span data-translate="results.in_booking">In Booking:</span>&nbsp;<span data-count-translation="{{ seat_type['booking_process_count'] }}">{{ seat_type['booking_process_count'] }} {{ 'ticket' if seat_type['booking_process_count'] == 1 else 'tickets' }}</span>
                 </span>
             </p>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Status</th>
-                        <th>Coach (Ticket Count)</th>
-                        <th>Seat Numbers</th>
+                        <th data-translate="results.status">Status</th>
+                        <th data-translate="results.coach_ticket_count">Coach (Ticket Count)</th>
+                        <th data-translate="results.seat_numbers">Seat Numbers</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -176,10 +180,10 @@
                     <tr>
                         <td>
                             <span class="status status-available">
-                                <i class="fas fa-check-circle"></i> Available
+                                <i class="fas fa-check-circle"></i> <span data-translate="results.available_status">Available</span>
                             </span>
                         </td>
-                        <td>{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] == 1 else 'tickets' }})</td>
+                        <td><span data-coach-count="{{ group['count'] }}" data-coach-name="{{ coach }}">{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] == 1 else 'tickets' }})</span></td>
                         <td>{{ ', '.join(group['seats']) }}</td>
                     </tr>
                     {% endfor %}
@@ -187,10 +191,10 @@
                     <tr>
                         <td>
                             <span class="status status-in-process">
-                                <i class="fas fa-spinner"></i> In Booking
+                                <i class="fas fa-spinner"></i> <span data-translate="results.in_booking_status">In Booking</span>
                             </span>
                         </td>
-                        <td>{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] == 1 else 'tickets' }})</td>
+                        <td><span data-coach-count="{{ group['count'] }}" data-coach-name="{{ coach }}">{{ coach }} ({{ group['count'] }} {{ 'ticket' if group['count'] == 1 else 'tickets' }})</span></td>
                         <td>{{ ', '.join(group['seats']) }}</td>
                     </tr>
                     {% endfor %}
@@ -206,24 +210,462 @@
         {% endfor %}
         {% else %}
         <p class="error">
-            <i class="fas fa-exclamation-triangle"></i> No trains available for the selected criteria.
+            <i class="fas fa-exclamation-triangle"></i> <span data-translate="results.no_trains_available">No trains available for the selected criteria.</span>
         </p>
         {% endif %}
         <a href="/" class="btn-primary" draggable="false">
-            <i class="fas fa-arrow-left"></i> Back to Search
+            <i class="fas fa-arrow-left"></i> <span data-translate="results.back_to_search">Back to Search</span>
         </a>
-
-        <script>
-            setTimeout(function() {
-                window.location.href = '/';
-            }, 300000);
-        </script>
 
     </div>
 
     <button id="backToTopBtn">
         <i class="fas fa-arrow-up"></i>
     </button>
+    
+    <script>
+        // Translation functionality for results page
+        let translations = {};
+        let currentLanguage = 'en';
+        
+        // Bengali digits mapping
+        const bengaliDigits = {
+            '0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪',
+            '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯'
+        };
+        
+        const englishDigits = {
+            '০': '0', '১': '1', '২': '2', '৩': '3', '৪': '4',
+            '৫': '5', '৬': '6', '৭': '7', '৮': '8', '৯': '9'
+        };
+        
+        function convertToBengaliDigits(text) {
+            return text.replace(/[0-9]/g, (match) => bengaliDigits[match] || match);
+        }
+        
+        function convertToEnglishDigits(text) {
+            return text.replace(/[০-৯]/g, (match) => englishDigits[match] || match);
+        }
+        
+        function getTranslation(key) {
+            const keys = key.split('.');
+            let value = translations[currentLanguage];
+            
+            for (const k of keys) {
+                if (value && typeof value === 'object' && k in value) {
+                    value = value[k];
+                } else {
+                    // Fallback to English if translation not found
+                    value = translations['en'];
+                    for (const fallbackKey of keys) {
+                        if (value && typeof value === 'object' && fallbackKey in value) {
+                            value = value[fallbackKey];
+                        } else {
+                            return key; // Return key if no translation found
+                        }
+                    }
+                    break;
+                }
+            }
+            
+            return value || key;
+        }
+        
+        function applyTranslations() {
+            // Update elements with data-translate attribute
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                const translation = getTranslation(key);
+                element.textContent = translation;
+            });
+            
+            // Apply font family and language attributes
+            if (currentLanguage === 'bn') {
+                document.documentElement.lang = 'bn';
+                document.body.classList.add('bengali-text');
+                convertNumbersToBengali();
+            } else {
+                document.documentElement.lang = 'en';
+                document.body.classList.remove('bengali-text');
+                convertNumbersToEnglish();
+            }
+            
+            // Update collapsible toggle text content
+            updateCollapsibleToggleText();
+        }
+        
+        function updateCollapsibleToggleText() {
+            // Update stored translation text in data attributes
+            document.querySelectorAll('.collapsible-toggle').forEach(toggle => {
+                if (toggle.classList.contains('train-details-toggle')) {
+                    toggle.setAttribute('data-expand-text', getTranslation('results.view_seat_details'));
+                    toggle.setAttribute('data-collapse-text', getTranslation('results.hide_seat_details'));
+                } else {
+                    toggle.setAttribute('data-expand-text', getTranslation('results.expand_issued_tickets'));
+                    toggle.setAttribute('data-collapse-text', getTranslation('results.collapse_issued_tickets'));
+                }
+                
+                // Update current text if toggle exists
+                const targetId = toggle.getAttribute('data-target');
+                const content = document.getElementById(targetId);
+                const isExpanded = content && content.style.maxHeight && content.style.maxHeight !== "0px";
+                const expandText = toggle.getAttribute('data-expand-text');
+                const collapseText = toggle.getAttribute('data-collapse-text');
+                
+                if (isExpanded) {
+                    toggle.innerHTML = `<i class="fas fa-chevron-up"></i> ${collapseText}`;
+                } else {
+                    toggle.innerHTML = `<i class="fas fa-chevron-down"></i> ${expandText}`;
+                }
+            });
+        }
+        
+        function convertNumbersToBengali() {
+            // Convert all visible numbers to Bengali digits
+            document.querySelectorAll('*:not(script):not(style)').forEach(element => {
+                if (element.childNodes) {
+                    element.childNodes.forEach(node => {
+                        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                            const hasTranslateAttribute = node.parentElement && node.parentElement.hasAttribute('data-translate');
+                            if (!hasTranslateAttribute) {
+                                node.textContent = convertToBengaliDigits(node.textContent);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+        
+        function convertNumbersToEnglish() {
+            // Convert Bengali digits back to English digits
+            document.querySelectorAll('*:not(script):not(style)').forEach(element => {
+                if (element.childNodes) {
+                    element.childNodes.forEach(node => {
+                        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                            const hasTranslateAttribute = node.parentElement && node.parentElement.hasAttribute('data-translate');
+                            if (!hasTranslateAttribute) {
+                                node.textContent = convertToEnglishDigits(node.textContent);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+        
+        function initializeTranslations() {
+            // Load translations from script tag
+            const translationsScript = document.getElementById('translations-data');
+            if (translationsScript) {
+                try {
+                    translations = JSON.parse(translationsScript.textContent);
+                } catch (e) {
+                    console.error('Error parsing translations:', e);
+                    translations = { en: {}, bn: {} };
+                }
+            }
+            
+            // Check localStorage for language preference
+            const savedLanguage = localStorage.getItem('preferredLanguage');
+            if (savedLanguage && translations[savedLanguage]) {
+                currentLanguage = savedLanguage;
+            }
+            
+            // Apply translations
+            applyTranslations();
+            
+            // Patch the existing collapsible system after it initializes
+            setTimeout(() => {
+                patchCollapsibleSystem();
+            }, 100);
+        }
+        
+        function patchCollapsibleSystem() {
+            // Store original toggle text with translations
+            document.querySelectorAll('.collapsible-toggle').forEach(toggle => {
+                if (toggle.classList.contains('train-details-toggle')) {
+                    // Store translation keys as data attributes
+                    toggle.setAttribute('data-expand-text', getTranslation('results.view_seat_details'));
+                    toggle.setAttribute('data-collapse-text', getTranslation('results.hide_seat_details'));
+                } else {
+                    toggle.setAttribute('data-expand-text', getTranslation('results.expand_issued_tickets'));
+                    toggle.setAttribute('data-collapse-text', getTranslation('results.collapse_issued_tickets'));
+                }
+            });
+            
+            // Critical function for dynamic height recalculation
+            function recalculateParentHeights(element) {
+                let parent = element.closest('.train-details-content');
+                if (parent && parent.style.maxHeight && parent.style.maxHeight !== "none" && !parent.classList.contains('auto-expanded')) {
+                    parent.style.maxHeight = parent.scrollHeight + "px";
+                }
+            }
+            
+            // Set up ResizeObserver for automatic height adjustments
+            if (window.ResizeObserver) {
+                const resizeObserver = new ResizeObserver(entries => {
+                    entries.forEach(entry => {
+                        const element = entry.target;
+                        if (element.classList.contains('collapsible-content') && 
+                            element.style.maxHeight && 
+                            element.style.maxHeight !== "0px" && 
+                            element.style.maxHeight !== "none" &&
+                            !element.classList.contains('auto-expanded')) {
+                            element.style.maxHeight = element.scrollHeight + "px";
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.train-details-content').forEach(element => {
+                    resizeObserver.observe(element);
+                });
+            }
+            
+            // Override the toggle update mechanism
+            const originalToggleHandler = function(toggle, isExpanded, isTrainDetails) {
+                const expandText = toggle.getAttribute('data-expand-text');
+                const collapseText = toggle.getAttribute('data-collapse-text');
+                
+                if (isExpanded) {
+                    toggle.innerHTML = `<i class="fas fa-chevron-up"></i> ${collapseText}`;
+                } else {
+                    toggle.innerHTML = `<i class="fas fa-chevron-down"></i> ${expandText}`;
+                }
+            };
+            
+            // Re-attach event listeners with translation support and proper height calculation
+            document.querySelectorAll('.collapsible-toggle').forEach(toggle => {
+                // Remove existing listeners by cloning the node
+                const newToggle = toggle.cloneNode(true);
+                toggle.parentNode.replaceChild(newToggle, toggle);
+                
+                newToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('data-target');
+                    const content = document.getElementById(targetId);
+                    
+                    if (!content) return;
+                    
+                    const isCurrentlyExpanded = content.style.maxHeight && content.style.maxHeight !== "0px";
+                    const isTrainDetails = this.classList.contains('train-details-toggle');
+                    
+                    if (!isCurrentlyExpanded) {
+                        // Expanding
+                        const toggleRect = this.getBoundingClientRect();
+                        const initialScrollTop = window.scrollY;
+                        const toggleOffsetFromTop = toggleRect.top + initialScrollTop;
+                        
+                        if (isTrainDetails) {
+                            // Collapse other train details first
+                            const allTrainDetailsToggles = document.querySelectorAll('.train-details-toggle');
+                            let hasCollapsedSections = false;
+                            
+                            allTrainDetailsToggles.forEach(otherToggle => {
+                                if (otherToggle !== this) {
+                                    const otherTargetId = otherToggle.getAttribute('data-target');
+                                    const otherContent = document.getElementById(otherTargetId);
+                                    if (otherContent && otherContent.style.maxHeight && otherContent.style.maxHeight !== "0px") {
+                                        hasCollapsedSections = true;
+                                        otherContent.style.maxHeight = "0px";
+                                        otherContent.classList.remove('show');
+                                        originalToggleHandler(otherToggle, false, true);
+                                        
+                                        // Collapse nested toggles
+                                        const nestedToggles = otherContent.querySelectorAll('.collapsible-toggle:not(.train-details-toggle)');
+                                        nestedToggles.forEach(nestedToggle => {
+                                            const nestedTargetId = nestedToggle.getAttribute('data-target');
+                                            const nestedContent = document.getElementById(nestedTargetId);
+                                            if (nestedContent && nestedContent.style.maxHeight && nestedContent.style.maxHeight !== "0px") {
+                                                nestedContent.style.maxHeight = "0px";
+                                                originalToggleHandler(nestedToggle, false, false);
+                                                setTimeout(() => {
+                                                    nestedContent.style.display = "none";
+                                                }, 300);
+                                            }
+                                        });
+                                        
+                                        setTimeout(() => {
+                                            otherContent.style.display = "none";
+                                        }, 300);
+                                    }
+                                }
+                            });
+                            
+                            if (hasCollapsedSections) {
+                                setTimeout(() => {
+                                    const newToggleRect = this.getBoundingClientRect();
+                                    const currentScrollTop = window.scrollY;
+                                    const newToggleOffsetFromTop = newToggleRect.top + currentScrollTop;
+                                    
+                                    const movement = newToggleOffsetFromTop - toggleOffsetFromTop;
+                                    
+                                    const trainCard = this.closest('.train-card, .card, .result-item, .train-item, .search-result') || this.closest('div[class*="train"], div[class*="card"], div[class*="result"]');
+                                    
+                                    if (trainCard) {
+                                        const cardRect = trainCard.getBoundingClientRect();
+                                        const cardOffsetFromTop = cardRect.top + window.scrollY;
+                                        const viewportHeight = window.innerHeight;
+                                        
+                                        const isCardNotFullyVisible = cardRect.top < 0 || cardRect.bottom > viewportHeight || Math.abs(movement) > 50;
+                                        
+                                        if (isCardNotFullyVisible) {
+                                            const targetScrollTop = cardOffsetFromTop - 20;
+                                            
+                                            window.scrollTo({
+                                                top: Math.max(0, targetScrollTop),
+                                                behavior: 'smooth'
+                                            });
+                                        }
+                                    } else {
+                                        if (Math.abs(movement) > 50) {
+                                            const targetScrollTop = newToggleOffsetFromTop - 100;
+                                            window.scrollTo({
+                                                top: Math.max(0, targetScrollTop),
+                                                behavior: 'smooth'
+                                            });
+                                        }
+                                    }
+                                }, 350);
+                            }
+                        }
+                        
+                        content.style.display = "block";
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        content.classList.add('animated-fade-in');
+                        
+                        if (isTrainDetails) {
+                            content.classList.add('show');
+                        } else {
+                            // For nested toggles, recalculate parent heights
+                            recalculateParentHeights(content);
+                            
+                            requestAnimationFrame(() => {
+                                recalculateParentHeights(content);
+                            });
+                        }
+                        
+                        originalToggleHandler(this, true, isTrainDetails);
+                    } else {
+                        // Collapsing
+                        content.style.maxHeight = "0px";
+                        content.classList.remove('show');
+                        
+                        if (isTrainDetails) {
+                            // Collapse nested toggles
+                            const nestedToggles = content.querySelectorAll('.collapsible-toggle:not(.train-details-toggle)');
+                            nestedToggles.forEach(nestedToggle => {
+                                const nestedTargetId = nestedToggle.getAttribute('data-target');
+                                const nestedContent = document.getElementById(nestedTargetId);
+                                if (nestedContent && nestedContent.style.maxHeight && nestedContent.style.maxHeight !== "0px") {
+                                    nestedContent.style.maxHeight = "0px";
+                                    originalToggleHandler(nestedToggle, false, false);
+                                    setTimeout(() => {
+                                        nestedContent.style.display = "none";
+                                    }, 300);
+                                }
+                            });
+                        } else {
+                            // For nested toggles, recalculate parent heights after collapse
+                            setTimeout(() => {
+                                recalculateParentHeights(content);
+                            }, 320);
+                        }
+                        
+                        originalToggleHandler(this, false, isTrainDetails);
+                        
+                        setTimeout(() => {
+                            content.style.display = "none";
+                        }, 300);
+                    }
+                });
+            });
+        }
+        
+        // Initialize translations when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initializeTranslations);
+        
+        // Add language switching functionality (can be called from external scripts)
+        window.switchLanguage = function(lang) {
+            if (translations[lang]) {
+                currentLanguage = lang;
+                localStorage.setItem('preferredLanguage', lang);
+                applyTranslations();
+                // Update toggle text after language change
+                setTimeout(() => {
+                    patchCollapsibleSystem();
+                }, 10);
+            }
+        };
+        
+        // Helper function to translate numbers to Bengali
+        function translateNumber(num, lang) {
+            if (lang !== 'bn') return num.toString();
+            const bengaliDigits = {'0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪', '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯'};
+            return num.toString().split('').map(digit => bengaliDigits[digit] || digit).join('');
+        }
+        
+        // Handle custom ticket count translations
+        function translateTicketCounts() {
+            // Handle main ticket count displays
+            document.querySelectorAll('[data-ticket-count]').forEach(element => {
+                const count = parseInt(element.getAttribute('data-ticket-count'));
+                const translatedCount = translateNumber(count, currentLanguage);
+                const ticketWord = currentLanguage === 'bn' ? 'টিকিট' : (count === 1 ? 'Ticket' : 'Tickets');
+                element.textContent = `${translatedCount} ${ticketWord}`;
+            });
+            
+            // Handle coach-count displays (coach name + count + tickets)
+            document.querySelectorAll('[data-coach-count]').forEach(element => {
+                const count = parseInt(element.getAttribute('data-coach-count'));
+                const coachName = element.getAttribute('data-coach-name');
+                
+                if (coachName && count !== null) {
+                    const translatedCount = translateNumber(count, currentLanguage);
+                    const ticketWord = currentLanguage === 'bn' ? 'টিকিট' : (count === 1 ? 'ticket' : 'tickets');
+                    element.textContent = `${coachName} (${translatedCount} ${ticketWord})`;
+                }
+            });
+            
+            // Handle count translation displays (Available/In Booking counts)
+            document.querySelectorAll('[data-count-translation]').forEach(element => {
+                const count = parseInt(element.getAttribute('data-count-translation'));
+                const translatedCount = translateNumber(count, currentLanguage);
+                const ticketWord = currentLanguage === 'bn' ? 'টিকিট' : (count === 1 ? 'ticket' : 'tickets');
+                element.textContent = `${translatedCount} ${ticketWord}`;
+            });
+        }
+        
+        // Update applyTranslations to include custom ticket count translations
+        const originalApplyTranslations = applyTranslations;
+        applyTranslations = function() {
+            originalApplyTranslations();
+            translateTicketCounts();
+            
+            // Handle seat type display based on language
+            const seatTypePrefixes = document.querySelectorAll('.seat-type-prefix');
+            const seatTypeAppends = document.querySelectorAll('.seat-type-append');
+            
+            seatTypePrefixes.forEach(span => {
+                if (currentLanguage === 'bn') {
+                    span.style.display = 'inline';
+                } else {
+                    span.style.display = 'none';
+                }
+            });
+            
+            seatTypeAppends.forEach(span => {
+                if (currentLanguage === 'en') {
+                    span.style.display = 'inline';
+                } else {
+                    span.style.display = 'none';
+                }
+            });
+        };
+        
+        // Auto-redirect timer
+        setTimeout(function() {
+            window.location.href = '/';
+        }, 300000);
+    </script>
     
     <script>{{ script_js | safe }}</script>
 </body>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notice | Train Seat Availability</title>
+    <title data-translate="notice.site_title">Notice | Train Seat Availability</title>
     <style>{{ styles_css | safe }}</style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
     <link rel="icon"
@@ -20,17 +20,22 @@
     <noscript>
         <div class="container noscript-warning">
             <h2>
-                <i class="fas fa-exclamation-circle"></i> Please Enable JavaScript
+                <i class="fas fa-exclamation-circle"></i> <span data-translate="noscript.title">Please Enable JavaScript</span>
             </h2>
-            <p>This website requires JavaScript to function properly. Enable it in your browser settings to access full functionality and check train seat availability.</p>
+            <p data-translate="noscript.message">This website requires JavaScript to function properly. Enable it in your browser settings to access full functionality and check train seat availability.</p>
             <div class="instructions">
-                <strong>How to enable:</strong> Go to your browser settings > Privacy/Security > Enable JavaScript. Refresh the page after enabling.
+                <strong data-translate="noscript.instructions">How to enable: Go to your browser settings > Privacy/Security > Enable JavaScript. Refresh the page after enabling.</strong>
             </div>
         </div>
     </noscript>
     <div class="container">
+        <!-- Language Switcher -->
+        <button class="language-toggle" id="languageToggle" data-lang="en">
+            <span class="lang-text">বাংলা</span>
+        </button>
+        
         <h1 class="notice-header">
-            <i class="fas fa-bell"></i> Notice
+            <i class="fas fa-bell"></i> <span data-translate="notice.page_title">Notice</span>
         </h1>
         <div class="notice-card animated-fade-in">
             <i class="fas fa-train notice-icon"></i>
