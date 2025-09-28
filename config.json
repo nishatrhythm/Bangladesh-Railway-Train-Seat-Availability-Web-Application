@@ -1,9 +1,9 @@
 {
-    "version": "1.1.9",
+    "version": "1.1.10",
     "is_maintenance": 0,
     "maintenance_message": "The service will be temporarily unavailable from 5:10 PM to 6:00 PM (BST). Please check back after this time. We apologise for the inconvenience and appreciate your patience.",
     "is_banner_enabled": 1,
-    "image_link": "https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application/refs/heads/main/static/images/report-website-promotion.png",
+    "image_link": "",
     "force_banner": 0,
     "queue_enabled": false
 }
