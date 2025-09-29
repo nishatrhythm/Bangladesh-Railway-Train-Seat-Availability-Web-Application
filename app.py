@@ -104,6 +104,17 @@ def check_maintenance():
         )
     return None
 
+@app.route('/ads.txt')
+def ads_txt():
+    try:
+        with open('ads.txt', 'r', encoding='utf-8') as f:
+            content = f.read()
+        response = make_response(content)
+        response.headers['Content-Type'] = 'text/plain'
+        return response
+    except FileNotFoundError:
+        abort(404)
+
 @app.route('/')
 def home():
     maintenance_response = check_maintenance()
