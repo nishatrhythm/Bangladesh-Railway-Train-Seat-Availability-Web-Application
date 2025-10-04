@@ -2,6 +2,8 @@
 
 A comprehensive web application to **check real-time seat availability** for Bangladesh Railway trains. This application provides **detailed seat information, coach-wise breakdown, and intelligent request management** — built using Flask + Vanilla JS + REST APIs.
 
+> 📱 **Android App Available**: To minimize web traffic and provide better performance, an **Android app version** is now available! Check the [**GitHub Gist**](https://gist.github.com/nishatrhythm/b462e53062f32017fcc0c7c218898cde) for latest updates, new features, and download links.
+
 ✨ **Key Features:**
 - 🎯 **Real-Time Seat Checking**: Live seat availability for all Bangladesh Railway trains
 - 🚂 **Detailed Coach Layout**: View available seats by coach and seat type
@@ -47,11 +49,12 @@ A comprehensive web application to **check real-time seat availability** for Ban
 5. [Frontend Features](#️-frontend-features)  
 6. [Queue Management](#-queue-management)  
 7. [API Integration](#-api-integration)  
-8. [Authentication System](#-authentication-system)  
-9. [Technologies Used](#-technologies-used)  
-10. [Setup Instructions](#-setup-instructions)  
-11. [Configuration](#️-configuration)  
-12. [License](#-license)
+8. [Cache Control](#-cache-control)  
+9. [Authentication System](#-authentication-system)  
+10. [Technologies Used](#-technologies-used)  
+11. [Setup Instructions](#-setup-instructions)  
+12. [Configuration](#️-configuration)  
+13. [License](#-license)
 
 ---
 
@@ -63,6 +66,8 @@ A comprehensive web application to **check real-time seat availability** for Ban
 ├── detailsSeatAvailability.py    # Core seat availability logic, API calls, seat analysis
 ├── request_queue.py              # Advanced queue system for managing concurrent requests
 ├── stations_en.json              # Complete list of Bangladesh Railway stations
+├── trains_en.json                # Complete list of 120+ Bangladesh Railway trains
+├── .env                          # Environment variables (not in repo - create locally)
 ├── LICENSE                       # Project license
 ├── Procfile                      # Heroku/Render deployment configuration
 ├── README.md                     # Project documentation (this file)
@@ -71,16 +76,17 @@ A comprehensive web application to **check real-time seat availability** for Ban
 │   ├── link_share_image.png      # Social sharing preview image
 │   ├── Screenshot_1.png          # Interface screenshots
 │   └── Screenshot_2.png          # Results view screenshots
-├── assets/
-│   ├── styles.css                # Responsive UI with seat visualizations
+├── static/
+│   ├── css/
+│   │   └── styles.css            # Responsive UI with seat visualizations
 │   ├── images/
 │   │   └── sample_banner.png     # Default banner image
 │   └── js/
 │       └── script.js             # Frontend logic, validations, dropdowns
-├── static/
-│   └── images/                   # Static image assets
 └── templates/
     ├── 404.html                  # Custom error page with auto-redirect
+    ├── admin.html                # Android restriction bypass page for admin
+    ├── android.html              # Android device redirection page
     ├── index.html                # Home form with station selection
     ├── results.html              # Seat availability display with coach breakdown
     ├── notice.html               # Maintenance mode page
@@ -108,6 +114,9 @@ A comprehensive web application to **check real-time seat availability** for Ban
 | Social Media Integration              | ✅        | Open Graph tags for sharing |
 | Cache-Control Headers                 | ✅        | Ensures fresh data on every request |
 | User Activity Logging                 | ✅        | Comprehensive logging of user interactions and system events |
+| JWT Authentication System             | ✅        | Automated Bearer token management and refresh |
+| **Android Device Detection**          | ✅        | **Smart traffic management with automatic app redirection** |
+| **Admin Access Control**              | ✅        | **Secure administrative interface with environment-based auth** |
 
 ---
 
@@ -285,7 +294,24 @@ Headers: Authorization: Bearer {token}
 
 ---
 
-## 🔐 Authentication System
+## � Cache Control
+
+All responses include strict cache headers:
+```http
+Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+Pragma: no-cache
+Expires: 0
+```
+
+**Benefits:**
+- Always fresh data from APIs
+- No stale seat availability information
+- Proper handling of dynamic content
+- Prevents browser caching issues
+
+---
+
+## �🔐 Authentication System
 
 ### Secure Credential Management
 ```python
@@ -391,6 +417,23 @@ Visit `http://localhost:5000` in your browser
 ---
 
 ## ⚙️ Configuration
+
+### Environment Configuration
+Environment variables for Bangladesh Railway API access and admin functionality:
+```bash
+# Bangladesh Railway API Credentials
+FIXED_MOBILE_NUMBER=your_mobile_number  # Required for JWT token authentication
+FIXED_PASSWORD=your_password            # Required for JWT token authentication
+
+# Admin Access Control
+ADMIN_ACCESS_CODE=your_admin_code       # Optional - Enables Android restriction bypass
+```
+
+**Security Notes:**
+- Never commit credentials to version control
+- Use environment variables or secure secret management
+- Credentials are loaded from `/etc/secrets/.env` in production environments
+- Admin access code enables administrative features and Android bypass functionality
 
 ### Queue Settings
 - **max_concurrent**: Number of simultaneous API requests (default: 1)
@@ -500,6 +543,14 @@ logging.basicConfig(
 
 ---
 
+## 📱 App Updates & News
+
+For the latest updates, new features, and Android app releases, visit our **GitHub Gist**:
+
+👉 **[Updates & Downloads](https://gist.github.com/nishatrhythm/b462e53062f32017fcc0c7c218898cde)** - Stay updated with new features and app versions
+
+---
+
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -542,6 +593,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Made with ❤️ for Bangladesh Railway passengers**
 
-[🌐 Live Demo](https://trainseat.onrender.com) | [📧 Feedback](https://forms.gle/NV72PC1z75sq77tg7) | [⭐ Star on GitHub](https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application)
+[🌐 Live Demo](https://trainseat.onrender.com) | [📱 Android App](https://gist.github.com/nishatrhythm/b462e53062f32017fcc0c7c218898cde) | [📧 Feedback](https://forms.gle/NV72PC1z75sq77tg7) | [⭐ Star on GitHub](https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application)
 
 </div>

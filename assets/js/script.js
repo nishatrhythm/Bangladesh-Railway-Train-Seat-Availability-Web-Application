@@ -1,6 +1,338 @@
 document.documentElement.classList.add('js-enabled');
 
+let focusDueToValidation = false;
+let suppressEvents = false;
 let stationData;
+
+function detectAndroidDevice() {
+    const ua = navigator.userAgent.toLowerCase();
+    const platform = navigator.platform.toLowerCase();
+    
+    if (ua.includes('iphone') || ua.includes('ipad') || ua.includes('ipod') || ua.includes('ios')) {
+        return false;
+    }
+    
+    const isAndroidUA = ua.includes("android");
+    
+    const hasTouch = navigator.maxTouchPoints > 0;
+    const isMobileScreen = window.screen.width <= 1024;
+    const highDPI = window.devicePixelRatio > 1.5;
+    
+    const isFirefox = ua.includes('firefox');
+    const isFirefoxMobileInDesktopMode = isFirefox && hasTouch && isMobileScreen && !ua.includes('android');
+    
+    if (isFirefoxMobileInDesktopMode) {
+        console.log('Firefox mobile detected in desktop mode');
+        return true;
+    }
+    
+    const androidHints = [
+        ua.includes("mobile") && !ua.includes("safari"),
+        ua.includes("wv"),
+        platform.includes("arm") && !ua.includes("safari"),
+        hasTouch && isMobileScreen && !ua.includes("safari"),
+        hasTouch && highDPI && window.screen.width < 1200 && !ua.includes("safari")
+    ];
+    
+    return isAndroidUA || androidHints.filter(Boolean).length >= 2;
+}
+
+function checkAndroidRedirect() {
+    if (window.location.pathname.includes('/android') || window.location.pathname.includes('/admin')) {
+        return false;
+    }
+    
+    if (detectAndroidDevice()) {
+        const adminBypass = localStorage.getItem('isAdmin');
+        if (adminBypass === 'true') {
+            syncAdminBypass().then(() => {
+                console.log('Admin bypass active, allowing Android access');
+            }).catch(() => {
+                console.log('Failed to sync admin bypass');
+            });
+            return false;
+        }
+        
+        const redirectAttempted = sessionStorage.getItem('android-redirect-attempted');
+        if (!redirectAttempted) {
+            sessionStorage.setItem('android-redirect-attempted', 'true');
+            
+            fetch('/android', {
+                method: 'HEAD',
+                headers: {
+                    'X-Client-Android-Detection': 'true',
+                    'X-Client-Touch-Points': navigator.maxTouchPoints || 0,
+                    'X-Client-Screen-Size': `${window.screen.width}x${window.screen.height}`,
+                    'X-Client-Pixel-Ratio': window.devicePixelRatio || 1
+                }
+            }).catch(() => {});
+            
+            window.location.href = '/android';
+            return true;
+        }
+    }
+    return false;
+}
+
+function syncAdminBypass() {
+    const adminBypass = localStorage.getItem('isAdmin') === 'true';
+    
+    return fetch('/admin/sync', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ admin_active: adminBypass })
+    })
+    .then(response => response.json())
+    .catch(error => {
+        console.error('Error syncing admin bypass:', error);
+        throw error;
+    });
+}
+
+let adminStatus = {
+    active: false,
+    configured: false
+};
+
+function checkAdminStatus() {
+    const localAdminActive = localStorage.getItem('isAdmin') === 'true';
+    
+    fetch('/admin/status')
+        .then(response => response.json())
+        .then(data => {
+            adminStatus = {
+                active: localAdminActive,
+                configured: data.admin_configured
+            };
+            
+            if (localAdminActive !== data.admin_active) {
+                syncAdminBypass().then(() => {
+                    console.log('Admin status synced with localStorage:', localAdminActive);
+                });
+            }
+            
+            updateAdminUI();
+        })
+        .catch(error => {
+            console.error('Error checking admin status:', error);
+            adminStatus = {
+                active: localAdminActive,
+                configured: true
+            };
+            updateAdminUI();
+            showFlyout('Error checking admin status', 'warning');
+        });
+}
+
+function updateAdminUI() {
+    const adminForm = document.getElementById('adminForm');
+    const adminActive = document.getElementById('adminActive');
+    const adminNotConfigured = document.getElementById('adminNotConfigured');
+
+    if (!adminStatus.configured) {
+        if (adminForm) adminForm.style.display = 'none';
+        if (adminActive) adminActive.style.display = 'none';
+        if (adminNotConfigured) adminNotConfigured.style.display = 'block';
+    } else if (adminStatus.active) {
+        if (adminForm) adminForm.style.display = 'none';
+        if (adminActive) adminActive.style.display = 'block';
+        if (adminNotConfigured) adminNotConfigured.style.display = 'none';
+    } else {
+        if (adminForm) adminForm.style.display = 'block';
+        if (adminActive) adminActive.style.display = 'none';
+        if (adminNotConfigured) adminNotConfigured.style.display = 'none';
+    }
+}
+
+function setupAdminEventListeners() {
+    const adminCodeInput = document.getElementById('admin-code-input');
+    const applyAdminBtn = document.getElementById('applyAdminBtn');
+    const removeAdminBtn = document.getElementById('removeAdminBtn');
+    const adminCodeClear = document.getElementById('admin-code-clear');
+
+    if (adminCodeInput && adminCodeClear) {
+        console.log('Setting up admin-code-clear button event listener');
+        adminCodeClear.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            adminCodeInput.value = '';
+            const hiddenInput = document.getElementById('admin_code');
+            if (hiddenInput) hiddenInput.value = '';
+            
+            const errorField = document.getElementById('admin_code-error');
+            if (errorField && errorField.classList.contains('show')) {
+                errorField.classList.remove('show');
+                errorField.classList.add('hide');
+                adminCodeInput.classList.remove('error-input');
+            }
+            
+            adminCodeInput.focus();
+            updateClearButtonVisibility(adminCodeInput, adminCodeClear);
+        });
+        
+        adminCodeInput.addEventListener('input', function() {
+            const errorField = document.getElementById('admin_code-error');
+            if (errorField && errorField.classList.contains('show')) {
+                errorField.classList.remove('show');
+                errorField.classList.add('hide');
+                adminCodeInput.classList.remove('error-input');
+            }
+            
+            updateClearButtonVisibility(adminCodeInput, adminCodeClear);
+        });
+        
+        updateClearButtonVisibility(adminCodeInput, adminCodeClear);
+    }
+
+    if (applyAdminBtn) {
+        applyAdminBtn.addEventListener('click', function() {
+            applyAdminAccess();
+        });
+    }
+
+    if (removeAdminBtn) {
+        removeAdminBtn.addEventListener('click', function() {
+            removeAdminAccess();
+        });
+    }
+
+    if (adminCodeInput) {
+        adminCodeInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                applyAdminAccess();
+            }
+        });
+    }
+}
+
+function applyAdminAccess() {
+    const adminCode = document.getElementById('admin-code-input').value.trim();
+    document.getElementById('admin_code').value = adminCode;
+    
+    if (!adminCode) {
+        showAdminError('admin_code', 'Admin code is required');
+        const adminInput = document.getElementById('admin-code-input');
+        if (adminInput) {
+            focusDueToValidation = true;
+            adminInput.focus();
+            const rect = adminInput.getBoundingClientRect();
+            if (rect.top < 0 || rect.bottom > window.innerHeight) {
+                setTimeout(() => {
+                    adminInput.scrollIntoView({ block: 'center' });
+                }, 150);
+            }
+        }
+        return;
+    }
+
+    clearAdminError('admin_code');
+    
+    const applyBtn = document.getElementById('applyAdminBtn');
+    if (applyBtn) {
+        applyBtn.disabled = true;
+        applyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+    }
+
+    fetch('/admin/verify', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code: adminCode })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            adminStatus.active = true;
+            localStorage.setItem('isAdmin', 'true');
+            updateAdminUI();
+            const adminCodeInput = document.getElementById('admin-code-input');
+            if (adminCodeInput) adminCodeInput.value = '';
+        } else {
+            showAdminError('admin_code', data.error || 'Invalid admin code');
+        }
+    })
+    .catch(error => {
+        console.error('Error applying admin access:', error);
+        showAdminError('admin_code', 'Error verifying admin code');
+    })
+    .finally(() => {
+        const applyBtn = document.getElementById('applyAdminBtn');
+        if (applyBtn) {
+            applyBtn.disabled = false;
+            applyBtn.innerHTML = '<i class="fas fa-unlock"></i> Apply Admin Access';
+        }
+    });
+}
+
+function removeAdminAccess() {
+    const removeBtn = document.getElementById('removeAdminBtn');
+    if (removeBtn) {
+        removeBtn.disabled = true;
+        removeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Removing...';
+    }
+
+    fetch('/admin/remove', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            adminStatus.active = false;
+            localStorage.removeItem('isAdmin');
+            updateAdminUI();
+        } else {
+            showFlyout('Error removing admin access', 'warning');
+        }
+    })
+    .catch(error => {
+        console.error('Error removing admin access:', error);
+        showFlyout('Error removing admin access', 'warning');
+    })
+    .finally(() => {
+        const removeBtn = document.getElementById('removeAdminBtn');
+        if (removeBtn) {
+            removeBtn.disabled = false;
+            removeBtn.innerHTML = '<i class="fas fa-lock"></i> Remove Admin Access';
+        }
+    });
+}
+
+function showAdminError(fieldId, message) {
+    const errorElement = document.getElementById(fieldId + '-error');
+    const inputElement = fieldId === 'admin_code' ? document.getElementById('admin-code-input') : document.getElementById(fieldId);
+    
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.classList.remove('hide');
+        errorElement.classList.add('show');
+    }
+    
+    if (inputElement) {
+        inputElement.classList.add('error-input');
+    }
+}
+
+function clearAdminError(fieldId) {
+    const errorElement = document.getElementById(fieldId + '-error');
+    const inputElement = fieldId === 'admin_code' ? document.getElementById('admin-code-input') : document.getElementById(fieldId);
+    
+    if (errorElement) {
+        errorElement.classList.remove('show');
+        errorElement.classList.add('hide');
+    }
+    
+    if (inputElement) {
+        inputElement.classList.remove('error-input');
+    }
+}
+
+checkAndroidRedirect();
 
 function loadStations() {
     return new Promise((resolve) => {
@@ -95,7 +427,6 @@ const minDate = window.minDate;
 const maxDate = window.maxDate;
 
 let suppressDropdown = false;
-let suppressEvents = false;
 
 function showLoaderAndSubmit(event) {
     event.preventDefault();
@@ -995,4 +1326,9 @@ function updateClearButtonVisibility(input, clearButton) {
     } else {
         clearButton.style.display = 'none';
     }
+}
+
+if (window.location.pathname === '/admin') {
+    setupAdminEventListeners();
+    checkAdminStatus();
 }

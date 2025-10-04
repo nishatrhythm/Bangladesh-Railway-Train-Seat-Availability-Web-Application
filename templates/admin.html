@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Access | Train Seat Availability</title>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8782991694211014"
+         crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="/assets/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <link rel="icon" href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png" type="image/x-icon" sizes="30x30">
+
+    <script id="app-config" type="application/json">
+        {{ CONFIG | tojson | safe }}
+    </script>
+</head>
+
+<body>
+    <div class="flyout-notification" id="flyoutNotification">
+        <span id="flyoutMessage"></span>
+        <i class="fas fa-times flyout-close" id="flyoutClose"></i>
+    </div>
+    
+    <noscript>
+        <div class="container noscript-warning">
+            <h2><i class="fas fa-exclamation-circle"></i> Please Enable JavaScript</h2>
+            <p>This website requires JavaScript to function properly. Enable it in your browser settings to access full
+                functionality and check train seat availability.</p>
+            <div class="instructions">
+                <strong>How to enable:</strong> Go to your browser settings > Privacy/Security > Enable JavaScript.
+                Refresh the page after enabling.
+            </div>
+        </div>
+    </noscript>
+
+    <div class="container main-content">
+        <h1><i class="fas fa-shield-alt"></i> Admin Access</h1><br>
+
+        <div class="train-search-form" id="adminForm">
+            <div class="form-group">
+                <label for="admin_code">Admin Access Code</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-key input-icon"></i>
+                    <input type="number" id="admin-code-input" placeholder="Enter admin access code" autocomplete="off">
+                    <i class="fas fa-times clear-icon admin-clear-icon" id="admin-code-clear"></i>
+                    <input type="hidden" id="admin_code" name="admin_code">
+                </div>
+                <span class="error-message" id="admin_code-error"></span>
+            </div>
+            
+            <div class="form-group submit-btn">
+                <button type="button" class="btn-primary" id="applyAdminBtn">
+                    <i class="fas fa-unlock"></i> Apply Admin Access
+                </button>
+            </div>
+        </div>
+
+        <div class="admin-active" id="adminActive" style="display: none;">
+            <div class="note">
+                <i class="fas fa-check-circle"></i> <strong>Admin access is active.</strong> 
+                You can now access all features from your Android device.
+            </div>
+            
+            <div class="form-group submit-btn">
+                <button type="button" class="btn-primary" id="removeAdminBtn">
+                    <i class="fas fa-lock"></i> Remove Admin Access
+                </button>
+            </div>
+            
+            <br><br>
+            <div class="form-group submit-btn">
+                <a href="/" class="btn-primary" style="text-decoration: none; display: inline-block; text-align: center;">
+                    <i class="fas fa-home"></i> Go to Home
+                </a>
+            </div>
+        </div>
+
+        <div class="admin-not-configured" id="adminNotConfigured" style="display: none;">
+            <div class="note">
+                <i class="fas fa-exclamation-triangle"></i> Admin access is not configured on this server.
+            </div>
+        </div>
+    </div>
+
+    <style>
+        {{ styles_css | safe }}
+    </style>
+
+    <script>
+        {{ script_js | safe }}
+    </script>
+</body>
+
+</html>
