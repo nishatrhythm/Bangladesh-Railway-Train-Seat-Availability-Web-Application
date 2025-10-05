@@ -2,7 +2,7 @@
 
 A comprehensive web application to **check real-time seat availability** for Bangladesh Railway trains. This application provides **detailed seat information, coach-wise breakdown, and intelligent request management** — built using Flask + Vanilla JS + REST APIs.
 
-> 📱 **Android App Available**: To minimize web traffic and provide better performance, an **Android app version** is now available! Check the [**GitHub Gist**](https://gist.github.com/nishatrhythm/b462e53062f32017fcc0c7c218898cde) for latest updates, new features, and download links.
+> 📱 **Android App Available**: To minimize web traffic and provide better performance, an **Android app version** is now available! Check the [**GitHub Releases**](https://github.com/nishatrhythm/Train-Seat-App-Releases/blob/main/README.md) for latest updates, new features, and download links.
 
 ✨ **Key Features:**
 - 🎯 **Real-Time Seat Checking**: Live seat availability for all Bangladesh Railway trains
@@ -545,9 +545,9 @@ logging.basicConfig(
 
 ## 📱 App Updates & News
 
-For the latest updates, new features, and Android app releases, visit our **GitHub Gist**:
+For the latest updates, new features, and Android app releases, visit our **GitHub Releases**:
 
-👉 **[Updates & Downloads](https://gist.github.com/nishatrhythm/b462e53062f32017fcc0c7c218898cde)** - Stay updated with new features and app versions
+👉 **[Updates & Downloads](https://github.com/nishatrhythm/Train-Seat-App-Releases/blob/main/README.md)** - Stay updated with new features and app versions
 
 ---
 
@@ -593,6 +593,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Made with ❤️ for Bangladesh Railway passengers**
 
-[🌐 Live Demo](https://trainseat.onrender.com) | [📱 Android App](https://gist.github.com/nishatrhythm/b462e53062f32017fcc0c7c218898cde) | [📧 Feedback](https://forms.gle/NV72PC1z75sq77tg7) | [⭐ Star on GitHub](https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application)
+[🌐 Live Demo](https://trainseat.onrender.com) | [📱 Android App](https://github.com/nishatrhythm/Train-Seat-App-Releases/blob/main/README.md) | [📧 Feedback](https://forms.gle/NV72PC1z75sq77tg7) | [⭐ Star on GitHub](https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application)
 
 </div>
