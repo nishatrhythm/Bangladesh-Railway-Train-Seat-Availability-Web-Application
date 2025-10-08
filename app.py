@@ -6,6 +6,7 @@ from request_queue import RequestQueue
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -287,6 +288,7 @@ def admin_verify():
     valid_admin_code = os.environ.get('ADMIN_ACCESS_CODE')
     
     if valid_admin_code and admin_code == valid_admin_code:
+        session.permanent = True
         session['isAdmin'] = True
         logger.info("Admin access granted successfully")
         return jsonify({'success': True, 'message': 'Admin access granted'})
@@ -329,12 +331,18 @@ def admin_sync():
     data = request.get_json()
     client_admin_active = data.get('admin_active', False)
     
-    if client_admin_active:
+    server_admin_active = session.get('isAdmin', False)
+    
+    if client_admin_active and not server_admin_active:
+        logger.info("Admin sync rejected - server session expired, client localStorage should be cleared")
+        return jsonify({'success': False, 'synced': False, 'session_expired': True})
+    elif client_admin_active and server_admin_active:
+        session.permanent = True
         session['isAdmin'] = True
+        return jsonify({'success': True, 'synced': True})
     else:
         session.pop('isAdmin', None)
-    
-    return jsonify({'success': True, 'synced': True})
+        return jsonify({'success': True, 'synced': True})
 
 @app.route('/')
 def home():

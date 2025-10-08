@@ -85,6 +85,15 @@ function syncAdminBypass() {
         body: JSON.stringify({ admin_active: adminBypass })
     })
     .then(response => response.json())
+    .then(data => {
+        if (data.session_expired) {
+            localStorage.removeItem('isAdmin');
+            console.log('Server session expired - localStorage cleared');
+            window.location.href = '/android';
+            throw new Error('Session expired');
+        }
+        return data;
+    })
     .catch(error => {
         console.error('Error syncing admin bypass:', error);
         throw error;
@@ -102,16 +111,22 @@ function checkAdminStatus() {
     fetch('/admin/status')
         .then(response => response.json())
         .then(data => {
+            const serverAdminActive = data.admin_active;
+            
+            if (localAdminActive !== serverAdminActive) {
+                if (serverAdminActive) {
+                    localStorage.setItem('isAdmin', 'true');
+                    console.log('Admin status synced: localStorage updated to match server (active)');
+                } else {
+                    localStorage.removeItem('isAdmin');
+                    console.log('Admin status synced: localStorage cleared because server session expired');
+                }
+            }
+            
             adminStatus = {
-                active: localAdminActive,
+                active: serverAdminActive,
                 configured: data.admin_configured
             };
-            
-            if (localAdminActive !== data.admin_active) {
-                syncAdminBypass().then(() => {
-                    console.log('Admin status synced with localStorage:', localAdminActive);
-                });
-            }
             
             updateAdminUI();
         })
