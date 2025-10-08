@@ -1,7 +1,7 @@
 {
     "version": "1.1.2",
     "is_maintenance": 1,
-    "maintenance_message": "This service is no longer available as Bangladesh Railway has restricted API data access by enforcing Cloudflare verification on each request. Thank you for being with us throughout this journey.",
+    "maintenance_message": "This service is currently unavailable. We’re working to restore it as soon as possible. Thank you for your patience.",
     "is_banner_enabled": 1,
     "image_link": "",
     "force_banner": 0,
