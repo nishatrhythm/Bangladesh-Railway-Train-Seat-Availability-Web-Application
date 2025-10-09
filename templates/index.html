@@ -7,7 +7,7 @@
     <title>Home | Train Seat Availability</title>
     <!-- SEO Meta Tags -->
     <meta name="description"
-        content="Check train seat availability for Bangladesh Railway effortlessly. Plan your journey with accurate and up-to-date information;">
+        content="Check train seat availability for Bangladesh Railway effortlessly. Plan your journey with accurate and up-to-date information.">
     <meta name="keywords"
         content="Bangladesh Railway, train seat availability, travel, transportation, railway schedule, Bangladesh travel">
     <meta name="author" content="Nishat Mahmud">
@@ -58,7 +58,7 @@
     </noscript>
 
     <div class="container main-content">
-        <h1><i class="fas fa-subway"></i> BR Train Seat Availability</h1><br>
+        <h1><i class="fas fa-subway"></i> BR Train Seat Availability</h1>
 
         <!-- General Text Crawler Section -->
         <!-- <div class="text-crawler light">
@@ -79,12 +79,64 @@
         </p><br> -->
 
         {% if error %}
-        <div class="error shake">
+        <div class="error shake" id="indexError">
             <i class="fas fa-exclamation-circle error-icon"></i> {{ error }}
         </div>
+        <script>
+            // Check if error is auth-related and clear credentials
+            const errorText = "{{ error }}";
+            if (errorText.includes('AUTH_TOKEN_EXPIRED') || errorText.includes('AUTH_DEVICE_KEY_EXPIRED') || errorText.includes('AUTH_CREDENTIALS_REQUIRED')) {
+                localStorage.removeItem('railway_auth_token');
+                localStorage.removeItem('railway_device_key');
+            }
+        </script>
         {% endif %}
 
+        <!-- Authentication Credentials Section -->
+        <div class="auth-credentials-section" id="authCredentialsSection">
+            <p class="note" style="font-style: normal;">
+                <i class="fas fa-info-circle"></i> Please enter your <span class="note-bold">Auth Token</span> and <span class="note-bold">Device Key</span> to use this service. These will be stored securely in your browser. <br><br> <span class="highlight">• How to get these: <a href="#" id="instructionImageLink">See this image</a>
+            </p><br>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="auth-token-input">Auth Token</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="text" id="auth-token-input" placeholder="Enter your auth token" autocomplete="off">
+                        <i class="fas fa-times clear-icon" id="auth-token-clear"></i>
+                    </div>
+                    <span class="error-message" id="auth-token-error">Auth Token is required</span>
+                </div>
+                <div class="form-group">
+                    <label for="device-key-input">Device Key</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-mobile-alt input-icon"></i>
+                        <input type="text" id="device-key-input" placeholder="Enter your device key" autocomplete="off">
+                        <i class="fas fa-times clear-icon" id="device-key-clear"></i>
+                    </div>
+                    <span class="error-message" id="device-key-error">Device Key is required</span>
+                </div>
+            </div>
+            <div class="form-group submit-btn" style="background-color: transparent; align-items: center; justify-content: center;">
+                <button type="button" class="btn-primary" id="saveAuthBtn" style="width: auto; min-width: 300px; padding: 12px 30px;">
+                    <i class="fas fa-save"></i> Save Credentials
+                </button>
+            </div>
+            <div class="auth-status" id="authStatus" style="display: none;">
+                <i class="fas fa-check-circle"></i> Credentials saved successfully
+            </div>
+        </div>
+
+        <!-- Saved Credentials Section -->
+        <div class="saved-credentials-section" id="savedCredentialsSection" style="display: none;">
+            <button type="button" class="cancel-btn" id="deleteAuthBtn">
+                <i class="fas fa-trash-alt"></i> Delete Saved Credentials
+            </button>
+        </div><br><br>
+
         <form method="POST" action="{{ url_for('check_seats') }}" id="seatForm">
+            <input type="hidden" id="auth_token" name="auth_token">
+            <input type="hidden" id="device_key" name="device_key">
             <div class="form-row">
                 <div class="form-group">
                     <label for="origin">Origin Station</label>
@@ -150,7 +202,7 @@
             </div>
         </form>
 
-        <footer class="new-footer">
+        <footer class="new-footer" id="mainFooter" style="margin-top: 30px;">
             <p>This project is open source. Check it out on <a
                     href="https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application"
                     target="_blank">GitHub</a>.</p>
@@ -192,7 +244,7 @@
                 <span class="legal-close" onclick="closeModal('termsModal')">&times;</span>
                 <div class="legal-modal-body">
                     <h2>Terms and Conditions</h2>
-                    <p><strong>Effective Date:</strong> December 09, 2024</p>
+                    <p><strong>Effective Date:</strong> October 09, 2025</p>
                     <hr>
 
                     <h3>1. Introduction</h3>
@@ -213,16 +265,16 @@
                         <li><strong>Journey Planning:</strong> Tools to help plan your rail travel within Bangladesh
                         </li>
                         <li><strong>Mobile-Optimized Interface:</strong> Responsive design for use on all devices</li>
-                        <li><strong>No Registration Required:</strong> Free access without creating an account</li>
+                        <li><strong>User-Provided Authentication:</strong> Users must provide their own API authentication credentials (Auth Token and Device Key) to access the service</li>
                     </ul>
 
                     <h3>3. Acceptable Use Policy</h3>
-                    <p><strong>You may use this service for:</strong></p>
+                    <p><strong>Permitted Uses:</strong></p>
                     <ul>
                         <li>Personal travel planning and research</li>
-                        <li>Educational and learning purposes</li>
-                        <li>Non-commercial information gathering about train schedules</li>
-                        <li>Checking seat availability before booking tickets</li>
+                        <li>Educational purposes</li>
+                        <li>Non-commercial information gathering</li>
+                        <li>Checking train seat availability and fares using your own valid API credentials</li>
                     </ul>
 
                     <p><strong>You may NOT use this service for:</strong></p>
@@ -232,9 +284,21 @@
                         <li>Overwhelming the service with excessive requests</li>
                         <li>Any illegal activities or circumventing Bangladesh Railway policies</li>
                         <li>Attempting to access or modify the underlying systems</li>
+                        <li>Sharing or distributing your authentication credentials with unauthorized parties</li>
+                        <li>Using invalid, expired, or unauthorized API credentials</li>
                     </ul>
 
-                    <h3>4. Third-Party Data Sources</h3>
+                    <h3>4. User Responsibilities</h3>
+                    <p><strong>Authentication Credentials:</strong></p>
+                    <ul>
+                        <li>Users are responsible for obtaining their own valid Auth Token and Device Key from authorized sources</li>
+                        <li>Users must keep their authentication credentials secure and confidential</li>
+                        <li>Users are solely responsible for any activity conducted using their credentials</li>
+                        <li>The Service does not provide, distribute, or validate authentication credentials</li>
+                        <li>Users must ensure their credentials comply with the terms of the original API provider</li>
+                    </ul>
+
+                    <h3>5. Third-Party Data Sources</h3>
                     <p>This application fetches data from external sources including:</p>
                     <ul>
                         <li><strong>Shohoz API (railspaapi.shohoz.com):</strong> Primary source for train seat
@@ -244,7 +308,7 @@
                     <p>We are not affiliated with or endorsed by Bangladesh Railway or Shohoz. This is an independent
                         educational project.</p>
 
-                    <h3>5. Service Limitations and Disclaimers</h3>
+                    <h3>6. Service Limitations and Disclaimers</h3>
                     <p>This service is provided "as is" without warranties of any kind. We do not guarantee:</p>
                     <ul>
                         <li><strong>Data Accuracy:</strong> Seat availability information may not always be current or
@@ -254,20 +318,31 @@
                         <li><strong>Third-Party Dependencies:</strong> External APIs may be temporarily unavailable</li>
                         <li><strong>Booking Success:</strong> Availability shown here does not guarantee successful
                             ticket booking</li>
+                        <li><strong>Validity or functionality of user-provided authentication credentials</strong></li>
                     </ul>
 
-                    <h3>6. Open Source Nature</h3>
+                    <h3>7. Open Source Nature</h3>
                     <p>This is an open-source project available on <a
                             href="https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application"
                             target="_blank">GitHub</a>. The code is provided for educational purposes and community
                         contribution.</p>
 
-                    <h3>7. Limitation of Liability</h3>
+                    <h3>8. Limitation of Liability</h3>ta Sources</h3>
+                    <p>This application fetches data from external sources including:</p>
+                    <ul>
+                        <li><strong>Shohoz API (railspaapi.shohoz.com):</strong> Primary source for train seat
+                            availability data</li>
+                        <li><strong>Bangladesh Railway Systems:</strong> Official railway data when available</li>
+                    </ul>
+                    <p>We are not affiliated with or endorsed by Bangladesh Railway or Shohoz. This is an independent educational project.</p>
+                    <p><strong>Note:</strong> Users must provide their own authentication credentials to access these third-party APIs. We do not store, manage, or provide API credentials.</p>
+
+                    <h3>8. Limitation of Liability</h3>
                     <p>To the fullest extent permitted by law, we shall not be liable for any direct, indirect,
                         incidental, special, or consequential damages arising from your use of this service, including
                         but not limited to missed travel opportunities or booking failures.</p>
 
-                    <h3>8. Contact Information</h3>
+                    <h3>9. Contact Information</h3>
                     <p>For questions, feedback, or support, please contact us through our <a
                             href="https://forms.gle/NV72PC1z75sq77tg7" target="_blank">feedback form</a>.</p>
 
@@ -284,7 +359,7 @@
                 <span class="legal-close" onclick="closeModal('privacyModal')">&times;</span>
                 <div class="legal-modal-body">
                     <h2>Privacy Policy</h2>
-                    <p><strong>Effective Date:</strong> December 09, 2024</p>
+                    <p><strong>Effective Date:</strong> October 09, 2025</p>
                     <hr>
 
                     <h3>1. Introduction</h3>
@@ -306,6 +381,7 @@
                         <li><strong>No Behavioral Tracking:</strong> We don't track your browsing habits across other
                             websites</li>
                         <li><strong>No User Profiles:</strong> We don't create or maintain user profiles</li>
+                        <li><strong>No Server-side Storage of Authentication Credentials:</strong> We don't store your Auth Token or Device Key on our servers</li>
                     </ul>
 
                     <h3>3. Information We Temporarily Process</h3>
@@ -350,9 +426,12 @@
                             browser</li>
                         <li><strong>Local Storage:</strong> User interface preferences (like "don't show banner again")
                         </li>
+                        <li><strong>Authentication Credentials:</strong> Your Auth Token and Device Key are stored locally in your browser's localStorage for convenience. These credentials never leave your device and are not transmitted to our servers</li>
+                        <li><strong>Cached Images:</strong> Instruction images and banners are cached as base64 data in localStorage to improve performance</li>
                         <li><strong>Essential Cookies:</strong> Minimal cookies required for basic functionality</li>
                     </ul>
                     <p>All browser storage is under your control and can be cleared through your browser settings.</p>
+                    <p><strong>Important:</strong> You are responsible for the security of credentials stored in your browser. Clear your browser data if using a shared or public device.</p>
 
                     <h3>7. Data Security</h3>
                     <p><strong>Protection Measures:</strong></p>
@@ -401,6 +480,7 @@
         window.minDate = "{{ min_date }}";
         window.maxDate = "{{ max_date }}";
         window.bannerImageUrl = "{{ banner_image | safe }}";
+        window.instructionImageUrl = "{{ instruction_image | safe }}";
         {{ script_js | safe }}
     </script>
 </body>

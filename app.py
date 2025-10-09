@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, make_response, abort, session, after_this_request, jsonify
-from detailsSeatAvailability import main as detailsSeatAvailability, set_token, sort_seat_number
+from detailsSeatAvailability import main as detailsSeatAvailability, sort_seat_number
 from datetime import datetime, timedelta
 import requests, os, json, uuid, pytz, base64, re, logging, sys
 from request_queue import RequestQueue
@@ -124,6 +124,16 @@ if os.path.exists(default_banner_path):
             encoded_image = base64.b64encode(img_file.read()).decode('utf-8')
             DEFAULT_BANNER_IMAGE = f"data:image/png;base64,{encoded_image}"
     except Exception as e:
+        pass
+
+instruction_image_path = 'assets/images/instruction.png'
+DEFAULT_INSTRUCTION_IMAGE = ""
+if os.path.exists(instruction_image_path):
+    try:
+        with open(instruction_image_path, 'rb') as img_file:
+            encoded_image = base64.b64encode(img_file.read()).decode('utf-8')
+            DEFAULT_INSTRUCTION_IMAGE = f"data:image/png;base64,{encoded_image}"
+    except Exception:
         pass
 
 with open('stations_en.json', 'r', encoding='utf-8') as stations_file:
@@ -388,18 +398,24 @@ def home():
         app_version=CONFIG.get("version", "1.0.0"),
         is_banner_enabled=CONFIG.get("is_banner_enabled", 0),
         banner_image=banner_image,
+        instruction_image=DEFAULT_INSTRUCTION_IMAGE,
         CONFIG=CONFIG,
         styles_css=STYLES_CSS_CONTENT,
         script_js=SCRIPT_JS_CONTENT
     )
 
-def process_seat_request(origin, destination, formatted_date, form_values):
+def process_seat_request(origin, destination, formatted_date, form_values, auth_token, device_key):
     try:
+        if not auth_token or not device_key:
+            return {"error": "AUTH_CREDENTIALS_REQUIRED"}
+        
         config = {
             'from_city': origin,
             'to_city': destination,
             'date_of_journey': formatted_date,
-            'seat_class': 'S_CHAIR'
+            'seat_class': 'S_CHAIR',
+            'auth_token': auth_token,
+            'device_key': device_key
         }
         result = detailsSeatAvailability(config)
         
@@ -509,17 +525,28 @@ def check_seats():
                     'origin': form_values['origin'],
                     'destination': form_values['destination'],
                     'formatted_date': formatted_date,
-                    'form_values': form_values
+                    'form_values': form_values,
+                    'auth_token': request.form.get('auth_token', ''),
+                    'device_key': request.form.get('device_key', '')
                 }
             )
             session['queue_request_id'] = request_id
             return redirect(url_for('queue_wait'))
         else:
+            auth_token = request.form.get('auth_token', '')
+            device_key = request.form.get('device_key', '')
+            
+            if not auth_token or not device_key:
+                session['error'] = "AUTH_CREDENTIALS_REQUIRED"
+                return redirect(url_for('home'))
+            
             config = {
                 'from_city': form_values['origin'],
                 'to_city': form_values['destination'],
                 'date_of_journey': formatted_date,
-                'seat_class': 'S_CHAIR'
+                'seat_class': 'S_CHAIR',
+                'auth_token': auth_token,
+                'device_key': device_key
             }
 
             result = detailsSeatAvailability(config)

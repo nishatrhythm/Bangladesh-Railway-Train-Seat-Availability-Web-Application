@@ -2912,6 +2912,12 @@ footer a:hover {
     .crawler-content.speed {
         animation-duration: 55s;
     }
+
+    #saveAuthBtn {
+        width: 100% !important;
+        min-width: 0 !important;
+        display: block !important;
+    }
 }
 
 @media (max-width: 480px) {

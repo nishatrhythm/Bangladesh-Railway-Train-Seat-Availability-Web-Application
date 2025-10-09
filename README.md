@@ -10,7 +10,7 @@ A comprehensive web application to **check real-time seat availability** for Ban
 - 📊 **Multiple Seat Classes**: Support for all seat types (S_CHAIR, SNIGDHA, AC_B, etc.)
 - 🎫 **Ticket Type Analysis**: Shows issued, soon-to-be-issued, and reserved tickets
 - ⏳ **Smart Queue System**: Intelligent request management to prevent API overload
-- 🔄 **Authentication Management**: Automated token handling and refresh
+- � **User-Provided Authentication**: Secure credential management with browser localStorage
 - 📱 **Mobile-Optimized Interface**: Fully responsive design for all devices
 - 🛡️ **Error Handling**: Graceful handling of API failures and rate limits
 - 🔗 **Direct Booking**: Integration with official Bangladesh Railway booking system
@@ -103,7 +103,7 @@ A comprehensive web application to **check real-time seat availability** for Ban
 | Coach-wise Seat Breakdown              | ✅        | Detailed view of available seats by coach |
 | Multiple Seat Class Support            | ✅        | All Bangladesh Railway seat types supported |
 | Ticket Type Classification             | ✅        | Issued, soon-to-be-issued, reserved tickets |
-| Smart Authentication System            | ✅        | Automated token management and refresh |
+| User-Provided Authentication           | ✅        | Secure credential management with browser localStorage |
 | Advanced Queue Management              | ✅        | Prevents API overload with intelligent queuing |
 | Responsive Design                      | ✅        | Mobile-optimized interface |
 | Direct Booking Integration             | ✅        | Links to official booking system |
@@ -114,7 +114,7 @@ A comprehensive web application to **check real-time seat availability** for Ban
 | Social Media Integration              | ✅        | Open Graph tags for sharing |
 | Cache-Control Headers                 | ✅        | Ensures fresh data on every request |
 | User Activity Logging                 | ✅        | Comprehensive logging of user interactions and system events |
-| JWT Authentication System             | ✅        | Automated Bearer token management and refresh |
+| Client-Side Credential Storage        | ✅        | No server storage of authentication credentials |
 | **Android Device Detection**          | ✅        | **Smart traffic management with automatic app redirection** |
 | **Admin Access Control**              | ✅        | **Secure administrative interface with environment-based auth** |
 
@@ -132,25 +132,10 @@ def main(config: Dict) -> Dict
 
 **Process Flow:**
 1. **Train Search**: Fetches trains for specified route and date
-2. **Seat Layout Retrieval**: Gets detailed seat layout for each train
+2. **Seat Layout Retrieval**: Gets detailed seat layout for each train using user-provided authentication
 3. **Seat Analysis**: Categorizes seats by availability and type
 4. **Coach Organization**: Groups seats by coach using Bengali naming convention
 5. **Result Aggregation**: Combines all data for frontend display
-
-### 🔄 Authentication Management
-
-Intelligent token handling system:
-
-```python
-def fetch_token() -> str
-def set_token(token: str)
-```
-
-**Features:**
-- Automatic token refresh on expiration
-- Retry logic for failed authentication
-- Secure credential management via environment variables
-- Error handling for invalid credentials
 
 ### 📊 Seat Type Processing
 
@@ -311,25 +296,31 @@ Expires: 0
 
 ---
 
-## �🔐 Authentication System
+## 🔐 Authentication System
 
-### Secure Credential Management
-```python
-# Environment-based configuration
-mobile_number = os.getenv("FIXED_MOBILE_NUMBER")
-password = os.getenv("FIXED_PASSWORD")
-```
+### User-Provided Authentication
+
+The application now uses **user-provided authentication credentials** instead of server-side hardcoded credentials. Users must supply their own Auth Token and Device Key obtained from Bangladesh Railway/Shohoz API.
+
+**Features:**
+- **User-Supplied Credentials**: Auth Token and Device Key provided by users
+- **Local Storage**: Credentials stored securely in browser localStorage only
+- **Bearer Token Authentication**: Uses JWT tokens for all API requests
+- **Client-Side Management**: No server storage of user credentials
+- **Error Recovery**: Handles invalid credentials gracefully with clear error messages
+- **Rate Limit Handling**: Implements backoff strategies for API limits
 
 ### Token Lifecycle Management
-- **Automatic Refresh**: Detects expired tokens and refreshes
-- **Session Persistence**: Maintains authentication across requests
-- **Error Recovery**: Handles invalid credentials gracefully
-- **Security**: No hardcoded credentials in source code
+- **User Input**: Credentials entered through web interface
+- **Browser Storage**: Persistent storage in localStorage
+- **Manual Refresh**: Users can update credentials as needed
+- **Error Handling**: Graceful fallback for authentication failures
 
-### Rate Limit Handling
-- **403 Error Detection**: Identifies rate limit responses
-- **Backoff Strategy**: Implements exponential backoff
-- **User Notification**: Clear messaging about rate limits
+### User Responsibilities
+- Users are responsible for obtaining their own valid Auth Token and Device Key from authorized sources
+- Users must keep their authentication credentials secure and confidential
+- Users are solely responsible for any activity conducted using their credentials
+- The Service does not provide, distribute, or validate authentication credentials
 
 ---
 
@@ -419,19 +410,18 @@ Visit `http://localhost:5000` in your browser
 ## ⚙️ Configuration
 
 ### Environment Configuration
-Environment variables for Bangladesh Railway API access and admin functionality:
+Environment variables for admin functionality:
 ```bash
-# Bangladesh Railway API Credentials
-FIXED_MOBILE_NUMBER=your_mobile_number  # Required for JWT token authentication
-FIXED_PASSWORD=your_password            # Required for JWT token authentication
-
 # Admin Access Control
 ADMIN_ACCESS_CODE=your_admin_code       # Optional - Enables Android restriction bypass
 ```
 
-**Security Notes:**
-- Never commit credentials to version control
-- Use environment variables or secure secret management
+**Important Notes:**
+- **No API Credentials Required**: Users provide their own Auth Token and Device Key through the web interface
+- **Client-Side Storage**: User credentials are stored in browser localStorage only
+- **No Server Storage**: Authentication credentials are never transmitted to or stored on the server
+- Never commit any sensitive codes to version control
+- Use environment variables or secure secret management for admin codes
 - Credentials are loaded from `/etc/secrets/.env` in production environments
 - Admin access code enables administrative features and Android bypass functionality
 
