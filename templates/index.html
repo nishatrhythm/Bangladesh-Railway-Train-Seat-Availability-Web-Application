@@ -95,7 +95,7 @@
         <!-- Authentication Credentials Section -->
         <div class="auth-credentials-section" id="authCredentialsSection">
             <p class="note" style="font-style: normal;">
-                <i class="fas fa-info-circle"></i> Please enter your <span class="note-bold">Auth Token</span> and <span class="note-bold">Device Key</span> to use this service. These will be stored securely in your browser. <br><br> <span class="highlight">• How to get these: <a href="#" id="instructionImageLink">See this image</a>
+                <i class="fas fa-info-circle"></i> Please enter your <span class="note-bold">Auth Token</span> and <span class="note-bold">Device Key</span> to use this service. These will be stored securely in your browser. <br><br> <span class="highlight">• How to get these: </span><a href="#" id="instructionImageLink">See this image</a><br> <span class="highlight">• For Mobile Devices: </span><a href="#" id="mobileInstructionImageLink">Follow this instruction</a>
             </p><br>
             <div class="form-row">
                 <div class="form-group">
@@ -481,6 +481,7 @@
         window.maxDate = "{{ max_date }}";
         window.bannerImageUrl = "{{ banner_image | safe }}";
         window.instructionImageUrl = "{{ instruction_image | safe }}";
+        window.mobileInstructionImageUrl = "{{ mobile_instruction_image | safe }}";
         {{ script_js | safe }}
     </script>
 </body>

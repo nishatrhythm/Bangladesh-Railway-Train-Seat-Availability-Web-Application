@@ -917,6 +917,51 @@ function setupInstructionImageLink() {
     });
 }
 
+function setupMobileInstructionImageLink() {
+    const mobileInstructionLink = document.getElementById('mobileInstructionImageLink');
+    if (!mobileInstructionLink) return;
+    
+    const configData = JSON.parse(document.getElementById('app-config').textContent);
+    const appVersion = configData.version || "1.0.0";
+    const currentImageUrl = window.mobileInstructionImageUrl;
+    
+    if (!currentImageUrl) return;
+    
+    const cachedImageData = localStorage.getItem('mobileInstructionImageData');
+    let imageUrl = currentImageUrl;
+    
+    if (cachedImageData) {
+        const parsedCache = JSON.parse(cachedImageData);
+        if (parsedCache.version === appVersion) {
+            imageUrl = parsedCache.base64;
+        }
+    } else {
+        localStorage.setItem('mobileInstructionImageData', JSON.stringify({
+            base64: currentImageUrl,
+            version: appVersion
+        }));
+    }
+    
+    mobileInstructionLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const base64Data = imageUrl.split(',')[1];
+        const mimeType = imageUrl.split(',')[0].split(':')[1].split(';')[0];
+        const byteCharacters = atob(base64Data);
+        const byteNumbers = new Array(byteCharacters.length);
+        
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: mimeType });
+        const blobUrl = URL.createObjectURL(blob);
+        
+        window.open(blobUrl, '_blank');
+    });
+}
+
 function deleteAuthCredentials() {
     localStorage.removeItem('railway_auth_token');
     localStorage.removeItem('railway_device_key');
@@ -1093,6 +1138,7 @@ function checkForAuthErrors() {
 document.addEventListener('DOMContentLoaded', function () {
     initAuthCredentials();
     setupInstructionImageLink();
+    setupMobileInstructionImageLink();
     checkForAuthErrors();
     
     const seatForm = document.getElementById("seatForm");

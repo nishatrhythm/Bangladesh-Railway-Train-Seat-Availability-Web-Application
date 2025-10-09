@@ -20,65 +20,65 @@ logger = logging.getLogger(__name__)
 RESULT_CACHE = {}
 
 def is_android_device():
-    user_agent = request.headers.get('User-Agent', '').lower()
+    # user_agent = request.headers.get('User-Agent', '').lower()
     
-    if any(ios_pattern in user_agent for ios_pattern in ['iphone', 'ipad', 'ipod', 'ios']):
-        return False
+    # if any(ios_pattern in user_agent for ios_pattern in ['iphone', 'ipad', 'ipod', 'ios']):
+    #     return False
     
-    if 'android' in user_agent:
-        logger.info(f"Android detected via User-Agent: {request.headers.get('User-Agent', '')}")
-        return True
+    # if 'android' in user_agent:
+    #     logger.info(f"Android detected via User-Agent: {request.headers.get('User-Agent', '')}")
+    #     return True
     
-    if ('mobile' in user_agent or 'tablet' in user_agent) and 'safari' not in user_agent:
-        logger.info(f"Android detected via User-Agent (mobile/tablet): {request.headers.get('User-Agent', '')}")
-        return True
+    # if ('mobile' in user_agent or 'tablet' in user_agent) and 'safari' not in user_agent:
+    #     logger.info(f"Android detected via User-Agent (mobile/tablet): {request.headers.get('User-Agent', '')}")
+    #     return True
     
-    ua_platform = request.headers.get('Sec-CH-UA-Platform', '').lower()
-    ua_mobile = request.headers.get('Sec-CH-UA-Mobile', '').lower()
+    # ua_platform = request.headers.get('Sec-CH-UA-Platform', '').lower()
+    # ua_mobile = request.headers.get('Sec-CH-UA-Mobile', '').lower()
     
-    if 'android' in ua_platform:
-        logger.info(f"Android detected via Client Hints - Platform: {ua_platform}, Mobile: {ua_mobile}")
-        return True
+    # if 'android' in ua_platform:
+    #     logger.info(f"Android detected via Client Hints - Platform: {ua_platform}, Mobile: {ua_mobile}")
+    #     return True
     
-    if ua_mobile == '?1' and 'ios' not in ua_platform and 'safari' not in user_agent:
-        logger.info(f"Android detected via Client Hints - Mobile: {ua_mobile}")
-        return True
+    # if ua_mobile == '?1' and 'ios' not in ua_platform and 'safari' not in user_agent:
+    #     logger.info(f"Android detected via Client Hints - Mobile: {ua_mobile}")
+    #     return True
     
-    mobile_headers = [
-        'X-Requested-With',
-        'X-WAP-Profile',
-    ]
+    # mobile_headers = [
+    #     'X-Requested-With',
+    #     'X-WAP-Profile',
+    # ]
     
-    for header in mobile_headers:
-        header_value = request.headers.get(header, '').lower()
-        if 'android' in header_value or 'mobile' in header_value:
-            logger.info(f"Android detected via {header} header: {header_value}")
-            return True
+    # for header in mobile_headers:
+    #     header_value = request.headers.get(header, '').lower()
+    #     if 'android' in header_value or 'mobile' in header_value:
+    #         logger.info(f"Android detected via {header} header: {header_value}")
+    #         return True
     
-    accept_header = request.headers.get('Accept', '').lower()
-    if 'wap' in accept_header or 'mobile' in accept_header:
-        logger.info(f"Android detected via Accept header: {accept_header}")
-        return True
+    # accept_header = request.headers.get('Accept', '').lower()
+    # if 'wap' in accept_header or 'mobile' in accept_header:
+    #     logger.info(f"Android detected via Accept header: {accept_header}")
+    #     return True
     
-    client_detection = request.headers.get('X-Client-Android-Detection', '')
-    if client_detection == 'true':
-        touch_points = request.headers.get('X-Client-Touch-Points', '0')
-        screen_size = request.headers.get('X-Client-Screen-Size', 'unknown')
-        pixel_ratio = request.headers.get('X-Client-Pixel-Ratio', '1')
-        logger.info(f"Android detected via client-side JS - Touch: {touch_points}, Screen: {screen_size}, DPI: {pixel_ratio}")
-        return True
+    # client_detection = request.headers.get('X-Client-Android-Detection', '')
+    # if client_detection == 'true':
+    #     touch_points = request.headers.get('X-Client-Touch-Points', '0')
+    #     screen_size = request.headers.get('X-Client-Screen-Size', 'unknown')
+    #     pixel_ratio = request.headers.get('X-Client-Pixel-Ratio', '1')
+    #     logger.info(f"Android detected via client-side JS - Touch: {touch_points}, Screen: {screen_size}, DPI: {pixel_ratio}")
+    #     return True
     
-    if 'firefox' in user_agent:
-        session_android_detected = session.get('confirmed_android_device', False)
-        if session_android_detected:
-            logger.info("Android detected via session memory (Firefox desktop mode bypass detected)")
-            return True
+    # if 'firefox' in user_agent:
+    #     session_android_detected = session.get('confirmed_android_device', False)
+    #     if session_android_detected:
+    #         logger.info("Android detected via session memory (Firefox desktop mode bypass detected)")
+    #         return True
     
-    if 'chrome' in user_agent and 'linux' in user_agent:
-        session_android_detected = session.get('confirmed_android_device', False)
-        if session_android_detected:
-            logger.info("Android detected via session memory (desktop mode bypass detected)")
-            return True
+    # if 'chrome' in user_agent and 'linux' in user_agent:
+    #     session_android_detected = session.get('confirmed_android_device', False)
+    #     if session_android_detected:
+    #         logger.info("Android detected via session memory (desktop mode bypass detected)")
+    #         return True
     
     return False
 
@@ -133,6 +133,16 @@ if os.path.exists(instruction_image_path):
         with open(instruction_image_path, 'rb') as img_file:
             encoded_image = base64.b64encode(img_file.read()).decode('utf-8')
             DEFAULT_INSTRUCTION_IMAGE = f"data:image/png;base64,{encoded_image}"
+    except Exception:
+        pass
+
+mobile_instruction_image_path = 'assets/images/mobile_instruction.png'
+DEFAULT_MOBILE_INSTRUCTION_IMAGE = ""
+if os.path.exists(mobile_instruction_image_path):
+    try:
+        with open(mobile_instruction_image_path, 'rb') as img_file:
+            encoded_image = base64.b64encode(img_file.read()).decode('utf-8')
+            DEFAULT_MOBILE_INSTRUCTION_IMAGE = f"data:image/png;base64,{encoded_image}"
     except Exception:
         pass
 
@@ -399,6 +409,7 @@ def home():
         is_banner_enabled=CONFIG.get("is_banner_enabled", 0),
         banner_image=banner_image,
         instruction_image=DEFAULT_INSTRUCTION_IMAGE,
+        mobile_instruction_image=DEFAULT_MOBILE_INSTRUCTION_IMAGE,
         CONFIG=CONFIG,
         styles_css=STYLES_CSS_CONTENT,
         script_js=SCRIPT_JS_CONTENT
