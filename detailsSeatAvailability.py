@@ -180,7 +180,7 @@ def fetch_train_details(config: Dict, auth_token: str, device_key: str) -> List[
                     raise Exception("AUTH_TOKEN_EXPIRED")
             
             if response.status_code == 403:
-                raise Exception("Rate limit exceeded. Please try again later.")
+                raise Exception("Currently we are experiencing high traffic. Please try again after some time.")
                 
             if response.status_code >= 500:
                 retry_count += 1
@@ -210,7 +210,7 @@ def fetch_train_details(config: Dict, auth_token: str, device_key: str) -> List[
                     raise Exception("AUTH_TOKEN_EXPIRED")
                     
             if hasattr(e, 'response') and e.response and e.response.status_code == 403:
-                raise Exception("Rate limit exceeded. Please try again later.")
+                raise Exception("Currently we are experiencing high traffic. Please try again after some time.")
             return []
 
 def main(config: Dict) -> Dict:

@@ -85,7 +85,12 @@
         <script>
             // Check if error is auth-related and clear credentials
             const errorText = "{{ error }}";
-            if (errorText.includes('AUTH_TOKEN_EXPIRED') || errorText.includes('AUTH_DEVICE_KEY_EXPIRED') || errorText.includes('AUTH_CREDENTIALS_REQUIRED')) {
+            if (errorText.includes('AUTH_TOKEN_EXPIRED')) {
+                document.getElementById('indexError').innerHTML = '<i class="fas fa-exclamation-circle error-icon"></i> Auth token is expired (valid for 24 hrs). Please enter a new valid auth token and device key.';
+                localStorage.removeItem('railway_auth_token');
+                localStorage.removeItem('railway_device_key');
+            } else if (errorText.includes('AUTH_DEVICE_KEY_EXPIRED')) {
+                document.getElementById('indexError').innerHTML = '<i class="fas fa-exclamation-circle error-icon"></i> Device key is expired. Please enter a new valid auth token and device key.';
                 localStorage.removeItem('railway_auth_token');
                 localStorage.removeItem('railway_device_key');
             }

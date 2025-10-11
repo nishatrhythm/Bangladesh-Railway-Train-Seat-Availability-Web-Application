@@ -652,7 +652,7 @@ def check_seats():
             return redirect(url_for('show_results'))
 
     except Exception as e:
-        session['error'] = f"An unexpected error occurred: {str(e)}"
+        session['error'] = str(e)
         return redirect(url_for('home'))
 
 @app.route('/queue_wait')

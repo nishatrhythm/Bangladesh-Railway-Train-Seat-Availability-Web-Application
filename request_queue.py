@@ -245,7 +245,7 @@ class RequestQueue:
                             result = request_func(**params)
                             break
                         except Exception as e:
-                            if "Rate limit exceeded" in str(e) or "403" in str(e):
+                            if "experiencing high traffic" in str(e) or "403" in str(e):
                                 retry_count += 1
                                 if retry_count < max_retries:
                                     retry_delay_with_jitter = retry_delay + (retry_count * 2) + (random.random() * 2)
